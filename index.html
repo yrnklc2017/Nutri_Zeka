@@ -570,9 +570,9 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
   <div id="sm">
     <!-- Hero banner -->
     <div class="hero-banner">
-      <div class="hero-label">Prototip — Ornek Analiz Sistemi</div>
+      <div class="hero-label">AI Destekli Gercek Analiz</div>
       <div class="hero-main-title">Besin Etiketini<br><span>Analiz Et</span></div>
-      <div class="hero-desc">Barkod, ambalaj veya etiket fotografla ve ornek analiz sonucunu gor.</div>
+      <div class="hero-desc">Barkod, ambalaj veya etiket fotografla — Claude AI saniyeler icinde analiz etsin.</div>
       <div class="hero-stats">
         <div class="hero-stat">
           <div class="hero-stat-val">100</div>
@@ -593,11 +593,7 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
     <div class="scan-section">
       <div class="scan-section-title">Nasil taramak istersin?</div>
 
-      <!-- Proto note -->
-      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;font-weight:600;color:#92400e;display:flex;align-items:flex-start;gap:8px;">
-        <span style="flex-shrink:0;font-size:15px;">&#9432;</span>
-        <span>Bu prototipte yuklenen etiket gorseli ornek analiz sistemiyle degerlendirilmektedir.</span>
-      </div>
+
 
       <div class="scan-cards">
         <!-- Gallery -->
@@ -652,7 +648,7 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
           <button onclick="clearPreview()" style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#215;</button>
         </div>
         <button id="analyzeBtn" onclick="runSampleAnalysis()" style="width:100%;margin-top:10px;padding:14px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 14px rgba(22,163,74,.35);">
-          Analiz Et
+          Analiz Et — AI ile incele
         </button>
       </div>
 
@@ -936,61 +932,78 @@ function uploadProfilePhoto(event){
 
 // ─── SCAN ─────────────────────────────────────────────────────────────
 document.getElementById("gal").addEventListener("change",onF);
-function onF(e){
-  const f=e.target.files[0];if(!f)return;e.target.value="";
-  const r=new FileReader();
-  r.onload=ev=>{
-    const du=ev.target.result;
-    currentImg=du;
-    // Show preview and Analiz Et button
-    const prev=document.getElementById("imgPreview");
-    if(prev){prev.src=du;}
-    const area=document.getElementById("imgPreviewArea");
-    if(area){area.style.display="block";}
-    // Scroll to preview
-    if(area){area.scrollIntoView({behavior:"smooth",block:"nearest"});}
+function onF(e) {
+  const f = e.target.files[0];
+  if (!f) return;
+  e.target.value = "";
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const du = ev.target.result;
+    const m = du.match(/^data:([^;]+);base64,/);
+    const mime = (m && ["image/jpeg","image/png","image/gif","image/webp"].includes(m[1])) ? m[1] : "image/jpeg";
+    currentImg = du;
+    // Show preview
+    const prev = document.getElementById("imgPreview");
+    if (prev) prev.src = du;
+    const area = document.getElementById("imgPreviewArea");
+    if (area) { area.style.display = "block"; area.scrollIntoView({ behavior:"smooth", block:"nearest" }); }
+    // Store mime for analysis
+    window._currentMime = mime;
   };
-  r.readAsDataURL(f);
+  reader.readAsDataURL(f);
 }
 
 // Camera functions
 let cameraStream=null;
-function openCamera(){
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    const errEl=document.getElementById("camErrorMsg");
-    if(errEl){errEl.style.display="block";errEl.textContent="Kamera bu tarayicida desteklenmiyor. Lutfen galeriden fotograf yukleyin.";}
+function openCamera() {
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    const errEl = document.getElementById("camErrorMsg");
+    if (errEl) { errEl.style.display = "block"; errEl.textContent = "Kamera bu tarayicida desteklenmiyor. Lutfen galeriden fotograf yukleyin."; }
     return;
   }
-  const camArea=document.getElementById("cameraArea");
-  if(camArea){camArea.style.display="block";}
-  const errEl=document.getElementById("camErrorMsg");
-  if(errEl){errEl.style.display="none";}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false})
-    .then(stream=>{
-      cameraStream=stream;
-      const video=document.getElementById("cameraVideo");
-      if(video){video.srcObject=stream;video.play();}
+  const camArea = document.getElementById("cameraArea");
+  if (camArea) camArea.style.display = "block";
+  const errEl = document.getElementById("camErrorMsg");
+  if (errEl) errEl.style.display = "none";
+
+  const constraints = {
+    video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } },
+    audio: false
+  };
+
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(stream => {
+      cameraStream = stream;
+      const video = document.getElementById("cameraVideo");
+      if (video) { video.srcObject = stream; video.play(); }
     })
-    .catch(err=>{
-      const errEl=document.getElementById("camErrorMsg");
-      if(errEl){errEl.style.display="block";errEl.textContent="Kamera acılamadı. Lutfen tarayici izinlerini kontrol edin veya galeriden fotograf yukleyin.";}
-      console.warn("Camera error:",err);
+    .catch(err => {
+      const errEl = document.getElementById("camErrorMsg");
+      if (errEl) {
+        errEl.style.display = "block";
+        errEl.textContent = "Kamera acilamadi. Lutfen tarayici izinlerini kontrol edin veya galeriden fotograf yukleyin.";
+      }
+      console.warn("Camera error:", err);
     });
 }
-function capturePhoto(){
-  const video=document.getElementById("cameraVideo");
-  const canvas=document.getElementById("cameraCanvas");
-  if(!video||!canvas)return;
-  canvas.width=video.videoWidth||640;
-  canvas.height=video.videoHeight||480;
-  canvas.getContext("2d").drawImage(video,0,0);
-  const du=canvas.toDataURL("image/jpeg",0.85);
-  currentImg=du;
+function capturePhoto() {
+  const video = document.getElementById("cameraVideo");
+  const canvas = document.getElementById("cameraCanvas");
+  if (!video || !canvas) return;
+  canvas.width = video.videoWidth || 1280;
+  canvas.height = video.videoHeight || 720;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+  const du = canvas.toDataURL("image/jpeg", 0.9);
+  currentImg = du;
+  window._currentMime = "image/jpeg";
   closeCamera();
-  const prev=document.getElementById("imgPreview");
-  if(prev){prev.src=du;}
-  const area=document.getElementById("imgPreviewArea");
-  if(area){area.style.display="block";}
+  // Show preview briefly then auto-analyze
+  const prev = document.getElementById("imgPreview");
+  if (prev) prev.src = du;
+  const area = document.getElementById("imgPreviewArea");
+  if (area) area.style.display = "block";
+  // Auto-start analysis after short delay
+  setTimeout(() => { runSampleAnalysis(); }, 500);
 }
 function closeCamera(){
   if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
@@ -1006,61 +1019,65 @@ function clearPreview(){
 }
 
 // Barcode demo
-function barcodeDemo(){
-  currentImg=null;
-  const noteDiv=document.createElement("div");
-  noteDiv.style.cssText="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:2px solid #fde68a;border-radius:16px;padding:20px 22px;z-index:500;max-width:320px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.15);font-family:'Nunito',sans-serif;";
-  noteDiv.innerHTML="<div style='font-size:32px;margin-bottom:10px;'>&#9783;</div><div style='font-size:15px;font-weight:800;color:#92400e;margin-bottom:8px;'>Barkod Tarama</div><div style='font-size:13px;color:#6b7280;font-weight:600;line-height:1.5;margin-bottom:16px;'>Bu prototipte barkod okuma sonrasi ornek urun analizi gosterilmektedir.</div><button onclick='this.parentElement.remove();runSampleAnalysis();' style='width:100%;padding:12px;background:#16a34a;border:none;border-radius:10px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:inherit;'>Ornek Analizi Goster</button><br><button onclick='this.parentElement.remove()' style='margin-top:8px;width:100%;padding:10px;background:#f8f9fa;border:1px solid #e5e7eb;border-radius:10px;font-size:13px;font-weight:700;color:#6b7280;cursor:pointer;font-family:inherit;'>Iptal</button>";
+function barcodeDemo() {
+  // For barcode: open camera (user captures barcode photo) or gallery
+  const noteDiv = document.createElement("div");
+  noteDiv.style.cssText = "position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:500;display:flex;align-items:flex-end;justify-content:center;";
+  noteDiv.innerHTML = `<div style="background:#fff;border-radius:20px 20px 0 0;padding:24px 20px 36px;width:100%;max-width:430px;font-family:'Nunito',sans-serif;">
+    <div style="width:40px;height:4px;background:#e5e7eb;border-radius:4px;margin:0 auto 18px;"></div>
+    <div style="font-size:17px;font-weight:900;color:#111827;margin-bottom:6px;">Barkod Tara</div>
+    <div style="font-size:13px;color:#6b7280;font-weight:600;line-height:1.5;margin-bottom:18px;">Urunun barkodunu fotoğraflayın veya besin etiketi görselini yükleyin — AI analiz etsin.</div>
+    <button onclick="this.closest('[style*=fixed]').remove();openCamera();" style="width:100%;padding:14px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:inherit;margin-bottom:8px;">Kamera ile Çek</button>
+    <label style="display:block;width:100%;padding:14px;background:#f0fdf4;border:2px solid #bbf7d0;border-radius:12px;font-size:14px;font-weight:800;color:#15803d;cursor:pointer;text-align:center;font-family:inherit;">
+      <input type="file" accept="image/*" style="display:none;" onchange="this.closest('[style*=fixed]').remove();onF(event);">
+      Galeriden Yükle
+    </label>
+    <button onclick="this.closest('[style*=fixed]').remove();" style="width:100%;margin-top:8px;padding:12px;background:none;border:none;font-size:13px;font-weight:700;color:#6b7280;cursor:pointer;font-family:inherit;">İptal</button>
+  </div>`;
   document.body.appendChild(noteDiv);
 }
 
 // Sample analysis — runs without API
-function runSampleAnalysis(){
-  document.getElementById("sm").style.display="none";
-  document.getElementById("sl").style.display="block";
-  document.getElementById("se").style.display="none";
-  document.getElementById("sr").style.display="none";
-  if(currentImg){document.getElementById("pi").src=currentImg;}
-  si=0;document.getElementById("lst").textContent=STS[0];
-  clearInterval(stmr);stmr=setInterval(()=>{si=(si+1)%STS.length;document.getElementById("lst").textContent=STS[si];},900);
-  setTimeout(()=>{
-    clearInterval(stmr);
-    const sampleResult={
-      urun_adi:"Ornek Paketi Gida",
-      marka:"NutriZeka Prototip",
-      barkod:"",
-      besinler:{
-        kalori:{deger:420,birim:"kcal"},
-        seker:{deger:18,birim:"g"},
-        yag:{deger:22,birim:"g"},
-        doymus_yag:{deger:8,birim:"g"},
-        tuz:{deger:0.9,birim:"g"},
-        protein:{deger:7,birim:"g"},
-        karbonhidrat:{deger:52,birim:"g"},
-        lif:{deger:3.5,birim:"g"}
-      },
-      puan:42,
-      derece:"Zayif",
-      uyarilar:[
-        {seviye:"red",mesaj:"Yuksek seker icerir (100g'da 18g). Dikat edilmesi onerilir."},
-        {seviye:"red",mesaj:"Yuksek yag orani. Kalp sagligi icin dikkatli tuketilmeli."},
-        {seviye:"yellow",mesaj:"Tuz orani orta duzey. Fazla tuketimden kacinin."},
-        {seviye:"green",mesaj:"Protein miktari yeterli. Kas gelisimi icin olumlu."},
-        {seviye:"green",mesaj:"Lif icerigi iyi. Sindirim sagligi icin olumlu."}
-      ],
-      katki_maddeleri:[
-        {kod:"E471",ad:"Emulsifier",guvenlik:"caution"},
-        {kod:"E322",ad:"Lesithin",guvenlik:"safe"}
-      ],
-      tavsiye:"Bu urun yuksek seker ve yag icermektedir. Sik tuketilmesi onerilmez. Daha saglikli alternatifler tercih edilebilir.",
-      tahmin:true
-    };
-    currentResult=sampleResult;
-    rndr(sampleResult);
-    document.getElementById("sl").style.display="none";
-    document.getElementById("sr").style.display="block";
-    scanCnt++;addXP(10,"Urun tarandı! +10 XP");save();
-  },2400);
+function runSampleAnalysis() {
+  if (!currentImg) {
+    toast("Once bir gorsel secin!");
+    return;
+  }
+  const m = currentImg.match(/^data:([^;]+);base64,/);
+  const mime = (window._currentMime) || (m && ["image/jpeg","image/png","image/gif","image/webp"].includes(m[1]) ? m[1] : "image/jpeg");
+  const b64 = currentImg.split(",")[1];
+
+  document.getElementById("sm").style.display = "none";
+  document.getElementById("sl").style.display = "block";
+  document.getElementById("se").style.display = "none";
+  document.getElementById("sr").style.display = "none";
+  document.getElementById("pi").src = currentImg;
+
+  si = 0;
+  document.getElementById("lst").textContent = STS[0];
+  clearInterval(stmr);
+  stmr = setInterval(() => {
+    si = (si + 1) % STS.length;
+    document.getElementById("lst").textContent = STS[si];
+  }, 900);
+
+  callAPI(b64, mime)
+    .then(res => {
+      clearInterval(stmr);
+      currentResult = res;
+      rndr(res);
+      document.getElementById("sl").style.display = "none";
+      document.getElementById("sr").style.display = "block";
+      scanCnt++;
+      addXP(10, "Urun tarandı! +10 XP");
+      save();
+    })
+    .catch(err => {
+      clearInterval(stmr);
+      document.getElementById("sl").style.display = "none";
+      document.getElementById("se").style.display = "block";
+      document.getElementById("em").textContent = err.message || "Analiz sirasinda hata olustu.";
+    });
 }
 function rScan(){
   currentResult=null;currentImg=null;
@@ -1072,18 +1089,43 @@ function rScan(){
   closeCamera();
 }
 
-async function callAPI(b64,mime){
-  return new Promise(resolve=>{
-    setTimeout(()=>resolve({
-      urun_adi:"Ornek Paketli Gida",marka:"NutriZeka Prototip",barkod:"",
-      besinler:{kalori:{deger:420,birim:"kcal"},seker:{deger:18,birim:"g"},yag:{deger:22,birim:"g"},doymus_yag:{deger:8,birim:"g"},tuz:{deger:0.9,birim:"g"},protein:{deger:7,birim:"g"},karbonhidrat:{deger:52,birim:"g"},lif:{deger:3.5,birim:"g"}},
-      puan:42,derece:"Zayif",
-      uyarilar:[{seviye:"red",mesaj:"Yuksek seker icerir. Dikkatli tuketilmeli."},{seviye:"red",mesaj:"Yuksek yag orani. Kalp sagligi icin dikkat."},{seviye:"yellow",mesaj:"Tuz orani orta duzey."},{seviye:"green",mesaj:"Protein miktari yeterli."},{seviye:"green",mesaj:"Lif icerigi iyi."}],
-      katki_maddeleri:[{kod:"E471",ad:"Emulgatör",guvenlik:"caution"},{kod:"E322",ad:"Lesitin",guvenlik:"safe"}],
-      tavsiye:"Bu urun yuksek seker ve yag icermektedir. Sik tuketilmesi onerilmez. Daha saglikli alternatifler tercih edilebilir.",
-      tahmin:true
-    }),800);
+async function callAPI(b64, mime) {
+  const prompt = `Bu fotograf bir gida urunune ait. Ambalaj on yuzu, besin degerleri etiketi veya BARKOD olabilir.
+BARKOD: Numarayi oku, urunu tani, bilinen besin degerlerini kullan; bilinmiyorsa kategori tahmini yap.
+AMBALAJ: Urunu tani, tipik besin degerlerini tahmin et.
+ETIKET: Degerleri dogrudan oku.
+SADECE JSON dondur, baska hicbir sey yazma:
+{"urun_adi":"...","marka":"...","barkod":"...","besinler":{"kalori":{"deger":0,"birim":"kcal"},"seker":{"deger":0,"birim":"g"},"yag":{"deger":0,"birim":"g"},"doymus_yag":{"deger":0,"birim":"g"},"tuz":{"deger":0,"birim":"g"},"protein":{"deger":0,"birim":"g"},"karbonhidrat":{"deger":0,"birim":"g"},"lif":{"deger":0,"birim":"g"}},"puan":50,"derece":"Iyi","uyarilar":[{"seviye":"red","mesaj":"sade Turkce"}],"katki_maddeleri":[{"kod":"E471","ad":"...","guvenlik":"safe"}],"tavsiye":"Sade Turkce 2-3 cumle.","tahmin":true}
+PUANLAMA(60 baslangic):Seker<5g+20,>22g-20|Yag<3g+15,>20g-15|DYag<1.5g+15,>5g-15|Tuz<0.3g+10,>1.5g-20|Lif>3g+10|Protein>5g+10
+guvenlik:safe|caution|avoid — derece:Mukemmel|Iyi|Orta|Zayif|Kotu`;
+
+  const resp = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1000,
+      messages: [{
+        role: "user",
+        content: [
+          { type: "image", source: { type: "base64", media_type: mime, data: b64 } },
+          { type: "text", text: prompt }
+        ]
+      }]
+    })
   });
+
+  if (!resp.ok) {
+    const e = await resp.json().catch(() => ({}));
+    throw new Error(e?.error?.message || "API hatasi: " + resp.status);
+  }
+  const data = await resp.json();
+  const raw = data.content.map(c => c.text || "").join("");
+  try {
+    return JSON.parse(raw.replace(/```json|```/g, "").trim());
+  } catch (ex) {
+    throw new Error("Yanit ayristirilmadi. Lutfen tekrar deneyin.");
+  }
 }
 function scoreColor(s){return s>=70?"g":s>=45?"y":"r";}
 function rndr(r){
