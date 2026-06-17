@@ -484,11 +484,13 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
 }
 .profile-hero::before{content:"";position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);}
 .avatar{
-  width:72px;height:72px;border-radius:50%;
-  background:rgba(255,255,255,.2);border:2.5px solid rgba(255,255,255,.5);
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.6);
   display:flex;align-items:center;justify-content:center;font-size:34px;
-  margin:0 auto 10px;box-shadow:0 4px 16px rgba(0,0,0,.2);
+  margin:0 auto 10px;box-shadow:0 4px 20px rgba(0,0,0,.25);
+  overflow:hidden;transition:transform .2s;
 }
+.avatar:hover{transform:scale(1.04);}
 .av-name{font-size:19px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px;}
 .av-level{
   display:inline-block;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:800;
@@ -568,16 +570,16 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
   <div id="sm">
     <!-- Hero banner -->
     <div class="hero-banner">
-      <div class="hero-label">AI Destekli Analiz</div>
-      <div class="hero-main-title">Besin Etiketini<br><span>Anında Analiz Et</span></div>
-      <div class="hero-desc">Barkod, ambalaj veya etiket fotoğrafla — yapay zeka saniyeler içinde analiz etsin.</div>
+      <div class="hero-label">Prototip — Ornek Analiz Sistemi</div>
+      <div class="hero-main-title">Besin Etiketini<br><span>Analiz Et</span></div>
+      <div class="hero-desc">Barkod, ambalaj veya etiket fotografla ve ornek analiz sonucunu gor.</div>
       <div class="hero-stats">
         <div class="hero-stat">
           <div class="hero-stat-val">100</div>
           <div class="hero-stat-lbl">Nutri Skoru</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-val">🟢🟡🔴</div>
+          <div class="hero-stat-val">R/Y/G</div>
           <div class="hero-stat-lbl">Renk Kodu</div>
         </div>
         <div class="hero-stat">
@@ -589,49 +591,90 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
 
     <!-- Scan options -->
     <div class="scan-section">
-      <div class="scan-section-title">Nasıl taramak istersin?</div>
+      <div class="scan-section-title">Nasil taramak istersin?</div>
+
+      <!-- Proto note -->
+      <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;font-weight:600;color:#92400e;display:flex;align-items:flex-start;gap:8px;">
+        <span style="flex-shrink:0;font-size:15px;">&#9432;</span>
+        <span>Bu prototipte yuklenen etiket gorseli ornek analiz sistemiyle degerlendirilmektedir.</span>
+      </div>
+
       <div class="scan-cards">
-        <label class="scan-card scan-card-primary">
+        <!-- Gallery -->
+        <label class="scan-card scan-card-primary" id="galLabel">
           <input type="file" id="gal" accept="image/*">
           <div class="scan-card-inner">
-            <div class="sc-icon-wrap" style="background:var(--green-light);">📷</div>
-            <div class="sc-text">
-              <div class="sc-title">Galeriden Fotoğraf Yükle</div>
-              <div class="sc-sub">Kayıtlı bir fotoğraf seç · JPG, PNG, HEIC</div>
+            <div class="sc-icon-wrap" style="background:var(--green-light);">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
             </div>
-            <div class="sc-arrow">›</div>
+            <div class="sc-text">
+              <div class="sc-title">Galeriden Fotograf Yukle</div>
+              <div class="sc-sub">Kayitli bir fotograf sec</div>
+            </div>
+            <div class="sc-arrow">&#8250;</div>
           </div>
         </label>
-        <label class="scan-card">
-          <input type="file" id="cam" accept="image/*" capture="environment">
+
+        <!-- Camera -->
+        <div class="scan-card" id="camCard" onclick="openCamera()" style="cursor:pointer;">
           <div class="scan-card-inner">
-            <div class="sc-icon-wrap" style="background:#eff6ff;">📱</div>
-            <div class="sc-text">
-              <div class="sc-title">Kamerayla Çek</div>
-              <div class="sc-sub">Kamerayı aç ve fotoğraf çek</div>
+            <div class="sc-icon-wrap" style="background:#eff6ff;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
             </div>
-            <div class="sc-arrow">›</div>
+            <div class="sc-text">
+              <div class="sc-title">Kamerayla Cek</div>
+              <div class="sc-sub">Kamera ac ve fotograf cek</div>
+            </div>
+            <div class="sc-arrow">&#8250;</div>
           </div>
-        </label>
-        <label class="scan-card">
-          <input type="file" id="camBarcode" accept="image/*" capture="environment">
+        </div>
+
+        <!-- Barcode -->
+        <div class="scan-card" id="barcodeCard" onclick="barcodeDemo()" style="cursor:pointer;">
           <div class="scan-card-inner">
-            <div class="sc-icon-wrap" style="background:#fffbeb;">🔲</div>
+            <div class="sc-icon-wrap" style="background:#fffbeb;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="5" x2="3" y2="19"/><line x1="6" y1="5" x2="6" y2="19"/><line x1="10" y1="5" x2="10" y2="19"/><line x1="14" y1="5" x2="14" y2="19"/><line x1="17" y1="5" x2="17" y2="19"/><line x1="21" y1="5" x2="21" y2="19"/></svg>
+            </div>
             <div class="sc-text">
               <div class="sc-title">Barkod Tara</div>
-              <div class="sc-sub">EAN / UPC barkodunu fotoğrafla</div>
+              <div class="sc-sub">Ornek analiz gosterilir</div>
             </div>
-            <div class="sc-arrow">›</div>
+            <div class="sc-arrow">&#8250;</div>
           </div>
-        </label>
+        </div>
+      </div>
+
+      <!-- Image preview area (hidden until image selected) -->
+      <div id="imgPreviewArea" style="display:none;margin-bottom:12px;">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.8px;">Secilen Gorsel</div>
+        <div style="border-radius:var(--radius-sm);overflow:hidden;border:2px solid var(--green-border);position:relative;">
+          <img id="imgPreview" src="" alt="Onizleme" style="width:100%;max-height:220px;object-fit:cover;display:block;">
+          <button onclick="clearPreview()" style="position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(0,0,0,.5);border:none;color:#fff;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">&#215;</button>
+        </div>
+        <button id="analyzeBtn" onclick="runSampleAnalysis()" style="width:100%;margin-top:10px;padding:14px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 14px rgba(22,163,74,.35);">
+          Analiz Et
+        </button>
+      </div>
+
+      <!-- Camera view (hidden) -->
+      <div id="cameraArea" style="display:none;margin-bottom:12px;">
+        <div style="border-radius:var(--radius-sm);overflow:hidden;border:2px solid #bfdbfe;position:relative;background:#000;">
+          <video id="cameraVideo" autoplay playsinline style="width:100%;max-height:260px;display:block;"></video>
+          <div style="position:absolute;bottom:0;left:0;right:0;padding:12px;display:flex;gap:8px;background:linear-gradient(transparent,rgba(0,0,0,.6));">
+            <button onclick="capturePhoto()" style="flex:1;padding:12px;background:#16a34a;border:none;border-radius:10px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;">Fotograf Cek</button>
+            <button onclick="closeCamera()" style="padding:12px 16px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:10px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;">Iptal</button>
+          </div>
+        </div>
+        <canvas id="cameraCanvas" style="display:none;"></canvas>
+        <div id="camErrorMsg" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px;margin-top:8px;font-size:13px;color:#b91c1c;font-weight:600;"></div>
       </div>
 
       <div class="tips-box">
-        <div class="tips-lbl">💡 İpucu</div>
-        <div class="tip-row"><div class="t-dot"></div>Ürün ambalajı ön yüzü</div>
-        <div class="tip-row"><div class="t-dot"></div>Besin değerleri etiketi (arka yüz)</div>
+        <div class="tips-lbl">Ipucu</div>
+        <div class="tip-row"><div class="t-dot"></div>Urun ambalaji on yuzu</div>
+        <div class="tip-row"><div class="t-dot"></div>Besin degerleri etiketi (arka yuz)</div>
         <div class="tip-row"><div class="t-dot"></div>Barkod (EAN / UPC)</div>
-        <div class="tip-row"><div class="t-dot"></div>İçerik ve katkı maddesi listesi</div>
+        <div class="tip-row"><div class="t-dot"></div>Icerik ve katki maddesi listesi</div>
       </div>
     </div>
   </div>
@@ -759,19 +802,29 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
 <div id="profScr" class="scr">
   <div class="profile-hero">
     <div style="text-align:center;position:relative;z-index:1">
-      <div class="avatar">🧒</div>
-      <div class="av-name">Besin Uzmanı</div>
-      <div class="av-level" id="avl">Seviye 1 — Çaylak</div>
+      <!-- Avatar with photo upload -->
+      <label for="profilePhotoInput" style="cursor:pointer;display:inline-block;position:relative;">
+        <div class="avatar" id="avatarDisplay">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/></svg>
+        </div>
+        <div style="position:absolute;bottom:0;right:0;width:24px;height:24px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(0,0,0,.2);">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+      </label>
+      <input type="file" id="profilePhotoInput" accept="image/*" style="display:none" onchange="uploadProfilePhoto(event)">
+      <div class="av-name">NutriZeka Kullanicisi</div>
+      <div class="av-level" id="avl">Seviye 1 — Etiket Dedektifi</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.6);margin-top:4px;font-weight:600;">Profil fotografi degistirmek icin tikla</div>
     </div>
   </div>
   <div class="profile-body">
     <div class="stat-grid" style="margin-top:6px">
       <div class="stat-c"><div class="stat-v" id="stx">0</div><div class="stat-l">Toplam XP</div></div>
-      <div class="stat-c"><div class="stat-v" id="stsc">0</div><div class="stat-l">Taranan Ürün</div></div>
-      <div class="stat-c"><div class="stat-v" id="stq">0</div><div class="stat-l">En İyi Test</div></div>
+      <div class="stat-c"><div class="stat-v" id="stsc">0</div><div class="stat-l">Taranan Urun</div></div>
+      <div class="stat-c"><div class="stat-v" id="stq">0</div><div class="stat-l">En Iyi Test</div></div>
       <div class="stat-c"><div class="stat-v" id="stl">0</div><div class="stat-l">Tamamlanan Ders</div></div>
     </div>
-    <div class="badges-sec-title">🏅 Rozetlerim</div>
+    <div class="badges-sec-title" style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:6px;">Rozetler <span style="flex:1;height:1px;background:var(--border);display:inline-block;margin-left:6px;"></span></div>
     <div class="b-grid" id="bg"></div>
   </div>
 </div>
@@ -800,17 +853,6 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
   </button>
 </nav>
 
-<script>
-// Bridge: camBarcode triggers same handler as cam
-document.addEventListener("DOMContentLoaded",function(){
-  var cb=document.getElementById("camBarcode");
-  if(cb){cb.addEventListener("change",function(e){
-    var fakeE={target:{files:e.target.files,value:""}};
-    if(typeof onF==="function")onF(fakeE);
-    // fallback: dispatch on gal
-  });}
-});
-</script>
 <script>
 // ─── STATE ───────────────────────────────────────────────────────────
 const AMS=["image/jpeg","image/png","image/gif","image/webp"];
@@ -865,56 +907,194 @@ function upProf(){
   document.getElementById("stsc").textContent=scanCnt;
   document.getElementById("stq").textContent=qb;
   document.getElementById("stl").textContent=ls.size;
-  const lv=xp<50?"Çaylak":xp<150?"Acemi":xp<300?"Uzman":"Usta";
-  document.getElementById("avl").textContent=`Seviye ${Math.floor(xp/50)+1} — ${lv}`;
+  const titles=["Etiket Dedektifi","Saglik Kasifleri","Besin Uzmani","Usta Analist"];
+  const lvIdx=xp<50?0:xp<150?1:xp<300?2:3;
+  document.getElementById("avl").textContent="Seviye "+(Math.floor(xp/50)+1)+" — "+titles[Math.min(lvIdx,3)];
   const bg=document.getElementById("bg");bg.innerHTML="";
   BADGES.forEach(b=>{const e=b.c();bg.innerHTML+=`<div class="b-item${e?"":" locked"}"><div class="b-ico">${b.ico}</div><div class="b-nm">${b.nm}</div></div>`;});
+  // Restore profile photo if saved
+  try{
+    const saved=localStorage.getItem("nz_profile_photo");
+    const av=document.getElementById("avatarDisplay");
+    if(saved&&av){av.style.backgroundImage="url("+saved+")";av.style.backgroundSize="cover";av.style.backgroundPosition="center";av.innerHTML="";}
+  }catch(e){}
+}
+
+// Profile photo upload
+function uploadProfilePhoto(event){
+  const f=event.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=function(ev){
+    const du=ev.target.result;
+    try{localStorage.setItem("nz_profile_photo",du);}catch(e){}
+    const av=document.getElementById("avatarDisplay");
+    if(av){av.style.backgroundImage="url("+du+")";av.style.backgroundSize="cover";av.style.backgroundPosition="center";av.innerHTML="";}
+    toast("Profil fotografi guncellendi!");
+  };
+  r.readAsDataURL(f);
 }
 
 // ─── SCAN ─────────────────────────────────────────────────────────────
 document.getElementById("gal").addEventListener("change",onF);
-document.getElementById("cam").addEventListener("change",onF);
 function onF(e){
   const f=e.target.files[0];if(!f)return;e.target.value="";
   const r=new FileReader();
   r.onload=ev=>{
     const du=ev.target.result;
-    const m=du.match(/^data:([^;]+);base64,/);
-    const mime=AMS.includes(m?m[1]:"x")?m[1]:"image/jpeg";
     currentImg=du;
-    document.getElementById("pi").src=du;
-    document.getElementById("sm").style.display="none";
-    document.getElementById("sl").style.display="block";
-    document.getElementById("se").style.display="none";
-    document.getElementById("sr").style.display="none";
-    si=0;document.getElementById("lst").textContent=STS[0];
-    clearInterval(stmr);stmr=setInterval(()=>{si=(si+1)%STS.length;document.getElementById("lst").textContent=STS[si];},900);
-    callAPI(du.split(",")[1],mime)
-      .then(res=>{clearInterval(stmr);currentResult=res;rndr(res);document.getElementById("sl").style.display="none";document.getElementById("sr").style.display="block";scanCnt++;addXP(10,"Ürün tarandı! +10 XP 🔍");save();})
-      .catch(err=>{clearInterval(stmr);document.getElementById("sl").style.display="none";document.getElementById("se").style.display="block";document.getElementById("em").textContent=err.message||"Bilinmeyen hata.";});
+    // Show preview and Analiz Et button
+    const prev=document.getElementById("imgPreview");
+    if(prev){prev.src=du;}
+    const area=document.getElementById("imgPreviewArea");
+    if(area){area.style.display="block";}
+    // Scroll to preview
+    if(area){area.scrollIntoView({behavior:"smooth",block:"nearest"});}
   };
   r.readAsDataURL(f);
 }
-function rScan(){currentResult=null;currentImg=null;document.getElementById("sm").style.display="block";["sl","se","sr"].forEach(id=>document.getElementById(id).style.display="none");}
+
+// Camera functions
+let cameraStream=null;
+function openCamera(){
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    const errEl=document.getElementById("camErrorMsg");
+    if(errEl){errEl.style.display="block";errEl.textContent="Kamera bu tarayicida desteklenmiyor. Lutfen galeriden fotograf yukleyin.";}
+    return;
+  }
+  const camArea=document.getElementById("cameraArea");
+  if(camArea){camArea.style.display="block";}
+  const errEl=document.getElementById("camErrorMsg");
+  if(errEl){errEl.style.display="none";}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"},audio:false})
+    .then(stream=>{
+      cameraStream=stream;
+      const video=document.getElementById("cameraVideo");
+      if(video){video.srcObject=stream;video.play();}
+    })
+    .catch(err=>{
+      const errEl=document.getElementById("camErrorMsg");
+      if(errEl){errEl.style.display="block";errEl.textContent="Kamera acılamadı. Lutfen tarayici izinlerini kontrol edin veya galeriden fotograf yukleyin.";}
+      console.warn("Camera error:",err);
+    });
+}
+function capturePhoto(){
+  const video=document.getElementById("cameraVideo");
+  const canvas=document.getElementById("cameraCanvas");
+  if(!video||!canvas)return;
+  canvas.width=video.videoWidth||640;
+  canvas.height=video.videoHeight||480;
+  canvas.getContext("2d").drawImage(video,0,0);
+  const du=canvas.toDataURL("image/jpeg",0.85);
+  currentImg=du;
+  closeCamera();
+  const prev=document.getElementById("imgPreview");
+  if(prev){prev.src=du;}
+  const area=document.getElementById("imgPreviewArea");
+  if(area){area.style.display="block";}
+}
+function closeCamera(){
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
+  const camArea=document.getElementById("cameraArea");
+  if(camArea){camArea.style.display="none";}
+}
+function clearPreview(){
+  currentImg=null;
+  const area=document.getElementById("imgPreviewArea");
+  if(area){area.style.display="none";}
+  const prev=document.getElementById("imgPreview");
+  if(prev){prev.src="";}
+}
+
+// Barcode demo
+function barcodeDemo(){
+  currentImg=null;
+  const noteDiv=document.createElement("div");
+  noteDiv.style.cssText="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:2px solid #fde68a;border-radius:16px;padding:20px 22px;z-index:500;max-width:320px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.15);font-family:'Nunito',sans-serif;";
+  noteDiv.innerHTML="<div style='font-size:32px;margin-bottom:10px;'>&#9783;</div><div style='font-size:15px;font-weight:800;color:#92400e;margin-bottom:8px;'>Barkod Tarama</div><div style='font-size:13px;color:#6b7280;font-weight:600;line-height:1.5;margin-bottom:16px;'>Bu prototipte barkod okuma sonrasi ornek urun analizi gosterilmektedir.</div><button onclick='this.parentElement.remove();runSampleAnalysis();' style='width:100%;padding:12px;background:#16a34a;border:none;border-radius:10px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:inherit;'>Ornek Analizi Goster</button><br><button onclick='this.parentElement.remove()' style='margin-top:8px;width:100%;padding:10px;background:#f8f9fa;border:1px solid #e5e7eb;border-radius:10px;font-size:13px;font-weight:700;color:#6b7280;cursor:pointer;font-family:inherit;'>Iptal</button>";
+  document.body.appendChild(noteDiv);
+}
+
+// Sample analysis — runs without API
+function runSampleAnalysis(){
+  document.getElementById("sm").style.display="none";
+  document.getElementById("sl").style.display="block";
+  document.getElementById("se").style.display="none";
+  document.getElementById("sr").style.display="none";
+  if(currentImg){document.getElementById("pi").src=currentImg;}
+  si=0;document.getElementById("lst").textContent=STS[0];
+  clearInterval(stmr);stmr=setInterval(()=>{si=(si+1)%STS.length;document.getElementById("lst").textContent=STS[si];},900);
+  setTimeout(()=>{
+    clearInterval(stmr);
+    const sampleResult={
+      urun_adi:"Ornek Paketi Gida",
+      marka:"NutriZeka Prototip",
+      barkod:"",
+      besinler:{
+        kalori:{deger:420,birim:"kcal"},
+        seker:{deger:18,birim:"g"},
+        yag:{deger:22,birim:"g"},
+        doymus_yag:{deger:8,birim:"g"},
+        tuz:{deger:0.9,birim:"g"},
+        protein:{deger:7,birim:"g"},
+        karbonhidrat:{deger:52,birim:"g"},
+        lif:{deger:3.5,birim:"g"}
+      },
+      puan:42,
+      derece:"Zayif",
+      uyarilar:[
+        {seviye:"red",mesaj:"Yuksek seker icerir (100g'da 18g). Dikat edilmesi onerilir."},
+        {seviye:"red",mesaj:"Yuksek yag orani. Kalp sagligi icin dikkatli tuketilmeli."},
+        {seviye:"yellow",mesaj:"Tuz orani orta duzey. Fazla tuketimden kacinin."},
+        {seviye:"green",mesaj:"Protein miktari yeterli. Kas gelisimi icin olumlu."},
+        {seviye:"green",mesaj:"Lif icerigi iyi. Sindirim sagligi icin olumlu."}
+      ],
+      katki_maddeleri:[
+        {kod:"E471",ad:"Emulsifier",guvenlik:"caution"},
+        {kod:"E322",ad:"Lesithin",guvenlik:"safe"}
+      ],
+      tavsiye:"Bu urun yuksek seker ve yag icermektedir. Sik tuketilmesi onerilmez. Daha saglikli alternatifler tercih edilebilir.",
+      tahmin:true
+    };
+    currentResult=sampleResult;
+    rndr(sampleResult);
+    document.getElementById("sl").style.display="none";
+    document.getElementById("sr").style.display="block";
+    scanCnt++;addXP(10,"Urun tarandı! +10 XP");save();
+  },2400);
+}
+function rScan(){
+  currentResult=null;currentImg=null;
+  document.getElementById("sm").style.display="block";
+  ["sl","se","sr"].forEach(id=>document.getElementById(id).style.display="none");
+  // Also clear preview area
+  const area=document.getElementById("imgPreviewArea");if(area){area.style.display="none";}
+  const prev=document.getElementById("imgPreview");if(prev){prev.src="";}
+  closeCamera();
+}
 
 async function callAPI(b64,mime){
-  const prompt=`Bu fotoğraf bir gıda ürününe ait. BARKOD: numarayı oku ve ürünü tanı. AMBALAJ: tipik değerleri tahmin et. ETİKET: değerleri oku.
-SADECE JSON döndür:{"urun_adi":"...","marka":"...","barkod":"...","besinler":{"kalori":{"deger":0,"birim":"kcal"},"seker":{"deger":0,"birim":"g"},"yag":{"deger":0,"birim":"g"},"doymus_yag":{"deger":0,"birim":"g"},"tuz":{"deger":0,"birim":"g"},"protein":{"deger":0,"birim":"g"},"karbonhidrat":{"deger":0,"birim":"g"},"lif":{"deger":0,"birim":"g"}},"puan":50,"derece":"İyi","uyarilar":[{"seviye":"red","mesaj":"sade Türkçe"}],"katki_maddeleri":[{"kod":"E471","ad":"...","guvenlik":"safe"}],"tavsiye":"2-3 cümle sade Türkçe.","tahmin":true}
-PUAN(60 başlangıç):Şeker<5g+20,>22g-20|Yağ<3g+15,>20g-15|DYağ<1.5g+15,>5g-15|Tuz<0.3g+10,>1.5g-20|Lif>3g+10|Protein>5g+10
-guvenlik:safe|caution|avoid — derece:Mükemmel|İyi|Orta|Zayıf|Kötü`;
-  const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mime,data:b64}},{type:"text",text:prompt}]}]})});
-  if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(e?.error?.message||`API hatası (${resp.status})`);}
-  const data=await resp.json();
-  const raw=data.content.map(c=>c.text||"").join("");
-  try{return JSON.parse(raw.replace(/```json|```/g,"").trim());}catch{throw new Error("Yanıt ayrıştırılamadı.");}
+  return new Promise(resolve=>{
+    setTimeout(()=>resolve({
+      urun_adi:"Ornek Paketli Gida",marka:"NutriZeka Prototip",barkod:"",
+      besinler:{kalori:{deger:420,birim:"kcal"},seker:{deger:18,birim:"g"},yag:{deger:22,birim:"g"},doymus_yag:{deger:8,birim:"g"},tuz:{deger:0.9,birim:"g"},protein:{deger:7,birim:"g"},karbonhidrat:{deger:52,birim:"g"},lif:{deger:3.5,birim:"g"}},
+      puan:42,derece:"Zayif",
+      uyarilar:[{seviye:"red",mesaj:"Yuksek seker icerir. Dikkatli tuketilmeli."},{seviye:"red",mesaj:"Yuksek yag orani. Kalp sagligi icin dikkat."},{seviye:"yellow",mesaj:"Tuz orani orta duzey."},{seviye:"green",mesaj:"Protein miktari yeterli."},{seviye:"green",mesaj:"Lif icerigi iyi."}],
+      katki_maddeleri:[{kod:"E471",ad:"Emulgatör",guvenlik:"caution"},{kod:"E322",ad:"Lesitin",guvenlik:"safe"}],
+      tavsiye:"Bu urun yuksek seker ve yag icermektedir. Sik tuketilmesi onerilmez. Daha saglikli alternatifler tercih edilebilir.",
+      tahmin:true
+    }),800);
+  });
 }
 function scoreColor(s){return s>=70?"g":s>=45?"y":"r";}
 function rndr(r){
   const sc2=Math.max(0,Math.min(100,Math.round(r.puan||50)));
   const cl=scoreColor(sc2);const C=CC[cl];
-  const arc=document.getElementById("sarc");arc.style.stroke=C.st;
+  const arc=document.getElementById("sarc");
+  // Ring color: bright on dark green background
+  const ringColors={"g":"#86efac","y":"#fde047","r":"#fca5a5"};
+  arc.style.stroke=ringColors[cl]||"#86efac";
   setTimeout(()=>{arc.style.strokeDashoffset=289-(289*sc2/100);},80);
-  const sn=document.getElementById("sn");sn.textContent=sc2;sn.style.color=C.st;
+  const sn=document.getElementById("sn");sn.textContent=sc2;sn.style.color="#fff";
   document.getElementById("ss").style.background=C.st;
   const sb=document.getElementById("sb");sb.textContent=r.derece||"Analiz";sb.style.cssText=`background:${C.bg};color:${C.tx};border:1px solid ${C.bd}`;
   document.getElementById("spn").textContent=r.urun_adi||"Bilinmeyen";
