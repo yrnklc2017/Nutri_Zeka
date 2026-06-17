@@ -1076,7 +1076,18 @@ function runSampleAnalysis() {
       clearInterval(stmr);
       document.getElementById("sl").style.display = "none";
       document.getElementById("se").style.display = "block";
-      document.getElementById("em").textContent = err.message || "Analiz sirasinda hata olustu.";
+      const msg = err.message || "Analiz sirasinda bir sorun olustu. Lutfen tekrar deneyin veya besin degerlerini manuel girin.";
+      document.getElementById("em").textContent = msg;
+      const det = document.getElementById("emDetail");
+      if (det) {
+        if (msg.includes("ulasilamadi") || msg.includes("Internet")) {
+          det.textContent = "Internet baglantinizi kontrol edip tekrar deneyin.";
+        } else if (msg.includes("ayristirilmadi") || msg.includes("net")) {
+          det.textContent = "Ipucu: Besin etiketi veya barkod net ve aydinlatilmis sekilde fotograflanmali.";
+        } else {
+          det.textContent = "Gorsel net olmali, barkod veya besin etiketi belirgin gorunmeli.";
+        }
+      }
     });
 }
 function rScan(){
@@ -1090,42 +1101,70 @@ function rScan(){
 }
 
 async function callAPI(b64, mime) {
+  const WORKER_URL = "https://nutrizeka-api.yrnklc-2017.workers.dev";
+
   const prompt = `Bu fotograf bir gida urunune ait. Ambalaj on yuzu, besin degerleri etiketi veya BARKOD olabilir.
 BARKOD: Numarayi oku, urunu tani, bilinen besin degerlerini kullan; bilinmiyorsa kategori tahmini yap.
 AMBALAJ: Urunu tani, tipik besin degerlerini tahmin et.
 ETIKET: Degerleri dogrudan oku.
-SADECE JSON dondur, baska hicbir sey yazma:
-{"urun_adi":"...","marka":"...","barkod":"...","besinler":{"kalori":{"deger":0,"birim":"kcal"},"seker":{"deger":0,"birim":"g"},"yag":{"deger":0,"birim":"g"},"doymus_yag":{"deger":0,"birim":"g"},"tuz":{"deger":0,"birim":"g"},"protein":{"deger":0,"birim":"g"},"karbonhidrat":{"deger":0,"birim":"g"},"lif":{"deger":0,"birim":"g"}},"puan":50,"derece":"Iyi","uyarilar":[{"seviye":"red","mesaj":"sade Turkce"}],"katki_maddeleri":[{"kod":"E471","ad":"...","guvenlik":"safe"}],"tavsiye":"Sade Turkce 2-3 cumle.","tahmin":true}
-PUANLAMA(60 baslangic):Seker<5g+20,>22g-20|Yag<3g+15,>20g-15|DYag<1.5g+15,>5g-15|Tuz<0.3g+10,>1.5g-20|Lif>3g+10|Protein>5g+10
-guvenlik:safe|caution|avoid — derece:Mukemmel|Iyi|Orta|Zayif|Kotu`;
+SADECE asagidaki JSON formatinda yanit ver, baska hicbir sey yazma:
+{"urun_adi":"...","marka":"...","barkod":"...","besinler":{"kalori":{"deger":0,"birim":"kcal"},"seker":{"deger":0,"birim":"g"},"yag":{"deger":0,"birim":"g"},"doymus_yag":{"deger":0,"birim":"g"},"tuz":{"deger":0,"birim":"g"},"protein":{"deger":0,"birim":"g"},"karbonhidrat":{"deger":0,"birim":"g"},"lif":{"deger":0,"birim":"g"}},"puan":50,"derece":"Iyi","uyarilar":[{"seviye":"red","mesaj":"sade Turkce aciklama"}],"katki_maddeleri":[{"kod":"E471","ad":"aciklama","guvenlik":"safe"}],"tavsiye":"Sade Turkce 2-3 cumle tavsiye.","tahmin":true}
+PUANLAMA(60 baslangic): Seker<5g+20, >22g-20 | Yag<3g+15, >20g-15 | DoymusYag<1.5g+15, >5g-15 | Tuz<0.3g+10, >1.5g-20 | Lif>3g+10 | Protein>5g+10
+guvenlik degerleri: safe | caution | avoid
+derece degerleri: Mukemmel | Iyi | Orta | Zayif | Kotu`;
 
-  const resp = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [{
-        role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: mime, data: b64 } },
-          { type: "text", text: prompt }
-        ]
-      }]
-    })
-  });
+  let resp;
+  try {
+    resp = await fetch(WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        image: b64,
+        mimeType: mime,
+        prompt: prompt
+      })
+    });
+  } catch (networkErr) {
+    throw new Error("Sunucuya ulasilamadi. Internet baglantinizi kontrol edin.");
+  }
 
   if (!resp.ok) {
-    const e = await resp.json().catch(() => ({}));
-    throw new Error(e?.error?.message || "API hatasi: " + resp.status);
+    let errMsg = "Analiz sirasinda bir sorun olustu. Lutfen tekrar deneyin veya besin degerlerini manuel girin.";
+    try {
+      const e = await resp.json();
+      if (e && e.error && e.error.message) errMsg = e.error.message;
+    } catch (_) {}
+    throw new Error(errMsg);
   }
-  const data = await resp.json();
-  const raw = data.content.map(c => c.text || "").join("");
+
+  let data;
   try {
-    return JSON.parse(raw.replace(/```json|```/g, "").trim());
-  } catch (ex) {
-    throw new Error("Yanit ayristirilmadi. Lutfen tekrar deneyin.");
+    data = await resp.json();
+  } catch (_) {
+    throw new Error("Sunucudan gecersiz yanit alindi. Lutfen tekrar deneyin.");
   }
+
+  if (data.error) {
+    throw new Error(data.error.message || "Analiz sirasinda bir sorun olustu. Lutfen tekrar deneyin.");
+  }
+
+  // Worker'dan iki farkli format gelebilir:
+  // 1) Dogrudan analiz JSON objesini donduruyorsa: data.urun_adi mevcut
+  // 2) Anthropic'in ham yanitini donduruyorsa: data.content[].text icinde JSON var
+  if (data.urun_adi !== undefined) {
+    return data;
+  }
+
+  if (data.content && Array.isArray(data.content)) {
+    const raw = data.content.map(c => c.text || "").join("");
+    try {
+      return JSON.parse(raw.replace(/```json|```/g, "").trim());
+    } catch (_) {
+      throw new Error("Yanit ayristirilmadi. Gorsel net ve aydinlatilmis olmali, tekrar deneyin.");
+    }
+  }
+
+  throw new Error("Analiz sirasinda bir sorun olustu. Lutfen tekrar deneyin veya besin degerlerini manuel girin.");
 }
 function scoreColor(s){return s>=70?"g":s>=45?"y":"r";}
 function rndr(r){
