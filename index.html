@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>NutriZeka</title>
+<meta name="description" content="Besin etiketlerini AI ile analiz et. Etiketini Oku, Sağlığını Koru!">
+<meta name="theme-color" content="#16a34a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NutriZeka">
+<meta name="application-name" content="NutriZeka">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1637,6 +1647,16 @@ function showResult(score,total,type){
 }
 
 load();upProf();renderQuizHome(0);
+</script>
+<script>
+// Service Worker kaydet
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("sw.js")
+      .then(function(reg) { console.log("SW registered:", reg.scope); })
+      .catch(function(err) { console.log("SW error:", err); });
+  });
+}
 </script>
 </body>
 </html>
