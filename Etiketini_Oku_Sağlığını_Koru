@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>NutriZeka</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;--green-text:#15803d;
+  --yellow:#d97706;--yellow-bg:#fffbeb;--yellow-border:#fde68a;--yellow-text:#b45309;
+  --red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;--red-text:#b91c1c;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;--blue-text:#1d4ed8;
+  --purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;--purple-text:#6d28d9;
+  --bg:#f8f9fa;--border:#e5e7eb;--text:#111827;--muted:#6b7280;
+  --radius:16px;--radius-sm:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;}
+.scr{display:none;padding:0 0 84px;}
+.scr.on{display:block;}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:#fff;border-top:1px solid var(--border);display:flex;z-index:99;padding-bottom:env(safe-area-inset-bottom,0);}
+.nb{flex:1;padding:10px 2px 8px;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-family:'Nunito',sans-serif;color:var(--muted);font-weight:700;}
+.nb.on{color:var(--green);}
+.nb svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.hdr{background:#fff;border-bottom:1px solid var(--border);padding:14px 16px 12px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.hdr-name{font-size:18px;font-weight:900;color:var(--text);}
+.hdr-name span{color:var(--green);}
+.xpb{background:var(--green-bg);border:1px solid var(--green-border);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:700;color:var(--green-text);}
+.pad{padding:16px;}
+/* SCAN */
+.upload-area{border:2px dashed var(--border);border-radius:var(--radius);padding:28px 20px;text-align:center;cursor:pointer;background:#fff;transition:all .2s;margin-bottom:12px;position:relative;}
+.upload-area:hover,.upload-area:focus-within{border-color:var(--green);background:var(--green-bg);}
+.upload-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.cam-area{border:2px dashed var(--border);border-radius:var(--radius);padding:18px;text-align:center;cursor:pointer;background:#fff;margin-bottom:14px;position:relative;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;font-size:15px;font-weight:800;}
+.cam-area:hover{border-color:var(--green);background:var(--green-bg);}
+.cam-area input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.or-div{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:var(--border);}
+.or-div span{font-size:12px;color:var(--muted);font-weight:700;}
+.tips-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;}
+.tips-lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.tip-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:13px;color:var(--muted);font-weight:600;}
+.tip-row:last-child{margin-bottom:0;}
+.t-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.prev-box{border-radius:var(--radius);overflow:hidden;position:relative;border:1px solid var(--border);margin-bottom:14px;}
+.prev-box img{width:100%;display:block;max-height:260px;object-fit:cover;}
+.ld-over{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.ld-txt{font-size:13px;color:#6ee7b7;font-weight:700;font-family:monospace;}
+.ld-bar{width:70%;height:4px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;}
+.ld-fill{height:100%;background:#16a34a;border-radius:4px;animation:lfill 2s ease-in-out infinite alternate;}
+@keyframes lfill{from{width:8%}to{width:95%}}
+.err-box{background:var(--red-bg);border:1px solid var(--red-border);border-radius:var(--radius);padding:20px;text-align:center;margin-bottom:12px;}
+.err-msg{font-size:13px;color:var(--red-text);margin-bottom:14px;line-height:1.5;font-weight:600;}
+.err-btn{padding:10px 22px;background:#fff;border:1px solid var(--red-border);border-radius:var(--radius-sm);color:var(--red-text);font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+.score-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;margin-bottom:12px;position:relative;overflow:hidden;}
+.score-stripe{position:absolute;top:0;left:0;right:0;height:4px;}
+.ring-wrap{position:relative;width:110px;height:110px;margin:0 auto 12px;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-num{font-size:30px;font-weight:900;line-height:1;}
+.ring-max{font-size:11px;color:var(--muted);font-weight:700;}
+.sc-badge{display:inline-block;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:800;margin-bottom:8px;}
+.sc-name{font-size:16px;font-weight:800;margin-bottom:3px;}
+.sc-sub{font-size:12px;color:var(--muted);font-weight:600;}
+.sec-lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:0 16px 8px;}
+.nut-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 16px 12px;}
+.nut-c{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px;border-bottom-width:3px;}
+.nt-i{font-size:20px;margin-bottom:4px;}
+.nt-l{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;}
+.nt-v{font-size:17px;font-weight:900;margin-bottom:5px;}
+.nt-v small{font-size:11px;font-weight:600;color:var(--muted);}
+.nt-b{font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;display:inline-block;}
+.warn-wrap{margin:0 16px 12px;}
+.warn-item{display:flex;align-items:flex-start;gap:10px;padding:11px 13px;border-radius:var(--radius-sm);margin-bottom:8px;font-size:13px;line-height:1.5;font-weight:600;border-width:1px;border-style:solid;}
+.adds-wrap{display:flex;flex-wrap:wrap;gap:6px;margin:0 16px 12px;}
+.add-chip{font-size:11px;font-weight:800;padding:5px 11px;border-radius:20px;border-width:1px;border-style:solid;}
+.adv-box{margin:0 16px 12px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:var(--radius-sm);padding:14px;}
+.adv-lbl{font-size:11px;font-weight:800;color:var(--blue-text);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.adv-txt{font-size:13px;line-height:1.6;font-weight:600;}
+.action-row{display:flex;gap:8px;margin:0 16px 14px;}
+.btn-out{flex:1;padding:12px;background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:800;color:var(--text);cursor:pointer;font-family:'Nunito',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;}
+.btn-green{border-color:var(--green);color:var(--green);}
+/* ARCHIVE */
+.arc-empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.arc-item{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:background .15s;}
+.arc-item:hover{background:var(--green-bg);}
+.arc-thumb{width:52px;height:52px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;border:1px solid var(--border);}
+.arc-thumb-ph{width:52px;height:52px;border-radius:var(--radius-sm);background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.arc-info{flex:1;min-width:0;}
+.arc-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.arc-meta{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px;}
+.arc-score-num{font-size:20px;font-weight:900;}
+.arc-score-lbl{font-size:10px;font-weight:700;color:var(--muted);}
+.arc-del{flex-shrink:0;padding:6px 8px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;}
+/* COMPARE */
+.cmp-sel{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:background .15s;}
+.cmp-sel:hover{background:var(--green-bg);}
+.cmp-sel.picked{border-color:var(--green);background:var(--green-bg);}
+.cmp-sel-name{font-size:13px;font-weight:800;}
+.cmp-sel-meta{font-size:11px;color:var(--muted);font-weight:600;}
+.cmp-check{color:var(--green);font-size:18px;display:none;}
+.cmp-sel.picked .cmp-check{display:block;}
+.cmp-btn{width:100%;padding:14px;background:var(--green);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;margin-top:4px;}
+.cmp-btn:disabled{background:#d1d5db;cursor:not-allowed;}
+.cmp-table{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
+.cmp-hdr-row{display:grid;grid-template-columns:1fr 1fr 1fr;background:var(--bg);border-bottom:1px solid var(--border);}
+.cmp-hdr-cell{padding:10px 8px;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;text-align:center;}
+.cmp-hdr-cell:first-child{text-align:left;}
+.cmp-row{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--bg);padding:10px 8px;align-items:center;}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-cell{font-size:13px;font-weight:700;text-align:center;}
+.cmp-cell:first-child{font-size:12px;font-weight:800;color:var(--muted);text-align:left;}
+.cmp-winner{font-weight:900;color:var(--green-text);}
+.cmp-loser{color:var(--red-text);}
+/* LEARN */
+.learn-cat{background:linear-gradient(135deg,var(--green-bg),var(--blue-bg));border:1px solid var(--green-border);border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:transform .15s;}
+.learn-cat:hover{transform:scale(1.01);}
+.lc-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.lc-title{font-size:15px;font-weight:800;margin-bottom:2px;}
+.lc-sub{font-size:12px;color:var(--muted);font-weight:600;}
+.lc-prog{font-size:11px;font-weight:700;margin-top:4px;}
+.lesson-row{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s;}
+.lesson-row:hover{background:var(--green-bg);}
+.lr-ico{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.lr-done{margin-left:auto;font-size:16px;color:var(--green);display:none;flex-shrink:0;}
+.ld-back{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--green);cursor:pointer;margin-bottom:16px;}
+.info-blk{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;}
+.info-blk h3{font-size:14px;font-weight:800;margin-bottom:6px;}
+.info-blk p{font-size:13px;color:var(--muted);line-height:1.6;font-weight:600;}
+.color-row{display:flex;gap:8px;margin-top:10px;}
+.cb{flex:1;padding:8px 4px;border-radius:var(--radius-sm);text-align:center;font-size:12px;font-weight:800;border-width:1px;border-style:solid;}
+/* SVG ANIMATION CARD */
+.anim-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
+.anim-title{padding:12px 14px 0;font-size:13px;font-weight:800;color:var(--muted);}
+.anim-card svg{display:block;width:100%;}
+/* fact card */
+.fact-card{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border-width:1px;border-style:solid;display:flex;gap:10px;align-items:flex-start;}
+.fact-card .fc-icon{font-size:20px;flex-shrink:0;margin-top:1px;}
+.fact-card .fc-text{font-size:13px;font-weight:600;line-height:1.5;}
+/* QUIZ */
+.quiz-tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:2px;}
+.qtab{flex-shrink:0;padding:7px 14px;border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:800;cursor:pointer;background:#fff;font-family:'Nunito',sans-serif;color:var(--muted);}
+.qtab.on{background:var(--green);border-color:var(--green);color:#fff;}
+.quiz-intro{text-align:center;padding:20px 0;}
+.qi-icon{font-size:52px;margin-bottom:12px;}
+.qi-title{font-size:20px;font-weight:900;margin-bottom:8px;}
+.qi-sub{font-size:13px;color:var(--muted);font-weight:600;line-height:1.6;margin-bottom:20px;}
+.start-btn{width:100%;padding:16px;background:var(--green);border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:800;color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;}
+.q-prog-wrap{height:6px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:12px;}
+.q-prog{height:100%;background:var(--green);border-radius:6px;transition:width .4s;}
+.q-meta{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;}
+.q-txt{font-size:15px;font-weight:800;line-height:1.5;margin-bottom:14px;}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.q-opt{padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:700;color:var(--text);cursor:pointer;text-align:left;background:#fff;font-family:'Nunito',sans-serif;}
+.q-opt:hover:not(:disabled){background:var(--green-bg);border-color:var(--green-border);}
+.q-opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green-text);}
+.q-opt.wrong{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
+.q-fb{padding:11px 13px;border-radius:var(--radius-sm);font-size:13px;font-weight:700;line-height:1.5;margin-bottom:12px;display:none;border-width:1px;border-style:solid;}
+.q-fb.on{display:block;}
+.q-next{width:100%;padding:13px;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;display:none;font-family:'Nunito',sans-serif;}
+.q-next.on{display:block;}
+/* MATCH quiz */
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.match-col{display:flex;flex-direction:column;gap:8px;}
+.match-item{padding:10px 12px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;background:#fff;text-align:center;transition:all .15s;user-select:none;}
+.match-item.selected{border-color:var(--blue);background:var(--blue-bg);color:var(--blue-text);}
+.match-item.matched{border-color:var(--green);background:var(--green-bg);color:var(--green-text);cursor:default;}
+.match-item.wrong-flash{border-color:var(--red);background:var(--red-bg);}
+/* FILL quiz */
+.fill-sentence{font-size:15px;font-weight:700;line-height:2;margin-bottom:14px;}
+.fill-blank{display:inline-block;min-width:80px;border-bottom:2px solid var(--border);padding:0 6px;text-align:center;font-weight:800;cursor:pointer;}
+.fill-blank.filled{border-color:var(--green);color:var(--green-text);}
+.fill-blank.wrong{border-color:var(--red);color:var(--red-text);}
+.fill-options{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.fill-chip{padding:8px 14px;border:2px solid var(--border);border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;background:#fff;transition:all .15s;}
+.fill-chip:hover{border-color:var(--green-border);background:var(--green-bg);}
+.fill-chip.used{opacity:.35;cursor:not-allowed;}
+/* SORT quiz */
+.sort-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.sort-item{padding:12px 14px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-weight:700;background:#fff;display:flex;align-items:center;gap:10px;cursor:grab;user-select:none;}
+.sort-item .sort-handle{font-size:16px;color:var(--muted);}
+.sort-item.drag-over{border-color:var(--blue);background:var(--blue-bg);}
+.sort-item.correct-pos{border-color:var(--green);background:var(--green-bg);}
+.sort-item.wrong-pos{border-color:var(--red);background:var(--red-bg);}
+/* RESULT */
+.qr-wrap{text-align:center;padding:16px 0;}
+.qr-ico{font-size:56px;margin-bottom:10px;}
+.qr-title{font-size:22px;font-weight:900;margin-bottom:6px;}
+.qr-score{font-size:48px;font-weight:900;color:var(--green);margin-bottom:6px;}
+.qr-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:18px;line-height:1.6;}
+.badges-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px;}
+.bp{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:800;border-width:1px;border-style:solid;}
+.retry-btn{width:100%;padding:14px;background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-bottom:10px;}
+/* PROFILE */
+.avatar{width:68px;height:68px;border-radius:50%;background:var(--green-bg);border:2px solid var(--green-border);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 10px;}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.stat-c{background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;text-align:center;}
+.stat-v{font-size:26px;font-weight:900;color:var(--green);}
+.stat-l{font-size:11px;font-weight:700;color:var(--muted);margin-top:2px;}
+.b-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px;}
+.b-item{text-align:center;width:64px;}
+.b-ico{font-size:26px;margin-bottom:3px;}
+.b-nm{font-size:10px;font-weight:700;color:var(--muted);}
+.b-item.locked .b-ico{filter:grayscale(1);opacity:.3;}
+.b-item.locked .b-nm{color:#d1d5db;}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-80px);background:#16a34a;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:200;transition:transform .35s;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:150;align-items:flex-end;justify-content:center;}
+.modal-bg.on{display:flex;}
+.modal{background:#fff;border-radius:var(--radius) var(--radius) 0 0;padding:20px 16px 36px;width:100%;max-width:430px;max-height:90vh;overflow-y:auto;}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- SCAN -->
+<div id="scanScr" class="scr on">
+  <div class="hdr">
+    <div class="hdr-name">Nutri<span>Zeka</span></div>
+    <div class="xpb">⭐ <span id="xpShow">0</span> XP</div>
+  </div>
+  <div id="sm" class="pad">
+    <label class="upload-area">
+      <input type="file" id="gal" accept="image/*">
+      <div style="font-size:38px;margin-bottom:10px">📷</div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:4px">Fotoğraf yükle</div>
+      <div style="font-size:12px;color:var(--muted)">Barkod · Ambalaj · Besin etiketi</div>
+    </label>
+    <div class="or-div"><span>ya da</span></div>
+    <label class="cam-area">
+      <input type="file" id="cam" accept="image/*" capture="environment">
+      📱 Kamerayla çek
+    </label>
+    <div class="tips-box">
+      <div class="tips-lbl">Ne fotoğraflayabilirsin?</div>
+      <div class="tip-row"><div class="t-dot"></div>Ürün ambalajı ön yüzü</div>
+      <div class="tip-row"><div class="t-dot"></div>Besin değerleri etiketi</div>
+      <div class="tip-row"><div class="t-dot"></div>Barkod (EAN / UPC)</div>
+      <div class="tip-row"><div class="t-dot"></div>İçerik ve katkı maddesi listesi</div>
+    </div>
+  </div>
+  <div id="sl" style="display:none" class="pad">
+    <div class="prev-box">
+      <img id="pi" src="" alt="">
+      <div class="ld-over">
+        <div style="font-size:40px">🔬</div>
+        <div class="ld-txt" id="lst">Görüntü işleniyor...</div>
+        <div class="ld-bar"><div class="ld-fill"></div></div>
+      </div>
+    </div>
+  </div>
+  <div id="se" style="display:none" class="pad">
+    <div class="err-box">
+      <div style="font-size:30px;margin-bottom:8px">⚠️</div>
+      <div class="err-msg" id="em">Analiz sırasında hata oluştu.</div>
+      <button class="err-btn" onclick="rScan()">← Tekrar dene</button>
+    </div>
+  </div>
+  <div id="sr" style="display:none">
+    <div class="pad" style="padding-bottom:8px">
+      <div class="score-card">
+        <div class="score-stripe" id="ss"></div>
+        <div class="ring-wrap">
+          <svg width="110" height="110" viewBox="0 0 110 110">
+            <circle cx="55" cy="55" r="46" fill="none" stroke="#e5e7eb" stroke-width="9"/>
+            <circle id="sarc" cx="55" cy="55" r="46" fill="none" stroke="#16a34a" stroke-width="9" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289" style="transition:stroke-dashoffset 1.2s ease,stroke .3s"/>
+          </svg>
+          <div class="ring-ctr"><div class="ring-num" id="sn" style="color:#16a34a">0</div><div class="ring-max">/100</div></div>
+        </div>
+        <div class="sc-badge" id="sb"></div>
+        <div class="sc-name" id="spn"></div>
+        <div class="sc-sub" id="sps"></div>
+      </div>
+    </div>
+    <div class="sec-lbl">Besin değerleri</div>
+    <div class="nut-grid" id="ng"></div>
+    <div class="sec-lbl">Değerlendirme</div>
+    <div class="warn-wrap" id="ww"></div>
+    <div id="adsec" style="display:none"><div class="sec-lbl">Katkı maddeleri</div><div class="adds-wrap" id="aw"></div></div>
+    <div class="adv-box"><div class="adv-lbl">💡 Tavsiye</div><div class="adv-txt" id="at"></div></div>
+    <div class="action-row">
+      <button class="btn-out btn-green" onclick="saveToArchive()">📦 Arşivle</button>
+      <button class="btn-out" onclick="rScan()">🔄 Yeni tara</button>
+    </div>
+  </div>
+</div>
+
+<!-- ARCHIVE -->
+<div id="arcScr" class="scr">
+  <div class="hdr">
+    <div class="hdr-name">Arşiv<span>im</span></div>
+    <button onclick="showCompare()" style="padding:6px 14px;background:var(--blue-bg);border:1px solid var(--blue-border);border-radius:20px;font-size:12px;font-weight:800;color:var(--blue-text);cursor:pointer;font-family:'Nunito',sans-serif;">⚖️ Kıyas</button>
+  </div>
+  <div class="pad"><div id="arcList"></div></div>
+</div>
+
+<!-- COMPARE MODAL -->
+<div class="modal-bg" id="cmpModal">
+  <div class="modal"><div id="cmpContent"></div></div>
+</div>
+<!-- DETAIL MODAL -->
+<div class="modal-bg" id="detModal">
+  <div class="modal"><div id="detContent"></div></div>
+</div>
+
+<!-- LEARN -->
+<div id="learnScr" class="scr">
+  <div class="hdr"><div class="hdr-name">Etiket <span>Okuma</span></div></div>
+  <!-- category list -->
+  <div id="learnCats" class="pad">
+    <div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:12px">8 kategori · Animasyon + detaylı içerik</div>
+    <div class="learn-cat" onclick="openCat(0)"><div class="lc-icon" style="background:#f0fdf4">🚦</div><div style="flex:1"><div class="lc-title">Renk Kodu Sistemi</div><div class="lc-sub">Trafik ışığı ile besin değerleri</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(1)"><div class="lc-icon" style="background:#fffbeb">🍬</div><div style="flex:1"><div class="lc-title">Şeker Tuzağı</div><div class="lc-sub">Gizli şekerleri tanı</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(2)"><div class="lc-icon" style="background:#fef2f2">🧈</div><div style="flex:1"><div class="lc-title">Yağ Çeşitleri</div><div class="lc-sub">İyi yağ, kötü yağ farkı</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(3)"><div class="lc-icon" style="background:#f5f3ff">🧂</div><div style="flex:1"><div class="lc-title">Tuz ve Sodyum</div><div class="lc-sub">Gizli tuz kaynakları</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(4)"><div class="lc-icon" style="background:#eff6ff">📋</div><div style="flex:1"><div class="lc-title">İçerik Listesi</div><div class="lc-sub">Sıralama neden önemli?</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(5)"><div class="lc-icon" style="background:#f0fdf4">🧪</div><div style="flex:1"><div class="lc-title">E Kodları (Katkı Maddeleri)</div><div class="lc-sub">Zararlı mı, zararsız mı?</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(6)"><div class="lc-icon" style="background:#fef2f2">💪</div><div style="flex:1"><div class="lc-title">Protein ve Lif</div><div class="lc-sub">Vücut için neden gerekli?</div></div><div style="font-size:18px">›</div></div>
+    <div class="learn-cat" onclick="openCat(7)"><div class="lc-icon" style="background:#fffbeb">⚡</div><div style="flex:1"><div class="lc-title">Kalori Nedir?</div><div class="lc-sub">Enerji ve dengeli beslenme</div></div><div style="font-size:18px">›</div></div>
+  </div>
+  <!-- lesson detail -->
+  <div id="learnDetail" style="display:none" class="pad">
+    <div class="ld-back" onclick="closeCat()">← Kategoriler</div>
+    <div id="learnDetailContent"></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quizScr" class="scr">
+  <div class="hdr"><div class="hdr-name">Mini <span>Test</span></div></div>
+  <div class="pad">
+    <div class="quiz-tabs">
+      <button class="qtab on" onclick="selectQuizType(0,this)">🔘 Çoktan Seçmeli</button>
+      <button class="qtab" onclick="selectQuizType(1,this)">🔗 Eşleştirme</button>
+      <button class="qtab" onclick="selectQuizType(2,this)">✏️ Boşluk Doldur</button>
+      <button class="qtab" onclick="selectQuizType(3,this)">📊 Sıralama</button>
+    </div>
+    <div id="quizArea"></div>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="profScr" class="scr">
+  <div class="hdr"><div class="hdr-name">Profil<span>im</span></div></div>
+  <div class="pad">
+    <div style="text-align:center;margin-bottom:18px">
+      <div class="avatar">🧒</div>
+      <div style="font-size:18px;font-weight:900;margin-bottom:4px">Besin Uzmanı</div>
+      <div style="font-size:13px;color:var(--green-text);font-weight:700;background:var(--green-bg);border:1px solid var(--green-border);display:inline-block;padding:4px 14px;border-radius:20px" id="avl">Seviye 1 — Çaylak</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-c"><div class="stat-v" id="stx">0</div><div class="stat-l">Toplam XP</div></div>
+      <div class="stat-c"><div class="stat-v" id="stsc">0</div><div class="stat-l">Taranan ürün</div></div>
+      <div class="stat-c"><div class="stat-v" id="stq">0</div><div class="stat-l">En iyi test</div></div>
+      <div class="stat-c"><div class="stat-v" id="stl">0</div><div class="stat-l">Tamamlanan ders</div></div>
+    </div>
+    <div style="font-size:15px;font-weight:800;margin-bottom:6px">Rozetlerim</div>
+    <div class="b-grid" id="bg"></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="bnav">
+  <button class="nb on" id="n0" onclick="sw(0)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="5" height="5" rx="1"/><rect x="16" y="3" width="5" height="5" rx="1"/><rect x="3" y="16" width="5" height="5" rx="1"/><line x1="16" y1="16" x2="21" y2="16"/><line x1="16" y1="19" x2="21" y2="19"/><line x1="16" y1="22" x2="21" y2="22"/></svg>Tara</button>
+  <button class="nb" id="n1" onclick="sw(1)"><svg viewBox="0 0 24 24"><path d="M3 3h7v7H3z"/><path d="M14 3h7v7h-7z"/><path d="M3 14h7v7H3z"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>Arşiv</button>
+  <button class="nb" id="n2" onclick="sw(2)"><svg viewBox="0 0 24 24"><path d="M4 19V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v13"/><path d="M4 19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="13" y2="13"/></svg>Öğren</button>
+  <button class="nb" id="n3" onclick="sw(3)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>Test</button>
+  <button class="nb" id="n4" onclick="sw(4)"><svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="4"/><path d="M6 21v-2a6 6 0 0 1 12 0v2"/></svg>Profil</button>
+</nav>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────────────────
+const AMS=["image/jpeg","image/png","image/gif","image/webp"];
+const STS=["Görüntü işleniyor...","Barkod / etiket okunuyor...","Besin değerleri analiz ediliyor...","Katkı maddeleri kontrol ediliyor...","Sağlık puanı hesaplanıyor..."];
+const ND=[
+  {k:"kalori",l:"Kalori",i:"⚡",u:"kcal",f:v=>v<100?"g":v<300?"y":"r"},
+  {k:"seker",l:"Şeker",i:"🍬",u:"g",f:v=>v<5?"g":v<12.5?"y":"r"},
+  {k:"yag",l:"Yağ",i:"🧈",u:"g",f:v=>v<3?"g":v<17.5?"y":"r"},
+  {k:"tuz",l:"Tuz",i:"🧂",u:"g",f:v=>v<0.3?"g":v<1.5?"y":"r"},
+  {k:"protein",l:"Protein",i:"💪",u:"g",f:v=>v>=5?"g":v>=2?"y":"r"},
+  {k:"lif",l:"Lif",i:"🌾",u:"g",f:v=>v>=3?"g":v>=1?"y":"r"},
+];
+const CC={
+  g:{bg:"var(--green-bg)",bd:"var(--green-border)",tx:"var(--green-text)",st:"#16a34a"},
+  y:{bg:"var(--yellow-bg)",bd:"var(--yellow-border)",tx:"var(--yellow-text)",st:"#d97706"},
+  r:{bg:"var(--red-bg)",bd:"var(--red-border)",tx:"var(--red-text)",st:"#dc2626"},
+};
+let xp=0,scanCnt=0,ls=new Set(),qb=0,stmr=null,si=0;
+let archive=[],currentResult=null,currentImg=null,cmpSelected=[];
+
+// ─── PERSIST ─────────────────────────────────────────────────────────
+function save(){try{localStorage.setItem("nz2_arc",JSON.stringify(archive));localStorage.setItem("nz2_xp",xp);localStorage.setItem("nz2_sc",scanCnt);localStorage.setItem("nz2_ls",JSON.stringify([...ls]));localStorage.setItem("nz2_qb",qb);}catch(e){}}
+function load(){try{const a=localStorage.getItem("nz2_arc");if(a)archive=JSON.parse(a);xp=parseInt(localStorage.getItem("nz2_xp")||0);scanCnt=parseInt(localStorage.getItem("nz2_sc")||0);const l=localStorage.getItem("nz2_ls");if(l)ls=new Set(JSON.parse(l));qb=parseInt(localStorage.getItem("nz2_qb")||0);}catch(e){}}
+
+// ─── BADGES ──────────────────────────────────────────────────────────
+const BADGES=[
+  {id:"scan1",ico:"🔍",nm:"İlk Tarama",c:()=>scanCnt>=1},
+  {id:"scan5",ico:"📦",nm:"Kaşif",c:()=>scanCnt>=5},
+  {id:"learn3",ico:"📚",nm:"Öğrenci",c:()=>ls.size>=3},
+  {id:"learn5",ico:"🎓",nm:"Bilge",c:()=>ls.size>=5},
+  {id:"learn8",ico:"🏫",nm:"Akademisyen",c:()=>ls.size>=8},
+  {id:"quiz6",ico:"🏅",nm:"Test Geçti",c:()=>qb>=6},
+  {id:"quiz9",ico:"🏆",nm:"Şampiyon",c:()=>qb>=9},
+  {id:"xp100",ico:"⭐",nm:"100 XP",c:()=>xp>=100},
+  {id:"arc5",ico:"🗂️",nm:"Koleksiyoner",c:()=>archive.length>=5},
+];
+
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
+function addXP(n,msg){xp+=n;document.getElementById("xpShow").textContent=xp;toast(msg||`+${n} XP 🎉`);save();upProf();}
+
+// ─── NAV ─────────────────────────────────────────────────────────────
+const SCRIDS=["scanScr","arcScr","learnScr","quizScr","profScr"];
+function sw(i){
+  SCRIDS.forEach((s,j)=>{document.getElementById(s).classList.toggle("on",j===i);document.getElementById("n"+j).classList.toggle("on",j===i);});
+  if(i===1)renderArchive();
+  if(i===3){currentQuizType=0;renderQuizHome(0);}
+  if(i===4)upProf();
+}
+function upProf(){
+  document.getElementById("xpShow").textContent=xp;
+  document.getElementById("stx").textContent=xp;
+  document.getElementById("stsc").textContent=scanCnt;
+  document.getElementById("stq").textContent=qb;
+  document.getElementById("stl").textContent=ls.size;
+  const lv=xp<50?"Çaylak":xp<150?"Acemi":xp<300?"Uzman":"Usta";
+  document.getElementById("avl").textContent=`Seviye ${Math.floor(xp/50)+1} — ${lv}`;
+  const bg=document.getElementById("bg");bg.innerHTML="";
+  BADGES.forEach(b=>{const e=b.c();bg.innerHTML+=`<div class="b-item${e?"":" locked"}"><div class="b-ico">${b.ico}</div><div class="b-nm">${b.nm}</div></div>`;});
+}
+
+// ─── SCAN ─────────────────────────────────────────────────────────────
+document.getElementById("gal").addEventListener("change",onF);
+document.getElementById("cam").addEventListener("change",onF);
+function onF(e){
+  const f=e.target.files[0];if(!f)return;e.target.value="";
+  const r=new FileReader();
+  r.onload=ev=>{
+    const du=ev.target.result;
+    const m=du.match(/^data:([^;]+);base64,/);
+    const mime=AMS.includes(m?m[1]:"x")?m[1]:"image/jpeg";
+    currentImg=du;
+    document.getElementById("pi").src=du;
+    document.getElementById("sm").style.display="none";
+    document.getElementById("sl").style.display="block";
+    document.getElementById("se").style.display="none";
+    document.getElementById("sr").style.display="none";
+    si=0;document.getElementById("lst").textContent=STS[0];
+    clearInterval(stmr);stmr=setInterval(()=>{si=(si+1)%STS.length;document.getElementById("lst").textContent=STS[si];},900);
+    callAPI(du.split(",")[1],mime)
+      .then(res=>{clearInterval(stmr);currentResult=res;rndr(res);document.getElementById("sl").style.display="none";document.getElementById("sr").style.display="block";scanCnt++;addXP(10,"Ürün tarandı! +10 XP 🔍");save();})
+      .catch(err=>{clearInterval(stmr);document.getElementById("sl").style.display="none";document.getElementById("se").style.display="block";document.getElementById("em").textContent=err.message||"Bilinmeyen hata.";});
+  };
+  r.readAsDataURL(f);
+}
+function rScan(){currentResult=null;currentImg=null;document.getElementById("sm").style.display="block";["sl","se","sr"].forEach(id=>document.getElementById(id).style.display="none");}
+
+async function callAPI(b64,mime){
+  const prompt=`Bu fotoğraf bir gıda ürününe ait. BARKOD: numarayı oku ve ürünü tanı. AMBALAJ: tipik değerleri tahmin et. ETİKET: değerleri oku.
+SADECE JSON döndür:{"urun_adi":"...","marka":"...","barkod":"...","besinler":{"kalori":{"deger":0,"birim":"kcal"},"seker":{"deger":0,"birim":"g"},"yag":{"deger":0,"birim":"g"},"doymus_yag":{"deger":0,"birim":"g"},"tuz":{"deger":0,"birim":"g"},"protein":{"deger":0,"birim":"g"},"karbonhidrat":{"deger":0,"birim":"g"},"lif":{"deger":0,"birim":"g"}},"puan":50,"derece":"İyi","uyarilar":[{"seviye":"red","mesaj":"sade Türkçe"}],"katki_maddeleri":[{"kod":"E471","ad":"...","guvenlik":"safe"}],"tavsiye":"2-3 cümle sade Türkçe.","tahmin":true}
+PUAN(60 başlangıç):Şeker<5g+20,>22g-20|Yağ<3g+15,>20g-15|DYağ<1.5g+15,>5g-15|Tuz<0.3g+10,>1.5g-20|Lif>3g+10|Protein>5g+10
+guvenlik:safe|caution|avoid — derece:Mükemmel|İyi|Orta|Zayıf|Kötü`;
+  const resp=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:mime,data:b64}},{type:"text",text:prompt}]}]})});
+  if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(e?.error?.message||`API hatası (${resp.status})`);}
+  const data=await resp.json();
+  const raw=data.content.map(c=>c.text||"").join("");
+  try{return JSON.parse(raw.replace(/```json|```/g,"").trim());}catch{throw new Error("Yanıt ayrıştırılamadı.");}
+}
+function scoreColor(s){return s>=70?"g":s>=45?"y":"r";}
+function rndr(r){
+  const sc2=Math.max(0,Math.min(100,Math.round(r.puan||50)));
+  const cl=scoreColor(sc2);const C=CC[cl];
+  const arc=document.getElementById("sarc");arc.style.stroke=C.st;
+  setTimeout(()=>{arc.style.strokeDashoffset=289-(289*sc2/100);},80);
+  const sn=document.getElementById("sn");sn.textContent=sc2;sn.style.color=C.st;
+  document.getElementById("ss").style.background=C.st;
+  const sb=document.getElementById("sb");sb.textContent=r.derece||"Analiz";sb.style.cssText=`background:${C.bg};color:${C.tx};border:1px solid ${C.bd}`;
+  document.getElementById("spn").textContent=r.urun_adi||"Bilinmeyen";
+  document.getElementById("sps").textContent=(r.marka||"")+(r.barkod?" · 🔲"+r.barkod:"")+(r.tahmin?" · ⚡Tahmini":" · ✓Etiketten");
+  const ng=document.getElementById("ng");ng.innerHTML="";
+  const b=r.besinler||{};
+  ND.forEach(nd=>{const raw=b[nd.k];if(raw==null)return;const val=typeof raw==="object"?raw.deger:raw;const unit=typeof raw==="object"?raw.birim:nd.u;const c=nd.f(val);const C2=CC[c];const badge=c==="g"?"✓ İyi":c==="y"?"~ Orta":"! Yüksek";ng.innerHTML+=`<div class="nut-c" style="border-bottom-color:${C2.st}"><div class="nt-i">${nd.i}</div><div class="nt-l">${nd.l}</div><div class="nt-v">${val}<small>${unit}</small></div><div class="nt-b" style="background:${C2.bg};color:${C2.tx};border:1px solid ${C2.bd}">${badge}</div></div>`;});
+  const ww=document.getElementById("ww");ww.innerHTML="";
+  const warns=r.uyarilar&&r.uyarilar.length?r.uyarilar:[{seviye:"green",mesaj:"Özel uyarı tespit edilmedi."}];
+  warns.forEach(w=>{const key=["green","g"].includes(w.seviye)?"g":["yellow","y"].includes(w.seviye)?"y":"r";const C2=CC[key];const ic=key==="g"?"✅":key==="y"?"⚠️":"🚨";ww.innerHTML+=`<div class="warn-item" style="background:${C2.bg};border-color:${C2.bd};color:${C2.tx}">${ic} ${w.mesaj}</div>`;});
+  const adds=r.katki_maddeleri||[];const adsec=document.getElementById("adsec");
+  if(adds.length){adsec.style.display="block";const aw=document.getElementById("aw");aw.innerHTML="";adds.forEach(a=>{const C2=a.guvenlik==="safe"?CC.g:a.guvenlik==="caution"?CC.y:CC.r;const ai=a.guvenlik==="safe"?"✓":a.guvenlik==="caution"?"⚠":"✕";aw.innerHTML+=`<span class="add-chip" style="background:${C2.bg};border-color:${C2.bd};color:${C2.tx}">${ai} ${a.kod}${a.ad?" · "+a.ad:""}</span>`;});}
+  else adsec.style.display="none";
+  document.getElementById("at").textContent=r.tavsiye||"Dengeli beslenme için meyve ve sebzeyi ihmal etme!";
+}
+
+// ─── ARCHIVE ─────────────────────────────────────────────────────────
+function saveToArchive(){
+  if(!currentResult)return;
+  archive.unshift({id:Date.now(),name:currentResult.urun_adi||"Bilinmeyen",marka:currentResult.marka||"",puan:Math.max(0,Math.min(100,Math.round(currentResult.puan||50))),img:currentImg,data:currentResult,date:new Date().toLocaleDateString("tr-TR")});
+  if(archive.length>50)archive.pop();
+  save();toast("Arşive eklendi! 📦");rScan();setTimeout(()=>sw(1),600);
+}
+function renderArchive(){
+  const el=document.getElementById("arcList");
+  if(!archive.length){el.innerHTML=`<div class="arc-empty"><div style="font-size:40px;margin-bottom:10px">📦</div><p style="font-size:14px;font-weight:600">Henüz arşiv yok.<br>Bir ürün tara ve Arşivle'ye bas!</p></div>`;return;}
+  el.innerHTML="";
+  archive.forEach(a=>{const cl=scoreColor(a.puan);const C=CC[cl];el.innerHTML+=`<div class="arc-item" onclick="showDetail(${a.id})">${a.img?`<img class="arc-thumb" src="${a.img}" alt="">`:`<div class="arc-thumb-ph">📦</div>`}<div class="arc-info"><div class="arc-name">${a.name}</div><div class="arc-meta">${a.marka?a.marka+" · ":""}${a.date}</div></div><div style="text-align:center;flex-shrink:0"><div class="arc-score-num" style="color:${C.st}">${a.puan}</div><div class="arc-score-lbl">puan</div></div><button class="arc-del" onclick="event.stopPropagation();delArc(${a.id})">🗑️</button></div>`;});
+}
+function delArc(id){archive=archive.filter(a=>a.id!==id);save();renderArchive();toast("Silindi.");}
+function showDetail(id){
+  const a=archive.find(x=>x.id===id);if(!a)return;
+  const cl=scoreColor(a.puan);const C=CC[cl];const b=a.data.besinler||{};
+  let nh="";ND.forEach(nd=>{const raw=b[nd.k];if(raw==null)return;const val=typeof raw==="object"?raw.deger:raw;const unit=typeof raw==="object"?raw.birim:nd.u;const c=nd.f(val);const C2=CC[c];nh+=`<div class="nut-c" style="border-bottom-color:${C2.st}"><div class="nt-i">${nd.i}</div><div class="nt-l">${nd.l}</div><div class="nt-v">${val}<small>${unit}</small></div><div class="nt-b" style="background:${C2.bg};color:${C2.tx};border:1px solid ${C2.bd}">${c==="g"?"✓ İyi":c==="y"?"~ Orta":"! Yüksek"}</div></div>`;});
+  document.getElementById("detContent").innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div style="font-size:16px;font-weight:900">${a.name}</div><button class="modal-close" onclick="document.getElementById('detModal').classList.remove('on')">✕</button></div>${a.img?`<img src="${a.img}" style="width:100%;border-radius:var(--radius-sm);margin-bottom:12px;max-height:200px;object-fit:cover" alt="">`:""}
+  <div style="text-align:center;margin-bottom:12px"><div style="font-size:36px;font-weight:900;color:${C.st}">${a.puan}<small style="font-size:14px;font-weight:600;color:var(--muted)">/100</small></div><div style="display:inline-block;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:800;background:${C.bg};color:${C.tx};border:1px solid ${C.bd}">${a.data.derece||""}</div><div style="font-size:11px;color:var(--muted);margin-top:4px">${a.date}</div></div>
+  <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Besin değerleri</div><div class="nut-grid" style="margin:0 0 12px">${nh}</div><div class="adv-box"><div class="adv-lbl">💡 Tavsiye</div><div class="adv-txt">${a.data.tavsiye||""}</div></div>`;
+  document.getElementById("detModal").classList.add("on");
+}
+function showCompare(){
+  if(archive.length<2){toast("Kıyas için en az 2 ürün arşivleyin!");return;}
+  cmpSelected=[];
+  document.getElementById("cmpContent").innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:17px;font-weight:900">Ürün Kıyasla</div><button class="modal-close" onclick="closeCmp()">✕</button></div><div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:10px">2 ürün seç:</div>${archive.map(a=>`<div class="cmp-sel" id="cs${a.id}" onclick="toggleCmp(${a.id})"><div><div class="cmp-sel-name">${a.name}</div><div class="cmp-sel-meta">${a.marka?a.marka+" · ":""}${a.date} · Puan: ${a.puan}</div></div><div class="cmp-check">✓</div></div>`).join("")}<button class="cmp-btn" id="doCmpBtn" onclick="doCompare()" disabled>Kıyasla →</button>`;
+  document.getElementById("cmpModal").classList.add("on");
+}
+function toggleCmp(id){const idx=cmpSelected.indexOf(id);if(idx>-1){cmpSelected.splice(idx,1);document.getElementById("cs"+id).classList.remove("picked");}else if(cmpSelected.length<2){cmpSelected.push(id);document.getElementById("cs"+id).classList.add("picked");}document.getElementById("doCmpBtn").disabled=cmpSelected.length!==2;}
+function doCompare(){
+  const [a1,a2]=cmpSelected.map(id=>archive.find(a=>a.id===id));
+  const C1=CC[scoreColor(a1.puan)],C2=CC[scoreColor(a2.puan)];
+  let rows="";
+  ND.forEach(nd=>{const r1=(a1.data.besinler||{})[nd.k],r2=(a2.data.besinler||{})[nd.k];if(!r1||!r2)return;const v1=typeof r1==="object"?r1.deger:r1,v2=typeof r2==="object"?r2.deger:r2,unit=typeof r1==="object"?r1.birim:nd.u;const good=nd.k==="protein"||nd.k==="lif";const w1=good?v1>v2:v1<v2,w2=good?v2>v1:v2<v1;rows+=`<div class="cmp-row"><div class="cmp-cell">${nd.l}</div><div class="cmp-cell ${v1===v2?"":w1?"cmp-winner":"cmp-loser"}">${v1}${unit}</div><div class="cmp-cell ${v1===v2?"":w2?"cmp-winner":"cmp-loser"}">${v2}${unit}</div></div>`;});
+  const win=a1.puan>a2.puan?a1:a2.puan>a1.puan?a2:null;
+  document.getElementById("cmpContent").innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div style="font-size:17px;font-weight:900">Kıyas Sonucu</div><button class="modal-close" onclick="closeCmp()">✕</button></div><div class="cmp-table"><div class="cmp-hdr-row"><div class="cmp-hdr-cell">Besin</div><div class="cmp-hdr-cell" style="color:${C1.st}">${a1.name.substring(0,12)}</div><div class="cmp-hdr-cell" style="color:${C2.st}">${a2.name.substring(0,12)}</div></div><div class="cmp-row"><div class="cmp-cell">Puan</div><div class="cmp-cell" style="font-size:18px;font-weight:900;color:${C1.st}">${a1.puan}</div><div class="cmp-cell" style="font-size:18px;font-weight:900;color:${C2.st}">${a2.puan}</div></div>${rows}</div>${win?`<div class="adv-box"><div class="adv-lbl">🏆 Sonuç</div><div class="adv-txt"><strong>${win.name}</strong> daha sağlıklı! (${win.puan} puan)</div></div>`:`<div class="adv-box"><div class="adv-lbl">🤝 Sonuç</div><div class="adv-txt">İki ürün eşit puana sahip.</div></div>`}<button class="cmp-btn" style="background:#fff;border:2px solid var(--border);color:var(--text)" onclick="showCompare()">← Başka seç</button>`;
+}
+function closeCmp(){document.getElementById("cmpModal").classList.remove("on");}
+document.getElementById("cmpModal").addEventListener("click",e=>{if(e.target===document.getElementById("cmpModal"))closeCmp();});
+document.getElementById("detModal").addEventListener("click",e=>{if(e.target===document.getElementById("detModal"))document.getElementById("detModal").classList.remove("on");});
+
+// ─── LEARN ────────────────────────────────────────────────────────────
+// SVG animations are inline, one per category
+const CATS=[
+  {
+    title:"Renk Kodu Sistemi",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#f8f9fa"/>
+      <g id="tl">
+        <rect x="30" y="20" width="80" height="120" rx="12" fill="#1f2937"/>
+        <circle cx="70" cy="55" r="22" fill="#ef4444"><animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/></circle>
+        <circle cx="70" cy="100" r="22" fill="#f59e0b" opacity="0.4"/>
+        <circle cx="70" cy="145" r="22" fill="#22c55e" opacity="0.4"/>
+      </g>
+      <line x1="130" y1="80" x2="170" y2="80" stroke="#e5e7eb" stroke-width="2" stroke-dasharray="4"/>
+      <rect x="175" y="55" width="85" height="50" rx="10" fill="#fef2f2" stroke="#fecaca"/>
+      <text x="217" y="75" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#b91c1c">🔴 Fazla</text>
+      <text x="217" y="95" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b91c1c">Dikkat et!</text>
+      <g><animate attributeName="opacity" values="1;0;1" dur="3s" begin="0s" repeatCount="indefinite"/>
+        <circle cx="70" cy="55" r="22" fill="#ef4444" opacity="0"/>
+        <circle cx="70" cy="100" r="22" fill="#f59e0b"><animate attributeName="opacity" values="0.4;1;0.4" dur="2s" begin="1s" repeatCount="indefinite"/></circle>
+      </g>
+      <rect x="270" y="30" width="85" height="42" rx="10" fill="#fffbeb" stroke="#fde68a"/>
+      <text x="312" y="48" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#b45309">🟡 Orta</text>
+      <text x="312" y="64" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b45309">Dikkatli ol</text>
+      <rect x="270" y="88" width="85" height="42" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+      <text x="312" y="106" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#15803d">🟢 Az</text>
+      <text x="312" y="122" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">Harika!</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>🚦 Trafik ışığı mantığı</h3><p>Besin değerlerini renklere göre anlık yorumlayabilirsin. Kırmızı = dur düşün, sarı = dikkatli ol, yeşil = güvenli.</p></div>
+    <div class="info-blk"><h3>Her besin için farklı eşik</h3><p><strong>Şeker:</strong> 100g başına 5g altı 🟢 | 5–12.5g 🟡 | 12.5g üzeri 🔴<br><strong>Yağ:</strong> 3g altı 🟢 | 3–17.5g 🟡 | 17.5g üzeri 🔴<br><strong>Tuz:</strong> 0.3g altı 🟢 | 0.3–1.5g 🟡 | 1.5g üzeri 🔴<br><strong>Protein:</strong> 5g üzeri 🟢 | 2–5g 🟡 | 2g altı 🔴<br><strong>Lif:</strong> 3g üzeri 🟢 | 1–3g 🟡 | 1g altı 🔴</p></div>
+    <div class="fact-card" style="background:var(--blue-bg);border-color:var(--blue-border)"><div class="fc-icon">💡</div><div class="fc-text" style="color:var(--blue-text)">Bir üründe hem kırmızı hem yeşil renk olabilir. Örneğin ceviz: yağ 🔴 ama protein 🟢 — bu normal, dengeli bakmalısın.</div></div>`
+  },
+  {
+    title:"Şeker Tuzağı",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#fffbeb"/>
+      <text x="190" y="25" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#b45309">100g Meyve Suyu içinde ne kadar şeker var?</text>
+      <rect x="20" y="40" width="60" height="100" rx="8" fill="#fde68a" stroke="#f59e0b"/>
+      <text x="50" y="96" text-anchor="middle" font-family="Nunito" font-size="28">🧃</text>
+      <text x="50" y="155" text-anchor="middle" font-family="Nunito" font-size="10" font-weight="800" fill="#b45309">Meyve suyu</text>
+      <rect x="105" y="90" width="180" height="14" rx="4" fill="#e5e7eb"/>
+      <rect x="105" y="90" width="0" height="14" rx="4" fill="#ef4444"><animate attributeName="width" from="0" to="162" dur="2s" fill="freeze" begin="0.5s"/></rect>
+      <text x="295" y="102" font-family="Nunito" font-size="11" font-weight="800" fill="#b91c1c">~9g 🔴</text>
+      <rect x="105" y="112" width="180" height="14" rx="4" fill="#e5e7eb"/>
+      <rect x="105" y="112" width="0" height="14" rx="4" fill="#22c55e"><animate attributeName="width" from="0" to="36" dur="2s" fill="freeze" begin="0.8s"/></rect>
+      <text x="295" y="124" font-family="Nunito" font-size="11" font-weight="800" fill="#15803d">~2g 🟢</text>
+      <text x="105" y="88" font-family="Nunito" font-size="10" fill="#6b7280">Doğal meyve suyu</text>
+      <text x="105" y="110" font-family="Nunito" font-size="10" fill="#6b7280">Taze sıkılmış portakal</text>
+      <text x="30" y="145" font-family="Nunito" font-size="9" fill="#9ca3af">*Tahmini değerler, 100g başına</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>🍬 Gizli şekerlerin isimleri</h3><p>Etikette "şeker" yazmasa da bunlar şekerdir: <strong>glikoz, fruktoz, sükroz, maltoz, laktoz, dekstroz, mısır şurubu, agave şurubu, bal, pekmez.</strong> Bunlardan birkaçı bir arada varsa dikkat!</p></div>
+    <div class="info-blk"><h3>📊 Günlük şeker limiti</h3><p>Çocuklar için: günde en fazla <strong>25 gram</strong> (yaklaşık 6 çay kaşığı).<br>Yetişkinler için: en fazla <strong>50 gram</strong>.<br>Bir kutu kola zaten 35g şeker içerir — günlük limitin tamamına yakını!</p></div>
+    <div class="info-blk"><h3>⚠️ "Şeker eklemedik" tuzağı</h3><p>Bazı ürünler "şeker eklenmedi" yazar ama meyve konsantresi veya fruktoz içerebilir. Bunlar da şeker sayılır! Daima besin değerleri tablosundaki "şeker" satırını kontrol et.</p></div>
+    <div class="fact-card" style="background:var(--red-bg);border-color:var(--red-border)"><div class="fc-icon">🚨</div><div class="fc-text" style="color:var(--red-text)">Yüksek şeker tüketimi: diş çürükleri, kilo artışı, enerji dalgalanmaları ve konsantrasyon güçlüğüne yol açabilir.</div></div>`
+  },
+  {
+    title:"Yağ Çeşitleri",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#fef2f2"/>
+      <rect x="15" y="30" width="100" height="110" rx="12" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+      <text x="65" y="60" text-anchor="middle" font-family="Nunito" font-size="22">🫒</text>
+      <text x="65" y="82" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#15803d">Zeytinyağı</text>
+      <text x="65" y="98" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">Tekli doymamış</text>
+      <text x="65" y="125" text-anchor="middle" font-family="Nunito" font-size="22">🟢</text>
+      <rect x="140" y="30" width="100" height="110" rx="12" fill="#fffbeb" stroke="#fde68a" stroke-width="2"/>
+      <text x="190" y="60" text-anchor="middle" font-family="Nunito" font-size="22">🧈</text>
+      <text x="190" y="82" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#b45309">Tereyağı</text>
+      <text x="190" y="98" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b45309">Doymuş yağ</text>
+      <text x="190" y="125" text-anchor="middle" font-family="Nunito" font-size="22">🟡</text>
+      <rect x="265" y="30" width="100" height="110" rx="12" fill="#fef2f2" stroke="#fecaca" stroke-width="2"/>
+      <text x="315" y="60" text-anchor="middle" font-family="Nunito" font-size="22">🍟</text>
+      <text x="315" y="82" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#b91c1c">Kızartma yağı</text>
+      <text x="315" y="98" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b91c1c">Trans yağ</text>
+      <text x="315" y="125" text-anchor="middle" font-family="Nunito" font-size="22">🔴</text>
+      <g><animateTransform attributeName="transform" type="translate" values="0,0;0,-3;0,0" dur="2s" repeatCount="indefinite"/><text x="65" y="60" text-anchor="middle" font-family="Nunito" font-size="22">🫒</text></g>
+    </svg>`,
+    content:`<div class="info-blk"><h3>🟢 İyi yağlar (doymamış)</h3><p>Zeytinyağı, avokado yağı, fındık yağı, somon balığındaki omega-3 yağları. Kalp sağlığını korur, beyin gelişimini destekler. Günlük diyetin temel yağ kaynağı olmalı.</p></div>
+    <div class="info-blk"><h3>🟡 Dikkatli tüketilmeli (doymuş)</h3><p>Tereyağı, kuyruk yağı, et yağı, tam yağlı süt ürünleri. Az miktarda sorun değil ama 100g başına 5g üzerini aşarsa kalp sağlığı için risk oluşturabilir.</p></div>
+    <div class="info-blk"><h3>🔴 Kaçınılmalı (trans yağ)</h3><p>Etiketlerde "kısmen hidrojene yağ" veya "hidrojenlenmiş bitkisel yağ" olarak geçer. Hazır kekler, bisküviler, cipsler ve margarinlerde bulunur. Kalp hastalığı riskini ciddi artırır.</p></div>
+    <div class="fact-card" style="background:var(--green-bg);border-color:var(--green-border)"><div class="fc-icon">✅</div><div class="fc-text" style="color:var(--green-text)">Çocuklarda beyin gelişimi için sağlıklı yağlar şarttır. Ceviz, badem, fındık ve balık tüketimini artır!</div></div>`
+  },
+  {
+    title:"Tuz ve Sodyum",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#f5f3ff"/>
+      <text x="190" y="22" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#6d28d9">Günde kaç gram tuz tüketiyoruz?</text>
+      <rect x="30" y="35" width="50" height="110" rx="6" fill="#e5e7eb"/>
+      <rect x="30" y="35" width="50" height="0" rx="6" fill="#22c55e"><animate attributeName="height" from="0" to="33" dur="1.5s" fill="freeze" begin="0.3s"/><animate attributeName="y" from="145" to="112" dur="1.5s" fill="freeze" begin="0.3s"/></rect>
+      <text x="55" y="155" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">Önerilen</text>
+      <text x="55" y="165" text-anchor="middle" font-family="Nunito" font-size="9" font-weight="800" fill="#15803d">5g/gün</text>
+      <rect x="110" y="35" width="50" height="110" rx="6" fill="#e5e7eb"/>
+      <rect x="110" y="35" width="50" height="0" rx="6" fill="#ef4444"><animate attributeName="height" from="0" to="88" dur="1.5s" fill="freeze" begin="0.5s"/><animate attributeName="y" from="145" to="57" dur="1.5s" fill="freeze" begin="0.5s"/></rect>
+      <text x="135" y="155" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">Ortalama</text>
+      <text x="135" y="165" text-anchor="middle" font-family="Nunito" font-size="9" font-weight="800" fill="#b91c1c">8–10g/gün</text>
+      <line x1="200" y1="35" x2="380" y2="35" stroke="transparent"/>
+      <text x="220" y="55" font-family="Nunito" font-size="11" font-weight="800" fill="#7c3aed">Gizli tuz kaynakları:</text>
+      <text x="220" y="75" font-family="Nunito" font-size="11" fill="#6b7280">🍞 Ekmek — 1 dilim ~0.5g</text>
+      <text x="220" y="93" font-family="Nunito" font-size="11" fill="#6b7280">🥫 Konserve — 1 kutu ~1.5g</text>
+      <text x="220" y="111" font-family="Nunito" font-size="11" fill="#6b7280">🧀 Peynir — 30g ~0.4g</text>
+      <text x="220" y="129" font-family="Nunito" font-size="11" fill="#6b7280">🍟 Cips — 1 paket ~1.2g</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>🧂 Sodyum mu, tuz mu?</h3><p>Etikette genellikle "sodyum" yazar. <strong>Tuzu bulmak için sodyumu 2.5 ile çarp.</strong><br>Örneğin: 0.4g sodyum × 2.5 = 1g tuz.</p></div>
+    <div class="info-blk"><h3>📏 Günlük limit</h3><p>Çocuklar (4-10 yaş): günde en fazla <strong>3–4g tuz</strong> (1200–1500mg sodyum).<br>Yetişkinler: günde en fazla <strong>5g tuz</strong> (2000mg sodyum).<br>Ülkemizde ortalama 8–10g tuz tüketiliyor — bu limit 2 katı!</p></div>
+    <div class="info-blk"><h3>🩺 Neden önemli?</h3><p>Aşırı tuz: tansiyon yüksekliği, böbrek sorunları, kemik erimesine zemin hazırlar. Çocuklukta başlayan yüksek tuz alışkanlığı ileride kalp hastalığına zemin hazırlayabilir.</p></div>
+    <div class="fact-card" style="background:var(--purple-bg);border-color:var(--purple-border)"><div class="fc-icon">💜</div><div class="fc-text" style="color:var(--purple-text)">Yemeklere tuz eklemeden önce bir kez tadına bak. Çoğunlukla yeterince tuzlu olduğunu göreceksin!</div></div>`
+  },
+  {
+    title:"İçerik Listesi",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#eff6ff"/>
+      <rect x="15" y="15" width="160" height="130" rx="10" fill="#fff" stroke="#bfdbfe" stroke-width="2"/>
+      <text x="95" y="35" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#1d4ed8">İÇERİKLER</text>
+      <rect x="25" y="42" width="140" height="18" rx="4" fill="#fecaca"><animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/></rect>
+      <text x="95" y="55" text-anchor="middle" font-family="Nunito" font-size="10" font-weight="800" fill="#b91c1c">Şeker %38 ← En Fazla!</text>
+      <rect x="25" y="65" width="100" height="14" rx="4" fill="#fde68a"/>
+      <text x="78" y="76" text-anchor="middle" font-family="Nunito" font-size="9" fill="#b45309">Un %28</text>
+      <rect x="25" y="84" width="75" height="14" rx="4" fill="#bbf7d0"/>
+      <text x="64" y="95" text-anchor="middle" font-family="Nunito" font-size="9" fill="#15803d">Yağ %22</text>
+      <rect x="25" y="103" width="45" height="14" rx="4" fill="#e5e7eb"/>
+      <text x="47" y="114" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">Kakao %7</text>
+      <rect x="25" y="122" width="25" height="10" rx="4" fill="#e5e7eb"/>
+      <text x="37" y="130" text-anchor="middle" font-family="Nunito" font-size="8" fill="#9ca3af">Tuz %3</text>
+      <text x="25" y="152" font-family="Nunito" font-size="9" fill="#9ca3af">En çok → en az</text>
+      <line x1="185" y1="80" x2="210" y2="80" stroke="#bfdbfe" stroke-width="2" stroke-dasharray="4"/>
+      <rect x="215" y="25" width="150" height="55" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="2"/>
+      <text x="290" y="45" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#b91c1c">⚠️ Dikkat!</text>
+      <text x="290" y="62" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b91c1c">Şeker ilk sırada =</text>
+      <text x="290" y="75" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b91c1c">En çok malzeme şeker</text>
+      <rect x="215" y="90" width="150" height="55" rx="10" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+      <text x="290" y="110" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="800" fill="#15803d">✅ İdeal</text>
+      <text x="290" y="127" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">İlk sırada tam tahıl</text>
+      <text x="290" y="140" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">veya meyve olmalı</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>📋 Altın kural: İlk 3 malzeme</h3><p>İçerik listesindeki ilk 3 malzeme, ürünün %60–70'ini oluşturur. İlk sırada şeker, rafine un veya hidrojene yağ varsa — o ürün işlenmiş bir gıdadır.</p></div>
+    <div class="info-blk"><h3>🔍 Liste ne kadar kısa?</h3><p>Gerçek besinlerin içerik listesi kısadır. Yoğurt: süt, maya. Ekmek: un, su, maya, tuz. 20+ malzeme içeren bir ürün çok işlenmiş demektir.</p></div>
+    <div class="info-blk"><h3>🧩 Şeker farklı isimlerle saklanır</h3><p>Şeker listenin başına gelmemek için bazen 3–4 farklı isimle eklenir: fruktoz, glikoz, maltodekstrin, dekstroz. Tek tek az görünürler ama toplamda çok olabilirler!</p></div>
+    <div class="fact-card" style="background:var(--blue-bg);border-color:var(--blue-border)"><div class="fc-icon">💡</div><div class="fc-text" style="color:var(--blue-text)">Kural: "Büyükannem bunu tanımaz mıydı?" — Anlamadığın malzeme çoksa, o ürün muhtemelen fazla işlenmiştir.</div></div>`
+  },
+  {
+    title:"E Kodları (Katkı Maddeleri)",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#f0fdf4"/>
+      <text x="190" y="22" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#15803d">E Kodları Sözlüğü</text>
+      <rect x="10" y="30" width="110" height="55" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="2"/>
+      <text x="65" y="50" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#15803d">✅ GÜVENLİ</text>
+      <text x="65" y="65" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">E100–E199</text>
+      <text x="65" y="78" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">Renklendiriciler</text>
+      <rect x="10" y="92" width="110" height="55" rx="8" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1"/>
+      <text x="65" y="112" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">E300 = C Vitamini</text>
+      <text x="65" y="127" text-anchor="middle" font-family="Nunito" font-size="10" fill="#15803d">E322 = Lesitin</text>
+      <text x="65" y="140" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">(zararsız)</text>
+      <rect x="135" y="30" width="110" height="55" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="2"/>
+      <text x="190" y="50" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#b45309">⚠️ DİKKAT</text>
+      <text x="190" y="65" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b45309">E200–E299</text>
+      <text x="190" y="78" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">Koruyucular</text>
+      <rect x="135" y="92" width="110" height="55" rx="8" fill="#fffbeb" stroke="#fde68a" stroke-width="1"/>
+      <text x="190" y="112" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b45309">E471 = Emülgatör</text>
+      <text x="190" y="127" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b45309">E476 = Emülgatör</text>
+      <text x="190" y="140" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">(orta düzey)</text>
+      <rect x="260" y="30" width="110" height="55" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="2"/>
+      <text x="315" y="50" text-anchor="middle" font-family="Nunito" font-size="11" font-weight="900" fill="#b91c1c">❌ KAÇIN</text>
+      <text x="315" y="65" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b91c1c">E900+ / Trans</text>
+      <text x="315" y="78" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">Yapay tatlandırıcı</text>
+      <rect x="260" y="92" width="110" height="55" rx="8" fill="#fef2f2" stroke="#fecaca" stroke-width="1"/>
+      <text x="315" y="127" text-anchor="middle" font-family="Nunito" font-size="10" fill="#b91c1c">E621 = MSG</text>
+      <text x="315" y="140" text-anchor="middle" font-family="Nunito" font-size="9" fill="#6b7280">(tartışmalı)</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>🧪 E kodu nedir?</h3><p>Avrupa Birliği'nin onayladığı gıda katkı maddelerine verilen numaralardır. Her E kodunun bir işlevi var: renklendirme, tatlandırma, koruma, kıvam artırma.</p></div>
+    <div class="info-blk"><h3>✅ Güvenli E kodları</h3><p><strong>E300</strong> = C vitamini | <strong>E322</strong> = Lesitin | <strong>E440</strong> = Pektin (meyveden) | <strong>E500</strong> = Kabartma tozu</p></div>
+    <div class="info-blk"><h3>⚠️ Dikkat edilmesi gerekenler</h3><p><strong>E621</strong> = MSG — aşırısı sinir sistemi üzerinde etkili.<br><strong>E951</strong> = Aspartam — tartışmalı yapay tatlandırıcı.<br><strong>E102</strong> = Tartrazin — bazı çocuklarda hiperaktiviteyle ilişkilendirilmiş.</p></div>
+    <div class="fact-card" style="background:var(--yellow-bg);border-color:var(--yellow-border)"><div class="fc-icon">⚠️</div><div class="fc-text" style="color:var(--yellow-text)">E kodu sayısı ne kadar azsa ürün o kadar doğal. 10+ E kodu içeren ürünleri günlük tüketme.</div></div>`
+  },
+  {
+    title:"Protein ve Lif",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#fef2f2"/>
+      <text x="100" y="22" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#b91c1c">💪 Protein kaynakları</text>
+      <circle cx="45" cy="90" r="30" fill="#fecaca" stroke="#ef4444" stroke-width="2"><animate attributeName="r" values="28;32;28" dur="2s" repeatCount="indefinite"/></circle>
+      <text x="45" y="86" text-anchor="middle" font-family="Nunito" font-size="22">🥚</text>
+      <text x="45" y="102" text-anchor="middle" font-family="Nunito" font-size="9" fill="#b91c1c">Yumurta</text>
+      <circle cx="115" cy="90" r="26" fill="#fecaca" stroke="#ef4444"/>
+      <text x="115" y="86" text-anchor="middle" font-family="Nunito" font-size="20">🥩</text>
+      <text x="115" y="102" text-anchor="middle" font-family="Nunito" font-size="9" fill="#b91c1c">Et/Balık</text>
+      <circle cx="175" cy="90" r="22" fill="#fecaca" stroke="#ef4444"/>
+      <text x="175" y="86" text-anchor="middle" font-family="Nunito" font-size="18">🥛</text>
+      <text x="175" y="102" text-anchor="middle" font-family="Nunito" font-size="9" fill="#b91c1c">Süt/Yoğurt</text>
+      <line x1="205" y1="20" x2="205" y2="150" stroke="#e5e7eb" stroke-width="1"/>
+      <text x="295" y="22" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#15803d">🌾 Lif kaynakları</text>
+      <circle cx="230" cy="90" r="28" fill="#bbf7d0" stroke="#22c55e" stroke-width="2"><animate attributeName="r" values="26;30;26" dur="2.5s" repeatCount="indefinite"/></circle>
+      <text x="230" y="86" text-anchor="middle" font-family="Nunito" font-size="22">🥦</text>
+      <text x="230" y="102" text-anchor="middle" font-family="Nunito" font-size="9" fill="#15803d">Sebzeler</text>
+      <circle cx="295" cy="90" r="24" fill="#bbf7d0" stroke="#22c55e"/>
+      <text x="295" y="86" text-anchor="middle" font-family="Nunito" font-size="20">🍎</text>
+      <text x="295" y="102" text-anchor="middle" font-family="Nunito" font-size="9" fill="#15803d">Meyveler</text>
+      <circle cx="355" cy="90" r="20" fill="#bbf7d0" stroke="#22c55e"/>
+      <text x="355" y="86" text-anchor="middle" font-family="Nunito" font-size="16">🌾</text>
+      <text x="355" y="102" text-anchor="middle" font-family="Nunito" font-size="9" fill="#15803d">Tahıllar</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>💪 Protein neden gerekli?</h3><p>Kasların, organların ve bağışıklık sisteminin yapı taşıdır. Büyüme çağındaki çocuklar için günde vücut ağırlığının kg başına yaklaşık <strong>1g protein</strong> gerekir.</p></div>
+    <div class="info-blk"><h3>🌾 Lif (posa) ne yapar?</h3><p>Sindirim sistemini düzenler, bağırsak sağlığını korur, şeker emilimini yavaşlatır ve daha uzun süre tok tutar. Günde <strong>20–25g lif</strong> idealdir.</p></div>
+    <div class="info-blk"><h3>📊 İyi kaynaklar</h3><p><strong>Protein:</strong> Tavuk, balık, yumurta, süt, yoğurt, baklagiller<br><strong>Lif:</strong> Tam tahıl ekmek, yulaf, elma, havuç, brokoli, badem</p></div>
+    <div class="fact-card" style="background:var(--green-bg);border-color:var(--green-border)"><div class="fc-icon">🌟</div><div class="fc-text" style="color:var(--green-text)">Sabah yulaf ezmesi ye! Hem lif (~10g) hem protein (~5g) içerir.</div></div>`
+  },
+  {
+    title:"Kalori Nedir?",
+    anim:`<svg viewBox="0 0 380 160" xmlns="http://www.w3.org/2000/svg">
+      <rect width="380" height="160" fill="#fffbeb"/>
+      <text x="190" y="22" text-anchor="middle" font-family="Nunito" font-size="12" font-weight="800" fill="#b45309">Enerji Dengesi</text>
+      <rect x="15" y="35" width="155" height="110" rx="10" fill="#fff" stroke="#fde68a"/>
+      <text x="92" y="58" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="800" fill="#b45309">🍽️ Alınan Kalori</text>
+      <text x="92" y="85" text-anchor="middle" font-family="Nunito" font-size="32">🎂</text>
+      <text x="92" y="115" text-anchor="middle" font-family="Nunito" font-size="11" fill="#b45309">Kek: ~400 kcal/100g</text>
+      <text x="190" y="92" text-anchor="middle" font-family="Nunito" font-size="24" fill="#f59e0b">⚡</text>
+      <rect x="210" y="35" width="155" height="110" rx="10" fill="#fff" stroke="#bbf7d0"/>
+      <text x="287" y="58" text-anchor="middle" font-family="Nunito" font-size="13" font-weight="800" fill="#15803d">🔥 Harcanan</text>
+      <text x="287" y="85" text-anchor="middle" font-family="Nunito" font-size="32">🚴</text>
+      <text x="287" y="115" text-anchor="middle" font-family="Nunito" font-size="11" fill="#15803d">30 dk bisiklet ~200 kcal</text>
+      <text x="190" y="155" text-anchor="middle" font-family="Nunito" font-size="10" fill="#6b7280">Denge = Sağlıklı ağırlık korunur</text>
+    </svg>`,
+    content:`<div class="info-blk"><h3>⚡ Kalori nedir?</h3><p>Besinlerin içerdiği enerji miktarının birimidir. Vücudumuz hareket etmek, düşünmek, nefes almak için kaloriye ihtiyaç duyar. Fazlası yağ olarak depolanır.</p></div>
+    <div class="info-blk"><h3>📊 Günlük kalori ihtiyacı</h3><p><strong>7–10 yaş:</strong> ~1600–1800 kcal<br><strong>11–14 yaş kız:</strong> ~2000 kcal<br><strong>11–14 yaş erkek:</strong> ~2200 kcal<br><strong>Yetişkin:</strong> ~2000–2500 kcal</p></div>
+    <div class="info-blk"><h3>🍫 Kalorilerin kalitesi önemli</h3><p>500 kcal çikolata ile 500 kcal sebze aynı enerji sağlar ama etkisi çok farklıdır. Kaliteli kalori = vitamin, mineral ve lif açısından zengin besinler.</p></div>
+    <div class="fact-card" style="background:var(--yellow-bg);border-color:var(--yellow-border)"><div class="fc-icon">💪</div><div class="fc-text" style="color:var(--yellow-text)">Günde 30 dakika tempolu yürüyüş ~150 kcal yakar. Asıl hedef sağlıklı alışkanlıklar edinmek!</div></div>`
+  }
+];
+
+function openCat(i){
+  const cat=CATS[i];
+  document.getElementById("learnCats").style.display="none";
+  const d=document.getElementById("learnDetail");d.style.display="block";
+  d.querySelector("#learnDetailContent").innerHTML=`
+    <div style="font-size:17px;font-weight:900;margin-bottom:12px">${cat.title}</div>
+    <div class="anim-card"><div class="anim-title">📊 Görsel Animasyon</div>${cat.anim}</div>
+    ${cat.content}
+    <div style="margin-top:16px;padding:12px 14px;background:var(--green-bg);border:1px solid var(--green-border);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:13px;font-weight:700;color:var(--green-text)">Bu dersi tamamladın! +15 XP</span>
+      <span style="font-size:20px">🎉</span>
+    </div>`;
+  if(!ls.has(i)){ls.add(i);addXP(15,`"${cat.title}" tamamlandı! +15 XP`);save();}
+}
+function closeCat(){
+  document.getElementById("learnCats").style.display="block";
+  document.getElementById("learnDetail").style.display="none";
+}
+
+// ─── QUIZ ─────────────────────────────────────────────────────────────
+let currentQuizType=0;
+function selectQuizType(type,btn){
+  document.querySelectorAll(".qtab").forEach(t=>t.classList.remove("on"));
+  btn.classList.add("on");currentQuizType=type;renderQuizHome(type);
+}
+function renderQuizHome(type){
+  const titles=["Çoktan Seçmeli","Eşleştirme","Boşluk Doldurma","Sıralama"];
+  const descs=["10 soruluk klasik test. Her doğru +5 XP!","Sol ve sağ sütunu eşleştir. +8 XP/çift!","Cümledeki boşlukları doğru kelimeyle doldur. +6 XP!","Besin değerlerini küçükten büyüğe sırala. +10 XP!"];
+  const icons=["🔘","🔗","✏️","📊"];
+  document.getElementById("quizArea").innerHTML=`<div class="quiz-intro"><div class="qi-icon">${icons[type]}</div><div class="qi-title">${titles[type]}</div><div class="qi-sub">${descs[type]}</div><button class="start-btn" onclick="startQuiz(${type})">Başla →</button></div>`;
+}
+function startQuiz(type){if(type===0)startMCQ();else if(type===1)startMatch();else if(type===2)startFill();else startSort();}
+
+// MCQ
+const MCQ=[
+  {q:"100g başına 15g şeker içeren ürün hangi renk kodunu alır?",o:["Yeşil","Sarı","Kırmızı"],a:2,e:"12.5g üzeri kırmızı!"},
+  {q:"İçerik listesinde malzemeler nasıl sıralanır?",o:["Alfabetik","En çoktan en aza","Rastgele"],a:1,e:"En çok kullanılan malzeme başta yazılır."},
+  {q:"Doymuş yağ için 100g başına 'az' sınırı nedir?",o:["1.5g altı","5g altı","10g altı"],a:0,e:"1.5g altı az kabul edilir."},
+  {q:"E300 kodu nedir?",o:["Şeker","C vitamini","Boyar madde"],a:1,e:"E300 = C vitamini (askorbik asit)!"},
+  {q:"Tuz için 'az' sayılan sınır?",o:["0.3g altı","3g altı","1g altı"],a:0,e:"0.3g altı az, 1.5g üzeri fazladır."},
+  {q:"Trans yağ etikette nasıl görünür?",o:["Omega-3 yağ asidi","Hidrojene bitkisel yağ","Zeytinyağı"],a:1,e:"'Hidrojene' veya 'kısmen hidrojene' = trans yağ!"},
+  {q:"Protein için 'iyi (yeşil)' sınır?",o:["5g üzeri","1g üzeri","0.5g üzeri"],a:0,e:"100g başına 5g ve üzeri yeşil (iyi) sayılır."},
+  {q:"Aşağıdakilerden hangisi gizli şekerdir?",o:["E300","Fruktoz","Pektin"],a:1,e:"Fruktoz bir şeker çeşididir!"},
+  {q:"Lifin faydası nedir?",o:["Diş çürütür","Sindirimi düzenler","Tansiyonu yükseltir"],a:1,e:"Lif sindirimi düzenler ve tok tutar."},
+  {q:"Hangisi en sağlıklı?",o:["Şeker 25g, Tuz 2g","Şeker 3g, Tuz 0.2g","Şeker 15g, Tuz 0.8g"],a:1,e:"Her iki değeri düşük olan her zaman daha sağlıklı!"},
+];
+let mcqIdx=0,mcqScore=0,mcqAnswered=false;
+function startMCQ(){mcqIdx=0;mcqScore=0;renderMCQ();}
+function renderMCQ(){
+  const q=MCQ[mcqIdx];
+  document.getElementById("quizArea").innerHTML=`<div class="q-prog-wrap"><div class="q-prog" style="width:${(mcqIdx/MCQ.length)*100}%"></div></div><div class="q-meta">Soru ${mcqIdx+1}/${MCQ.length}</div><div class="q-txt">${q.q}</div><div class="q-opts">${q.o.map((o,i)=>`<button class="q-opt" onclick="answerMCQ(${i})">${o}</button>`).join("")}</div><div class="q-fb" id="qf" style="display:none"></div><button class="q-next" id="qnb" style="display:none" onclick="nextMCQ()">Sonraki →</button>`;
+  mcqAnswered=false;
+}
+function answerMCQ(i){
+  if(mcqAnswered)return;mcqAnswered=true;
+  const q=MCQ[mcqIdx];const opts=document.querySelectorAll(".q-opt");
+  opts.forEach(b=>b.disabled=true);
+  const ok=i===q.a;if(ok)mcqScore++;
+  opts[i].classList.add(ok?"correct":"wrong");if(!ok)opts[q.a].classList.add("correct");
+  const fb=document.getElementById("qf");fb.textContent=(ok?"✅ Doğru! ":"❌ Yanlış! ")+q.e;
+  fb.style.cssText=`display:block;background:${ok?"var(--green-bg)":"var(--red-bg)"};border-color:${ok?"var(--green-border)":"var(--red-border)"};color:${ok?"var(--green-text)":"var(--red-text)"}`;fb.classList.add("on");
+  const nb=document.getElementById("qnb");nb.style.display="block";nb.textContent=mcqIdx<MCQ.length-1?"Sonraki →":"Sonuçları gör →";
+}
+function nextMCQ(){mcqIdx++;if(mcqIdx>=MCQ.length)showResult(mcqScore,MCQ.length,"mcq");else renderMCQ();}
+
+// MATCH
+const MATCH_SETS=[
+  {pairs:[["E300","C Vitamini"],["E621","MSG / Tat Artırıcı"],["E471","Emülgatör"],["E951","Aspartam"],["E440","Pektin"]]},
+  {pairs:[["Şeker < 5g","🟢 Az"],["Şeker > 12g","🔴 Fazla"],["Tuz > 1.5g","🔴 Fazla"],["Lif > 3g","🟢 İyi"],["Protein > 5g","🟢 İyi"]]},
+  {pairs:[["Hidrojene yağ","Trans yağ ❌"],["Omega-3","Sağlıklı yağ ✅"],["Fruktoz","Gizli şeker ⚠️"],["Pektin","Doğal katkı ✅"],["Tartrazin","Yapay boya ⚠️"]]},
+];
+let matchState={};
+function startMatch(){
+  const set=MATCH_SETS[Math.floor(Math.random()*MATCH_SETS.length)];
+  const rights=[...set.pairs.map(p=>p[1])].sort(()=>Math.random()-.5);
+  matchState={pairs:set.pairs,sel:null,matched:new Set(),score:0,lefts:set.pairs.map(p=>p[0]),rights,total:set.pairs.length};
+  renderMatch();
+}
+function renderMatch(){
+  const s=matchState;
+  document.getElementById("quizArea").innerHTML=`<div class="q-meta">Eşleştirme — ${s.matched.size/2|0}/${s.total} eşleşti</div><div class="q-txt">Sol ve sağdaki kartları eşleştir!</div><div class="match-grid"><div class="match-col" id="mLeft">${s.lefts.map((l,i)=>`<div class="match-item${s.matched.has("L"+i)?" matched":""}" id="mL${i}" onclick="matchClick('L',${i})">${l}</div>`).join("")}</div><div class="match-col" id="mRight">${s.rights.map((r,i)=>`<div class="match-item${s.matched.has("R"+i)?" matched":""}" id="mR${i}" onclick="matchClick('R',${i})">${r}</div>`).join("")}</div></div><div id="matchFb" style="display:none" class="q-fb on"></div>`;
+}
+function matchClick(side,idx){
+  const s=matchState;if(s.matched.has(side+idx))return;
+  const el=document.getElementById("m"+side+idx);
+  if(!s.sel){s.sel={side,idx};el.classList.add("selected");}
+  else{
+    if(s.sel.side===side){document.querySelectorAll(".match-item").forEach(e=>e.classList.remove("selected"));s.sel={side,idx};el.classList.add("selected");return;}
+    const lIdx=side==="L"?idx:s.sel.idx,rIdx=side==="R"?idx:s.sel.idx;
+    const ok=s.pairs.some(p=>p[0]===s.lefts[lIdx]&&p[1]===s.rights[rIdx]);
+    if(ok){
+      s.matched.add("L"+lIdx);s.matched.add("R"+rIdx);s.score++;
+      document.getElementById("mL"+lIdx).className="match-item matched";document.getElementById("mR"+rIdx).className="match-item matched";
+      const fb=document.getElementById("matchFb");fb.style.cssText="display:block;background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)";fb.textContent="✅ Doğru!";
+      if(s.score>=s.total)setTimeout(()=>showResult(s.score,s.total,"match"),700);
+    } else {
+      el.classList.add("wrong-flash");document.getElementById("m"+s.sel.side+s.sel.idx).classList.add("wrong-flash");
+      const fb=document.getElementById("matchFb");fb.style.cssText="display:block;background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)";fb.textContent="❌ Yanlış, tekrar dene!";
+      setTimeout(()=>{el.classList.remove("wrong-flash","selected");document.getElementById("m"+s.sel.side+s.sel.idx).classList.remove("wrong-flash","selected");},700);
+    }
+    s.sel=null;
+  }
+}
+
+// FILL
+const FILL_QS=[
+  {before:"100g başına şeker",blank:"___",after:"gramdan az ise yeşil renk alır.",answer:"5",options:["5","12","25","3"]},
+  {before:"İçerik listesi",blank:"___",after:"doğru sıralanır.",answer:"en çoktan en aza",options:["en çoktan en aza","alfabetik","rastgele","en azdan en çoğa"]},
+  {before:"Doymuş yağın 'az' sınırı 100g başına",blank:"___",after:"gramdır.",answer:"1.5",options:["1.5","5","3","10"]},
+  {before:"E300 kodu",blank:"___",after:"vitaminine karşılık gelir.",answer:"C",options:["C","D","B12","A"]},
+  {before:"Trans yağ etikette '",blank:"___",after:"bitkisel yağ' olarak geçer.",answer:"hidrojene",options:["hidrojene","doğal","rafine","sızma"]},
+];
+let fillIdx=0,fillScore=0;
+function startFill(){fillIdx=0;fillScore=0;renderFill();}
+function renderFill(){
+  const q=FILL_QS[fillIdx];const opts=[...q.options].sort(()=>Math.random()-.5);
+  document.getElementById("quizArea").innerHTML=`<div class="q-prog-wrap"><div class="q-prog" style="width:${(fillIdx/FILL_QS.length)*100}%"></div></div><div class="q-meta">Boşluk Doldur — ${fillIdx+1}/${FILL_QS.length}</div><div class="q-txt">Uygun kelimeyi seçerek cümleyi tamamla:</div><div class="fill-sentence" id="fillS">${q.before} <span class="fill-blank" id="fillB">___</span> ${q.after}</div><div class="fill-options">${opts.map(o=>`<div class="fill-chip" id="fco_${o.replace(/ /g,'_')}" onclick="fillSelect('${o.replace(/ /g,'_')}')">${o}</div>`).join("")}</div><div class="q-fb" id="fillFb" style="display:none"></div><button class="q-next" id="fillNext" style="display:none" onclick="nextFill()">Sonraki →</button>`;
+}
+function fillSelect(raw){
+  const o=raw.replace(/_/g,' ');if(document.getElementById("fillNext").style.display!=="none")return;
+  const q=FILL_QS[fillIdx];const ok=o===q.answer;if(ok)fillScore++;
+  const b=document.getElementById("fillB");b.textContent=o;b.classList.add(ok?"filled":"wrong");
+  document.querySelectorAll(".fill-chip").forEach(c=>{c.style.pointerEvents="none";if(c.textContent===q.answer)c.style.cssText="background:var(--green-bg);border-color:var(--green);color:var(--green-text)";});
+  const fb=document.getElementById("fillFb");fb.textContent=ok?`✅ Doğru!`:`❌ Yanlış! Doğru: "${q.answer}"`;fb.style.cssText=`display:block;background:${ok?"var(--green-bg)":"var(--red-bg)"};border-color:${ok?"var(--green-border)":"var(--red-border)"};color:${ok?"var(--green-text)":"var(--red-text)"}`;
+  const nb=document.getElementById("fillNext");nb.style.display="block";nb.textContent=fillIdx<FILL_QS.length-1?"Sonraki →":"Sonuçları gör →";
+}
+function nextFill(){fillIdx++;if(fillIdx>=FILL_QS.length)showResult(fillScore,FILL_QS.length,"fill");else renderFill();}
+
+// SORT
+const SORT_SETS=[
+  {title:"Şeker miktarını küçükten büyüğe sırala:",items:["Meyve suyu ~9g","Elma ~10g","Bisküvi ~30g","Çikolata ~55g"],correct:[0,1,2,3]},
+  {title:"Tuz miktarını az'dan çok'a sırala:",items:["Domates ~0.01g","Tam ekmek ~0.9g","Peynir ~1.2g","Cips ~1.8g"],correct:[0,1,2,3]},
+  {title:"Lif miktarını az'dan çok'a sırala:",items:["Beyaz pirinç 0.4g","Elma 2.4g","Mercimek 8g","Yulaf 10g"],correct:[0,1,2,3]},
+];
+let sortState={};
+function startSort(){
+  const set=SORT_SETS[Math.floor(Math.random()*SORT_SETS.length)];
+  sortState={set,items:[...set.items].sort(()=>Math.random()-.5),dragging:null};renderSort();
+}
+function renderSort(){
+  const s=sortState;
+  document.getElementById("quizArea").innerHTML=`<div class="q-meta">Sıralama</div><div class="q-txt">${s.set.title}</div><div class="sort-list" id="sortList">${s.items.map((item,i)=>`<div class="sort-item" id="si${i}" draggable="true" ondragstart="sortState.dragging=${i}" ondragover="event.preventDefault()" ondrop="dropSort(${i})"><span class="sort-handle">☰</span><span>${item}</span></div>`).join("")}</div><div class="q-fb" id="sortFb" style="display:none"></div><button class="q-next on" style="display:block" onclick="checkSort()">Kontrol et ✓</button>`;
+}
+function dropSort(i){
+  const s=sortState;if(s.dragging===null||s.dragging===i)return;
+  const arr=s.items;const tmp=arr[s.dragging];arr[s.dragging]=arr[i];arr[i]=tmp;s.dragging=null;renderSort();
+}
+function checkSort(){
+  const s=sortState;
+  const curOrder=s.items.map(item=>s.set.items.indexOf(item));
+  const isOk=JSON.stringify(curOrder)===JSON.stringify(s.set.correct);
+  const fb=document.getElementById("sortFb");
+  if(isOk){
+    document.querySelectorAll(".sort-item").forEach(el=>el.classList.add("correct-pos"));
+    fb.style.cssText="display:block;background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)";fb.textContent="🎉 Mükemmel sıralama!";
+    setTimeout(()=>showResult(1,1,"sort"),1000);
+  } else {
+    document.querySelectorAll(".sort-item").forEach(el=>el.classList.add("wrong-pos"));
+    fb.style.cssText="display:block;background:var(--red-bg);border-color:var(--red-border);color:var(--red-text)";fb.textContent="❌ Yanlış sıralama, tekrar dene!";
+    setTimeout(()=>{document.querySelectorAll(".sort-item").forEach(el=>el.classList.remove("wrong-pos"));fb.style.display="none";},1200);
+  }
+}
+
+function showResult(score,total,type){
+  const pct=Math.round((score/total)*100);
+  const e=pct>=90?"🏆":pct>=70?"🎉":pct>=50?"👏":"💪";
+  const tt=pct>=90?"Mükemmel!":pct>=70?"Harika!":pct>=50?"İyi iş!":"Devam et!";
+  if(score>qb){qb=score;save();}
+  const xpMap={mcq:score*5,match:score*8,fill:score*6,sort:10};
+  const earned=xpMap[type]||score*5;addXP(earned,`Test bitti! +${earned} XP 🧠`);
+  let bh="";BADGES.forEach(b=>{if(b.c())bh+=`<div class="bp" style="background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)">${b.ico} ${b.nm}</div>`;});
+  document.getElementById("quizArea").innerHTML=`<div class="qr-wrap"><div class="qr-ico">${e}</div><div class="qr-title">${tt}</div><div class="qr-score">${score}/${total}</div><div class="qr-sub">${pct>=70?"Harika iş çıkardın!":"Öğren sekmesini tekrar incele!"}</div><div class="badges-row">${bh}</div><button class="retry-btn" onclick="renderQuizHome(${currentQuizType})">🔄 Tekrar dene</button></div>`;
+}
+
+load();upProf();renderQuizHome(0);
+</script>
+</body>
+</html>
