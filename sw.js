@@ -1,4 +1,4 @@
-const CACHE_NAME = "nutrizeka-v1";
+const CACHE_NAME = "nutrizeka-v2";
 const STATIC_ASSETS = [
   "/Nutri_Zeka/",
   "/Nutri_Zeka/index.html"
