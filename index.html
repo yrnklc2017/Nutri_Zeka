@@ -3888,7 +3888,7 @@ async function lbFetchMyRank() {
     var id = lbGetOrCreateId();
     var resp = await fetch(LB_URL + '/rank?id=' + encodeURIComponent(id));
     var data = await resp.json();
-    return data.ok === false ? null : data;
+    return (data && data.player) ? data.player : null;
   } catch(e) { return null; }
 }
 // ── Leaderboard Altyapısı SONU ────────────────────────────────────────
@@ -3900,45 +3900,52 @@ var _lbPendingXP   = null;   // bekleyen en güncel XP değeri
 
 // XP'yi Worker'a gönder (toplam xp, artış değil)
 async function lbUpdateScore() {
-  // Kayıtlı değilse hiçbir şey yapma
   if (!lbGetNickname()) return;
 
   var id      = lbGetOrCreateId();
-  var totalXP = xp;   // global xp değişkeni — addXP sonrası güncel
+  var totalXP = xp;  // global xp — addXP sonrasi guncel
 
-  // Hâlâ uçuşta istek varsa: en güncel XP'yi kaydet, dön
-  if (_lbSyncing) {
-    _lbPendingXP = totalXP;
-    return;
-  }
-
+  if (_lbSyncing) { _lbPendingXP = totalXP; return; }
   _lbSyncing = true;
+
   try {
-    await fetch(LB_URL + '/update', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ id: id, xp: totalXP })
-    });
+    // 1. Once mevcut sunucu XP'sini oku
+    var rankResp = await fetch(LB_URL + '/rank?id=' + encodeURIComponent(id));
+    var serverXP = 0;
+    if (rankResp.ok) {
+      var rankData = await rankResp.json();
+      if (rankData && rankData.player && typeof rankData.player.xp === 'number') serverXP = rankData.player.xp;
+    }
+
+    // 2. Fark hesapla; Worker +50 siniri var, adim adim gonder
+    var diff = totalXP - serverXP;
+    if (diff <= 0) { _lbSyncing = false; return; }  // zaten guncel veya daha yuksek
+
+    var STEP = 45;  // guvenli adim (50 sinirinin altinda)
+    var sent = serverXP;
+    while (sent < totalXP) {
+      var next = Math.min(sent + STEP, totalXP);
+      var resp = await fetch(LB_URL + '/update', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ id: id, xp: next })
+      });
+      if (!resp.ok) {
+        var errData = await resp.json().catch(function(){ return {}; });
+        console.warn('[LB] /update hata:', resp.status, errData);
+        break;
+      }
+      sent = next;
+    }
   } catch(e) {
-    // Ağ hatası: sessizce yönet, _lbPendingXP'ye düşür
-    _lbPendingXP = totalXP;
+    console.warn('[LB] lbUpdateScore network hata:', e.message);
+    _lbPendingXP = totalXP;  // tekrar dene
   } finally {
     _lbSyncing = false;
-    // Bekleyen daha güncel bir XP varsa hemen tekrar gönder
     if (_lbPendingXP !== null) {
-      var pending  = _lbPendingXP;
+      var pending = _lbPendingXP;
       _lbPendingXP = null;
-      // Küçük gecikmeyle gönder (mikro-döngü çökmesini önler)
-      setTimeout(function() {
-        if (!_lbSyncing) {
-          _lbSyncing = true;
-          fetch(LB_URL + '/update', {
-            method:  'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body:    JSON.stringify({ id: id, xp: pending })
-          }).catch(function(){}).finally(function(){ _lbSyncing = false; });
-        }
-      }, 200);
+      setTimeout(function() { lbUpdateScore(); }, 500);
     }
   }
 }
