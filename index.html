@@ -555,6 +555,354 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
 .or-div{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
 .or-div::before,.or-div::after{content:"";flex:1;height:1px;background:var(--border);}
 .or-div span{font-size:12px;color:var(--muted);font-weight:700;}
+
+/* ── Oyun Merkezi CSS (gc- öneki) ─────────────────────────────────── */
+.gc-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:16px;
+}
+.gc-card{
+  background:#fff;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius);
+  padding:14px 12px 12px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  transition:transform .15s, box-shadow .15s;
+  box-shadow:var(--shadow-sm);
+  position:relative;
+  min-height:130px;
+}
+.gc-card:active{transform:scale(.97);}
+.gc-card--active{
+  border-color:var(--green);
+  background:var(--green-bg);
+}
+.gc-card--active:hover{box-shadow:var(--shadow);}
+.gc-card--soon{opacity:.75;}
+.gc-card--soon:hover{opacity:.88;}
+.gc-card-icon{font-size:28px;line-height:1;}
+.gc-card-body{flex:1;}
+.gc-card-title{font-size:13px;font-weight:800;color:var(--text);margin-bottom:3px;}
+.gc-card-desc{font-size:11px;color:var(--muted);font-weight:600;line-height:1.4;}
+.gc-card-badge{
+  font-size:10px;font-weight:800;
+  padding:3px 9px;border-radius:20px;
+  align-self:flex-start;
+}
+.gc-badge--active{
+  background:var(--green);color:#fff;
+}
+.gc-badge--soon{
+  background:var(--yellow-bg);color:var(--yellow-text);
+  border:1px solid var(--yellow-border);
+}
+.gc-back-btn{
+  padding:5px 14px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.35);
+  border-radius:20px;
+  font-size:12px;font-weight:700;
+  color:#fff;cursor:pointer;
+  font-family:"Nunito",sans-serif;
+}
+/* Yakında toast */
+.gc-soon-toast{
+  position:fixed;bottom:96px;left:50%;
+  transform:translateX(-50%) translateY(20px);
+  background:#1f2937;color:#fff;
+  padding:10px 20px;border-radius:20px;
+  font-size:13px;font-weight:700;
+  opacity:0;transition:opacity .25s, transform .25s;
+  pointer-events:none;z-index:201;white-space:nowrap;
+}
+.gc-soon-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── Etiket Düellosu CSS ──────────────────────────────────────────── */
+.duel-prog-wrap{height:6px;background:var(--green-light);border-radius:6px;overflow:hidden;margin-bottom:10px;}
+.duel-prog{height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);border-radius:6px;transition:width .4s;}
+.duel-meta{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;display:flex;justify-content:space-between;}
+.duel-question{font-size:14px;font-weight:800;color:var(--text);background:var(--green-light);border:1.5px solid var(--green-border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;line-height:1.5;}
+.duel-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.duel-card{background:#fff;border:2px solid var(--border);border-radius:var(--radius);padding:14px 12px;cursor:pointer;transition:border-color .15s,transform .15s,box-shadow .15s;box-shadow:var(--shadow-sm);}
+.duel-card:active{transform:scale(.97);}
+.duel-card.selected{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.15);}
+.duel-card.correct{border-color:var(--green);background:var(--green-bg);box-shadow:0 0 0 3px rgba(22,163,74,.15);}
+.duel-card.wrong{border-color:var(--red);background:var(--red-bg);}
+.duel-card-label{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.duel-card-name{font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.duel-nutrient{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:4px 0;border-bottom:1px solid var(--border);}
+.duel-nutrient:last-child{border-bottom:none;}
+.duel-nutrient-lbl{color:var(--muted);font-weight:600;}
+.duel-nutrient-val{font-weight:800;color:var(--text);}
+.duel-nutrient-val.hl{color:var(--green);font-size:13px;}
+.duel-feedback{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px;font-weight:600;line-height:1.5;display:none;border-width:1.5px;border-style:solid;}
+.duel-feedback.on{display:block;}
+.duel-feedback.ok{background:var(--green-bg);border-color:var(--green-border);color:var(--green-text);}
+.duel-feedback.fail{background:var(--red-bg);border-color:var(--red-border);color:var(--red-text);}
+.duel-next{width:100%;padding:13px;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;display:none;font-family:"Nunito",sans-serif;color:var(--text);transition:all .15s;margin-bottom:8px;}
+.duel-next.on{display:block;}
+.duel-next:hover{border-color:var(--green);color:var(--green);}
+.duel-result{text-align:center;padding:16px 0;}
+.duel-result-icon{font-size:56px;margin-bottom:10px;}
+.duel-result-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:6px;}
+.duel-result-score{font-size:44px;font-weight:900;color:var(--green);margin-bottom:4px;}
+.duel-result-sub{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:20px;line-height:1.6;}
+.duel-restart{width:100%;padding:14px;background:linear-gradient(135deg,#16a34a,#15803d);border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:"Nunito",sans-serif;margin-bottom:10px;box-shadow:0 4px 14px rgba(22,163,74,.3);}
+.duel-home{width:100%;padding:13px;background:#fff;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-weight:800;cursor:pointer;font-family:"Nunito",sans-serif;color:var(--text);}
+/* ── Etiket Düellosu CSS SONU ────────────────────────────────────── */
+
+/* ── Kazanımlarım CSS ─────────────────────────────────────────────── */
+.ach-summary{
+  background:linear-gradient(135deg,#16a34a,#15803d);
+  border-radius:var(--radius);padding:16px;margin-bottom:16px;
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;
+}
+.ach-sum-item{text-align:center;}
+.ach-sum-val{font-size:22px;font-weight:900;color:#fff;line-height:1.1;}
+.ach-sum-lbl{font-size:10px;color:rgba(255,255,255,.75);font-weight:700;
+  text-transform:uppercase;letter-spacing:.6px;margin-top:3px;}
+.ach-empty{
+  background:var(--green-light);border:1.5px solid var(--green-border);
+  border-radius:var(--radius-sm);padding:24px 16px;text-align:center;
+  margin-bottom:16px;
+}
+.ach-empty-icon{font-size:40px;margin-bottom:8px;}
+.ach-empty-txt{font-size:13px;color:var(--muted);font-weight:600;line-height:1.6;}
+.ach-cat{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:14px;margin-bottom:10px;box-shadow:var(--shadow-sm);
+}
+.ach-cat-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ach-cat-icon{font-size:22px;flex-shrink:0;}
+.ach-cat-info{flex:1;}
+.ach-cat-label{font-size:13px;font-weight:800;color:var(--text);}
+.ach-cat-score{font-size:12px;font-weight:700;margin-top:2px;}
+.ach-cat-badge{
+  font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px;
+  flex-shrink:0;
+}
+.ach-badge-none{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+.ach-badge-low{background:var(--red-bg);color:var(--red-text);border:1px solid var(--red-border);}
+.ach-badge-mid{background:var(--yellow-bg);color:var(--yellow-text);border:1px solid var(--yellow-border);}
+.ach-badge-hi{background:var(--green-light);color:var(--green-text);border:1px solid var(--green-border);}
+.ach-bar-wrap{height:8px;background:var(--bg);border-radius:8px;overflow:hidden;}
+.ach-bar{height:100%;border-radius:8px;transition:width .6s ease;}
+.ach-bar-low{background:var(--red);}
+.ach-bar-mid{background:var(--yellow);}
+.ach-bar-hi{background:var(--green);}
+.ach-no-data{font-size:12px;color:var(--muted);font-weight:600;font-style:italic;}
+/* ── Kazanımlarım CSS SONU ────────────────────────────────────────── */
+
+/* -- Hızlı Test CSS ----------------------------------------- */
+.qt-header{display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:10px;font-size:12px;font-weight:700;color:var(--muted);}
+.qt-streak{color:var(--green);font-weight:800;}
+.qt-timer-wrap{height:7px;background:var(--green-light);border-radius:7px;
+  overflow:hidden;margin-bottom:14px;}
+.qt-timer-bar{height:100%;border-radius:7px;
+  background:linear-gradient(90deg,#22c55e,#16a34a);
+  transition:width .25s linear,background .5s;}
+.qt-timer-bar.warn{background:linear-gradient(90deg,#f59e0b,#d97706);}
+.qt-timer-bar.danger{background:linear-gradient(90deg,#ef4444,#dc2626);}
+.qt-timer-num{font-size:13px;font-weight:900;text-align:right;
+  margin-bottom:8px;color:var(--muted);}
+.qt-timer-num.warn{color:var(--yellow);}
+.qt-timer-num.danger{color:var(--red);}
+.qt-question{font-size:14px;font-weight:800;color:var(--text);
+  background:var(--green-light);border:1.5px solid var(--green-border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;
+  line-height:1.55;}
+.qt-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.qt-opt{padding:12px 15px;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-size:13px;font-weight:700;
+  color:var(--text);cursor:pointer;text-align:left;background:#fff;
+  font-family:'Nunito',sans-serif;box-shadow:var(--shadow-sm);
+  transition:all .15s;}
+.qt-opt:hover:not(:disabled){border-color:var(--green-border);
+  background:var(--green-light);}
+.qt-opt.correct{background:var(--green-bg);border-color:var(--green);
+  color:var(--green-text);}
+.qt-opt.wrong{background:var(--red-bg);border-color:var(--red-border);
+  color:var(--red-text);}
+.qt-feedback{border-radius:var(--radius-sm);padding:11px 13px;
+  margin-bottom:12px;font-size:13px;font-weight:600;line-height:1.5;
+  display:none;border-width:1.5px;border-style:solid;}
+.qt-feedback.on{display:block;}
+.qt-feedback.ok{background:var(--green-bg);border-color:var(--green-border);
+  color:var(--green-text);}
+.qt-feedback.fail{background:var(--red-bg);border-color:var(--red-border);
+  color:var(--red-text);}
+.qt-feedback.timeout{background:var(--yellow-bg);border-color:var(--yellow-border);
+  color:var(--yellow-text);}
+.qt-next{width:100%;padding:13px;background:var(--bg);
+  border:2px solid var(--border);border-radius:var(--radius-sm);
+  font-size:14px;font-weight:800;cursor:pointer;display:none;
+  font-family:'Nunito',sans-serif;color:var(--text);transition:all .15s;
+  margin-bottom:8px;}
+.qt-next.on{display:block;}
+.qt-next:hover{border-color:var(--green);color:var(--green);}
+.qt-result{text-align:center;padding:14px 0;}
+.qt-result-icon{font-size:52px;margin-bottom:10px;}
+.qt-result-title{font-size:21px;font-weight:900;color:var(--text);margin-bottom:8px;}
+.qt-result-score{font-size:44px;font-weight:900;color:var(--green);margin-bottom:6px;}
+.qt-result-sub{font-size:13px;color:var(--muted);font-weight:600;
+  margin-bottom:6px;line-height:1.7;}
+.qt-stat-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px;}
+.qt-stat{background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:10px;text-align:center;}
+.qt-stat-val{font-size:18px;font-weight:900;color:var(--text);}
+.qt-stat-lbl{font-size:10px;color:var(--muted);font-weight:700;margin-top:2px;
+  text-transform:uppercase;letter-spacing:.5px;}
+.qt-replay{width:100%;padding:14px;
+  background:linear-gradient(135deg,#16a34a,#15803d);border:none;
+  border-radius:var(--radius-sm);font-size:14px;font-weight:800;color:#fff;
+  cursor:pointer;font-family:'Nunito',sans-serif;margin-bottom:8px;
+  box-shadow:0 4px 14px rgba(22,163,74,.3);}
+.qt-home{width:100%;padding:13px;background:#fff;
+  border:2px solid var(--border);border-radius:var(--radius-sm);
+  font-size:14px;font-weight:800;cursor:pointer;
+  font-family:'Nunito',sans-serif;color:var(--text);}
+/* -- Hızlı Test CSS SONU ------------------------------------ */
+
+/* -- Günlük Görev CSS --------------------------------------- */
+.dg-header{background:linear-gradient(135deg,#16a34a,#15803d);
+  border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;
+  color:#fff;}
+.dg-date{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);
+  text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.dg-title{font-size:16px;font-weight:900;margin-bottom:10px;}
+.dg-prog-row{display:flex;align-items:center;gap:10px;}
+.dg-prog-wrap{flex:1;height:7px;background:rgba(255,255,255,.25);
+  border-radius:7px;overflow:hidden;}
+.dg-prog-bar{height:100%;background:#fff;border-radius:7px;
+  transition:width .4s;}
+.dg-prog-txt{font-size:12px;font-weight:800;color:#fff;white-space:nowrap;}
+.dg-step{background:#fff;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;
+  box-shadow:var(--shadow-sm);}
+.dg-step-head{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.dg-step-num{width:24px;height:24px;border-radius:50%;
+  background:var(--green);color:#fff;font-size:11px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dg-step-num.done{background:var(--green-light);color:var(--green);
+  border:1.5px solid var(--green);}
+.dg-step-cat{font-size:11px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.6px;}
+.dg-question{font-size:13px;font-weight:800;color:var(--text);
+  line-height:1.5;margin-bottom:10px;}
+.dg-opts{display:flex;flex-direction:column;gap:7px;}
+.dg-opt{padding:10px 13px;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);font-size:13px;font-weight:700;
+  color:var(--text);cursor:pointer;text-align:left;background:#fff;
+  font-family:'Nunito',sans-serif;transition:all .15s;}
+.dg-opt:hover:not(:disabled){border-color:var(--green-border);
+  background:var(--green-light);}
+.dg-opt.correct{background:var(--green-bg);border-color:var(--green);
+  color:var(--green-text);}
+.dg-opt.wrong{background:var(--red-bg);border-color:var(--red-border);
+  color:var(--red-text);}
+.dg-feedback{border-radius:var(--radius-sm);padding:10px 13px;
+  margin-top:10px;font-size:12px;font-weight:600;line-height:1.5;
+  display:none;border-width:1.5px;border-style:solid;}
+.dg-feedback.on{display:block;}
+.dg-feedback.ok{background:var(--green-bg);border-color:var(--green-border);
+  color:var(--green-text);}
+.dg-feedback.fail{background:var(--red-bg);border-color:var(--red-border);
+  color:var(--red-text);}
+.dg-step.completed{border-color:var(--green);background:var(--green-bg);}
+.dg-step.completed .dg-question{color:var(--green-text);}
+.dg-done-box{background:linear-gradient(135deg,#16a34a,#15803d);
+  border-radius:var(--radius);padding:22px 16px;text-align:center;
+  color:#fff;margin-bottom:14px;}
+.dg-done-icon{font-size:48px;margin-bottom:8px;}
+.dg-done-title{font-size:20px;font-weight:900;margin-bottom:6px;}
+.dg-done-sub{font-size:13px;color:rgba(255,255,255,.8);font-weight:600;
+  line-height:1.6;margin-bottom:16px;}
+.dg-done-stat{display:flex;justify-content:center;gap:24px;margin-bottom:16px;}
+.dg-done-stat-item{text-align:center;}
+.dg-done-stat-val{font-size:28px;font-weight:900;color:#fff;}
+.dg-done-stat-lbl{font-size:10px;color:rgba(255,255,255,.7);font-weight:700;
+  text-transform:uppercase;letter-spacing:.5px;margin-top:2px;}
+.dg-home-btn{width:100%;padding:13px;background:rgba(255,255,255,.15);
+  border:1.5px solid rgba(255,255,255,.4);border-radius:var(--radius-sm);
+  font-size:14px;font-weight:800;color:#fff;cursor:pointer;
+  font-family:'Nunito',sans-serif;}
+
+.gc-badge--done{background:var(--green-dark);color:#fff;}
+/* -- Günlük Görev CSS SONU ---------------------------------- */
+
+/* -- Rozetlerim / Seviyem CSS ------------------------------- */
+.bv-level-card{background:linear-gradient(135deg,#16a34a,#15803d);
+  border-radius:var(--radius);padding:18px 16px;margin-bottom:16px;color:#fff;}
+.bv-level-row{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.bv-level-icon{font-size:36px;flex-shrink:0;}
+.bv-level-info{flex:1;}
+.bv-level-name{font-size:18px;font-weight:900;line-height:1.1;}
+.bv-level-xp{font-size:12px;color:rgba(255,255,255,.75);font-weight:600;margin-top:3px;}
+.bv-level-num{font-size:28px;font-weight:900;color:rgba(255,255,255,.9);}
+.bv-prog-wrap{height:8px;background:rgba(255,255,255,.25);border-radius:8px;overflow:hidden;margin-bottom:5px;}
+.bv-prog-bar{height:100%;background:#fff;border-radius:8px;transition:width .6s;}
+.bv-prog-txt{font-size:11px;color:rgba(255,255,255,.7);font-weight:700;text-align:right;}
+.bv-section-title{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.bv-section-title::after{content:'';flex:1;height:1px;background:var(--border);}
+.bv-badge-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.bv-badge{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  padding:14px 12px;text-align:center;box-shadow:var(--shadow-sm);transition:transform .15s;}
+.bv-badge.earned{border-color:var(--green);background:var(--green-bg);}
+.bv-badge.locked{opacity:.55;}
+.bv-badge-icon{font-size:30px;margin-bottom:6px;}
+.bv-badge.locked .bv-badge-icon{filter:grayscale(1);}
+.bv-badge-name{font-size:12px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.bv-badge.locked .bv-badge-name{color:var(--muted);}
+.bv-badge-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;display:inline-block;}
+.bv-status-earned{background:var(--green);color:#fff;}
+.bv-status-locked{background:var(--bg);color:var(--muted);border:1px solid var(--border);}
+.bv-badge-cond{font-size:10px;color:var(--muted);font-weight:600;margin-top:5px;line-height:1.4;}
+/* -- Rozetlerim / Seviyem CSS SONU -------------------------- */
+
+/* -- Leaderboard CSS ---------------------------------------- */
+.lb-my-rank-box{background:var(--green-light);border:1.5px solid var(--green-border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;
+  font-size:13px;font-weight:700;color:var(--green-text);
+  display:flex;align-items:center;gap:8px;}
+.lb-my-rank-icon{font-size:18px;flex-shrink:0;}
+.lb-table{width:100%;border-collapse:collapse;margin-bottom:14px;}
+.lb-table th{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;
+  letter-spacing:.8px;padding:8px 6px;border-bottom:2px solid var(--border);
+  text-align:left;}
+.lb-table th:last-child{text-align:right;}
+.lb-row{border-bottom:1px solid var(--bg);}
+.lb-row td{padding:10px 6px;font-size:13px;font-weight:700;vertical-align:middle;}
+.lb-row:last-child{border-bottom:none;}
+.lb-row.me{background:var(--green-light);border-radius:var(--radius-sm);}
+.lb-row.me td{color:var(--green-text);}
+.lb-rank-num{font-size:14px;font-weight:900;width:32px;flex-shrink:0;}
+.lb-rank-num.gold{color:#f59e0b;}
+.lb-rank-num.silver{color:#94a3b8;}
+.lb-rank-num.bronze{color:#cd7c3a;}
+.lb-nick{font-weight:800;max-width:130px;overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;}
+.lb-xp{text-align:right;font-weight:900;color:var(--green);}
+.lb-lv{text-align:right;font-size:11px;color:var(--muted);font-weight:700;}
+.lb-medal{font-size:16px;}
+.lb-empty{text-align:center;padding:32px 0;color:var(--muted);
+  font-size:13px;font-weight:600;line-height:1.7;}
+.lb-refresh{width:100%;padding:12px;background:#fff;
+  border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  font-size:13px;font-weight:800;color:var(--text);cursor:pointer;
+  font-family:'Nunito',sans-serif;margin-bottom:10px;}
+.lb-refresh:active{background:var(--bg);}
+.lb-not-in{background:var(--yellow-bg);border:1.5px solid var(--yellow-border);
+  border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;
+  font-size:12px;font-weight:700;color:var(--yellow-text);}
+/* -- Leaderboard CSS SONU ----------------------------------- */
+/* ── Oyun Merkezi CSS SONU ─────────────────────────────────────────── */
 </style>
 </head>
 <body>
@@ -788,21 +1136,250 @@ body{font-family:"Nunito",sans-serif;background:var(--bg);color:var(--text);max-
 
 <!-- QUIZ -->
 <div id="quizScr" class="scr">
-  <div class="pg-hdr">
-    <div class="pg-hdr-inner">
-      <div class="pg-hdr-title">Mini <span>Test</span></div>
+
+  <!-- ── Oyun Merkezi: Ana Ekran ── -->
+  <div id="gcHome">
+    <!-- Başlık + XP bilgisi -->
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">Oyun <span>Merkezi</span></div>
+        <div class="xpb" id="gcXpBadge">⭐ <span id="gcXpVal">0</span> XP · <span id="gcLevelVal">Seviye 1</span></div>
+      </div>
     </div>
-  </div>
-  <div class="pad">
-    <div class="quiz-tabs">
-      <button class="qtab on" onclick="selectQuizType(0,this)">🔘 Çoktan Seçmeli</button>
-      <button class="qtab" onclick="selectQuizType(1,this)">🔗 Eşleştirme</button>
-      <button class="qtab" onclick="selectQuizType(2,this)">✏️ Boşluk Doldur</button>
-      <button class="qtab" onclick="selectQuizType(3,this)">📊 Sıralama</button>
+    <div class="pad">
+      <!-- Kart ızgarası -->
+      <div class="gc-grid">
+
+        <!-- Etiket Düellosu -->
+        <div class="gc-card gc-card--active" onclick="gcOpenDuel()">
+          <div class="gc-card-icon">🎮</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Etiket Düellosu</div>
+            <div class="gc-card-desc">İki ürünü karşılaştır, doğru olanı seç</div>
+          </div>
+          <div class="gc-card-badge gc-badge--active">Oyna →</div>
+        </div>
+
+        <!-- Hızlı Test -->
+        <div class="gc-card gc-card--active" onclick="gcOpenQuick()">
+          <div class="gc-card-icon">⚡</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Hızlı Test</div>
+            <div class="gc-card-desc">Süre dolmadan soruları yanıtla</div>
+          </div>
+          <div class="gc-card-badge gc-badge--active">Oyna →</div>
+        </div>
+
+        <!-- Günlük Görev -->
+        <div class="gc-card gc-card--active" id="dgCard" onclick="gcOpenDaily()">
+          <div class="gc-card-icon">📅</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Günlük Görev</div>
+            <div class="gc-card-desc" id="dgCardDesc">Her gün kısa bir görev tamamla</div>
+          </div>
+          <div class="gc-card-badge gc-badge--active" id="dgCardBadge">Bugünün Görevi →</div>
+        </div>
+
+        <!-- Kazanımlarım -->
+        <div class="gc-card gc-card--active" onclick="gcOpenAchieve()">
+          <div class="gc-card-icon">📊</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Kazanımlarım</div>
+            <div class="gc-card-desc">Şeker, tuz, yağ… başarını gör</div>
+          </div>
+          <div class="gc-card-badge gc-badge--active">İncele →</div>
+        </div>
+
+        <!-- Rozetlerim / Seviyem -->
+        <div class="gc-card gc-card--active" onclick="gcOpenBadges()">
+          <div class="gc-card-icon">🏆</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Rozetlerim / Seviyem</div>
+            <div class="gc-card-desc">Kazandığın rozetlere bak</div>
+          </div>
+          <div class="gc-card-badge gc-badge--active">İncele →</div>
+        </div>
+
+        <!-- Sıralama -->
+        <div class="gc-card" id="lbRankCard" onclick="gcOpenLeaderboard()">
+          <div class="gc-card-icon">🏆</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Sıralama</div>
+            <div class="gc-card-desc" id="lbRankCardDesc">Katılmak için kayıt ol</div>
+          </div>
+          <div class="gc-card-badge" id="lbRankCardBadge">Katıl →</div>
+        </div>
+
+        <!-- Klasik Testler — AKTİF -->
+        <div class="gc-card gc-card--active" onclick="gcOpenClassic()">
+          <div class="gc-card-icon">📚</div>
+          <div class="gc-card-body">
+            <div class="gc-card-title">Klasik Testler</div>
+            <div class="gc-card-desc">Çoktan seçmeli, eşleştirme ve daha fazlası</div>
+          </div>
+          <div class="gc-card-badge gc-badge--active">Oyna →</div>
+        </div>
+
+      </div><!-- /gc-grid -->
+
+      <!-- Leaderboard katılım butonu -->
+      <div id="lbJoinRow" style="margin-top:4px;margin-bottom:4px;display:none;">
+        <button onclick="lbShowRegister()"
+          style="width:100%;padding:12px;background:#fff;border:1.5px solid var(--green-border);
+                 border-radius:var(--radius-sm);font-size:13px;font-weight:800;
+                 color:var(--green);cursor:pointer;font-family:'Nunito',sans-serif;
+                 display:flex;align-items:center;justify-content:center;gap:8px;
+                 box-shadow:var(--shadow-sm);">
+          🏆 Sıralamaya Katıl
+        </button>
+      </div>
+      <div id="lbJoinedRow" style="margin-top:4px;margin-bottom:4px;display:none;">
+        <div style="text-align:center;font-size:12px;font-weight:700;color:var(--green);
+                    padding:8px;background:var(--green-light);border-radius:var(--radius-sm);
+                    border:1px solid var(--green-border);">
+          🏆 Sıralamada: <span id="lbNicknameDisplay"></span>
+        </div>
+      </div>
+
+    </div><!-- /pad -->
+  </div><!-- /gcHome -->
+
+  <!-- ── Klasik Testler: Mevcut quiz ekranı (aynen korundu) ── -->
+  <div id="gcClassic" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">Klasik <span>Testler</span></div>
+        <button class="gc-back-btn" onclick="gcBackToHome()">← Geri</button>
+      </div>
     </div>
-    <div id="quizArea"></div>
-  </div>
-</div>
+    <div class="pad">
+      <div class="quiz-tabs">
+        <button class="qtab on" onclick="selectQuizType(0,this)">🔘 Çoktan Seçmeli</button>
+        <button class="qtab" onclick="selectQuizType(1,this)">🔗 Eşleştirme</button>
+        <button class="qtab" onclick="selectQuizType(2,this)">✏️ Boşluk Doldur</button>
+        <button class="qtab" onclick="selectQuizType(3,this)">📊 Sıralama</button>
+      </div>
+      <div id="quizArea"></div>
+    </div>
+  </div><!-- /gcClassic -->
+  <!-- ── Etiket Düellosu Oyun Ekranı ── -->
+  <div id="gcDuel" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">🎮 Etiket <span>Düellosu</span></div>
+        <button class="gc-back-btn" onclick="gcBackToHome()">← Oyun Merkezi</button>
+      </div>
+    </div>
+    <div class="pad" id="gcDuelContent"></div>
+  </div><!-- /gcDuel -->
+
+  <!-- ── Kazanımlarım Ekranı ── -->
+  <div id="gcAchieve" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">📊 <span>Kazanımlarım</span></div>
+        <button class="gc-back-btn" onclick="gcBackToHome()">← Geri</button>
+      </div>
+    </div>
+    <div class="pad" id="gcAchieveContent"></div>
+  </div><!-- /gcAchieve -->
+
+  <!-- Hızlı Test Ekranı -->
+  <div id="gcQuick" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">⚡ <span>Hızlı Test</span></div>
+        <button class="gc-back-btn" onclick="qtAbort()">← Çık</button>
+      </div>
+    </div>
+    <div class="pad" id="gcQuickContent"></div>
+  </div><!-- /gcQuick -->
+
+  <!-- Günlük Görev Ekranı -->
+  <div id="gcDaily" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">📅 <span>Günlük Görev</span></div>
+        <button class="gc-back-btn" onclick="gcBackToHome()">← Geri</button>
+      </div>
+    </div>
+    <div class="pad" id="gcDailyContent"></div>
+  </div><!-- /gcDaily -->
+
+  <!-- Rozetlerim / Seviyem Ekranı -->
+  <div id="gcBadges" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">🏆 <span>Rozetlerim</span></div>
+        <button class="gc-back-btn" onclick="gcBackToHome()">← Geri</button>
+      </div>
+    </div>
+    <div class="pad" id="gcBadgesContent"></div>
+  </div><!-- /gcBadges -->
+
+  <!-- Leaderboard Kayıt Modalı -->
+  <div id="lbRegisterModal" style="display:none;position:fixed;inset:0;
+       background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;
+       backdrop-filter:blur(2px);">
+    <div style="background:#fff;border-radius:20px 20px 0 0;padding:20px 16px 36px;
+                width:100%;max-width:430px;font-family:'Nunito',sans-serif;">
+      <div style="width:40px;height:4px;background:var(--border);border-radius:4px;
+                  margin:0 auto 16px;"></div>
+      <div style="font-size:17px;font-weight:900;color:var(--text);margin-bottom:4px;">
+        🏆 Sıralamaya Katıl
+      </div>
+      <div style="font-size:13px;color:var(--muted);font-weight:600;
+                  line-height:1.5;margin-bottom:16px;">
+        Anonim bir takma ad seç. Gerçek isim veya kişisel bilgi girme.
+      </div>
+      <input id="lbNicknameInput" type="text" maxlength="20"
+        placeholder="Takma adın (3–20 karakter)"
+        style="width:100%;padding:13px 14px;border:1.5px solid var(--border);
+               border-radius:var(--radius-sm);font-size:14px;font-weight:700;
+               font-family:'Nunito',sans-serif;outline:none;box-sizing:border-box;
+               margin-bottom:8px;"
+        oninput="lbValidateInput(this)">
+      <div id="lbInputHint"
+        style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:12px;">
+        Harf, rakam, _ ve - kullanabilirsin.
+      </div>
+      <div id="lbRegisterMsg"
+        style="font-size:13px;font-weight:700;margin-bottom:12px;display:none;
+               padding:10px 12px;border-radius:var(--radius-sm);border-width:1.5px;
+               border-style:solid;">
+      </div>
+      <button id="lbRegisterBtn" onclick="lbSubmitRegister()"
+        style="width:100%;padding:14px;background:var(--green);border:none;
+               border-radius:var(--radius-sm);font-size:14px;font-weight:800;
+               color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;
+               margin-bottom:8px;opacity:.5;" disabled>
+        Katıl
+      </button>
+      <button onclick="lbCloseRegister()"
+        style="width:100%;padding:12px;background:none;border:none;
+               font-size:13px;font-weight:700;color:var(--muted);
+               cursor:pointer;font-family:'Nunito',sans-serif;">
+        Vazgeç
+      </button>
+    </div>
+  </div><!-- /lbRegisterModal -->
+
+  <!-- Leaderboard Ekranı -->
+  <div id="gcLeaderboard" style="display:none;">
+    <div class="pg-hdr">
+      <div class="pg-hdr-inner">
+        <div class="pg-hdr-title">🏆 <span>Sıralama</span></div>
+        <button class="gc-back-btn" onclick="gcBackToHome()">← Geri</button>
+      </div>
+    </div>
+    <div class="pad" id="gcLeaderboardContent">
+      <div style="text-align:center;padding:32px 0;color:var(--muted);font-weight:700;">
+        Yükleniyor...
+      </div>
+    </div>
+  </div><!-- /gcLeaderboard -->
+
+</div><!-- /quizScr -->
 
 <!-- PROFILE -->
 <div id="profScr" class="scr">
@@ -883,6 +1460,1620 @@ let archive=[],currentResult=null,currentImg=null,cmpSelected=[];
 function save(){try{localStorage.setItem("nz2_arc",JSON.stringify(archive));localStorage.setItem("nz2_xp",xp);localStorage.setItem("nz2_sc",scanCnt);localStorage.setItem("nz2_ls",JSON.stringify([...ls]));localStorage.setItem("nz2_qb",qb);}catch(e){}}
 function load(){try{const a=localStorage.getItem("nz2_arc");if(a)archive=JSON.parse(a);xp=parseInt(localStorage.getItem("nz2_xp")||0);scanCnt=parseInt(localStorage.getItem("nz2_sc")||0);const l=localStorage.getItem("nz2_ls");if(l)ls=new Set(JSON.parse(l));qb=parseInt(localStorage.getItem("nz2_qb")||0);}catch(e){}}
 
+
+
+// ── Oyun Merkezi Fonksiyonları (gc- öneki) ───────────────────────────
+function renderGameCenter() {
+  var home    = document.getElementById('gcHome');
+  var classic = document.getElementById('gcClassic');
+  if (home)    home.style.display    = 'block';
+  if (classic) classic.style.display = 'none';
+  gcUpdateXpBar();
+  dgUpdateCard();
+  lbUpdateJoinRow();
+  lbUpdateRankCard();
+}
+
+function gcOpenClassic() {
+  const home    = document.getElementById('gcHome');
+  const classic = document.getElementById('gcClassic');
+  if (home)    home.style.display    = 'none';
+  if (classic) classic.style.display = 'block';
+  // Mevcut klasik quiz home'u render et
+  currentQuizType = 0;
+  renderQuizHome(0);
+}
+
+function gcBackToHome() {
+  qtStop();
+  var ids = ["gcDuel","gcAchieve","gcClassic","gcQuick","gcDaily","gcBadges","gcLeaderboard"];
+  ids.forEach(function(id){
+    var el=document.getElementById(id);
+    if(el) el.style.display="none";
+  });
+  renderGameCenter();
+}
+
+function gcUpdateXpBar() {
+  // Mevcut xp değişkenini ve seviye hesabını kullan (nz2_xp)
+  const xpVal  = document.getElementById('gcXpVal');
+  const lvlVal = document.getElementById('gcLevelVal');
+  if (xpVal)  xpVal.textContent  = xp;
+  const lv = xp < 50 ? 'Çaylak' : xp < 150 ? 'Acemi' : xp < 300 ? 'Uzman' : 'Usta';
+  if (lvlVal) lvlVal.textContent = 'Seviye ' + (Math.floor(xp / 50) + 1) + ' · ' + lv;
+}
+
+function gcComingSoon(name) {
+  // Yakında bildirimi göster
+  let t = document.querySelector('.gc-soon-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.className = 'gc-soon-toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = '🚧 ' + name + ' yakında geliyor!';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+// ── Oyun Merkezi Fonksiyonları SONU ──────────────────────────────────
+
+// ──
+
+// -- Hızlı Test ------------------------------------------------------
+var QUICK_QUESTIONS = [
+  // SEKER (5)
+  {cat:'seker', q:'Bir ürünün etiketinde 100g için şeker 22g yazıyor. Bu hangi renk koda girer?',
+   opts:['Yeşil','Sarı','Kırmızı'], ans:2,
+   exp:'12,5g üzeri şeker kırmızı kategoriye girer.'},
+  {cat:'seker', q:'İçindekiler listesinde ikinci sırada "fruktoz şurubu" yazan ürünün şekeri hakkında ne söylenebilir?',
+   opts:['Şeker içermez','Şeker ana malzemelerden biridir','Şeker yalnızca doğal kaynaklıdır'], ans:1,
+   exp:'Malzemeler çoktan aza sıralanır; ikinci sıradaki fruktoz şurubu yüksek şeker içerdiğini gösterir.'},
+  {cat:'seker', q:'100g başına 4g şeker içeren ürün hangi renk kodundadır?',
+   opts:['Yeşil','Sarı','Kırmızı'], ans:0,
+   exp:'5g altı şeker yeşil (az) kategorisine girer.'},
+  {cat:'seker', q:'Bir içecekte "şeker eklenmemiş" yazan etiket ne anlama gelir?',
+   opts:['Hiç şeker içermez','İşlem sırasında şeker katılmamıştır','Kalorisizdir'], ans:1,
+   exp:'"Şeker eklenmemiş" ifadesi üretim sırasında şeker katılmadığını gösterir; doğal şekerler yine de bulunabilir.'},
+  {cat:'seker', q:'Dekstroz hangi besin grubuna girer?',
+   opts:['Yağ','Şeker','Protein'], ans:1,
+   exp:'Dekstroz bir glikoz türüdür; şeker grubuna girer. Etiketlerde gizli şeker olarak karşımıza çıkabilir.'},
+
+  // TUZ (4)
+  {cat:'tuz', q:'100g için tuz 1,8g olan ürün hangi renk kodundadır?',
+   opts:['Yeşil','Sarı','Kırmızı'], ans:2,
+   exp:'1,5g üzeri tuz kırmızı (yüksek) kategorisine girer.'},
+  {cat:'tuz', q:'Etikette sodyum 400mg yazan ürünün tuz miktarı yaklaşık kaçtır?',
+   opts:['0,4g','1g','2g'], ans:1,
+   exp:'Tuz = Sodyum x 2,5. 400mg x 2,5 = 1g tuz.'},
+  {cat:'tuz', q:'Tuz açısından az sayılabilmek için 100g başına kaçın altında olmalıdır?',
+   opts:['0,3g','1g','1,5g'], ans:0,
+   exp:'0,3g/100g altı az, 1,5g/100g üzeri yüksek tuz sayılır.'},
+  {cat:'tuz', q:'Paketli gıdalarda tuz kaynağı olarak yalnızca hangi ifade yazılabilir?',
+   opts:['Sodyum klorür','Deniz tuzu','Her ikisi de'], ans:2,
+   exp:'Tuz hem sodyum klorür hem de deniz tuzu olarak etiketlenebilir; ikisi de aynı bileşiktir.'},
+
+  // YAG (5)
+  {cat:'yag', q:'100g için doymuş yağ 2g olan ürün hangi renk kodundadır?',
+   opts:['Yeşil','Sarı','Kırmızı'], ans:1,
+   exp:'1,5g ile 5g arasındaki doymuş yağ sarı (orta) kategorisine girer.'},
+  {cat:'yag', q:'Etikette "hidrojene bitkisel yağ" ifadesi ne anlama gelir?',
+   opts:['Sağlıklı doymamış yağ','Trans yağ içeriyor olabilir','Hayvansal yağ'], ans:1,
+   exp:'"Hidrojene" veya "kısmen hidrojene" ifadesi trans yağ varlığına işaret eder.'},
+  {cat:'yag', q:'100g için toplam yağ 2g olan ürün hangi renk kodundadır?',
+   opts:['Yeşil','Sarı','Kırmızı'], ans:0,
+   exp:'3g altı toplam yağ yeşil (az) kategorisine girer.'},
+  {cat:'yag', q:'1 gram yağ kaç kilokalori enerji sağlar?',
+   opts:['4 kcal','7 kcal','9 kcal'], ans:2,
+   exp:'1g yağ 9 kcal, 1g karbonhidrat ve protein 4 kcal enerji sağlar.'},
+  {cat:'yag', q:'Doymuş yağ için yeşil renk koduna girmek amacıyla 100g başına en fazla kaç gram olmalıdır?',
+   opts:['1,5g','3g','5g'], ans:0,
+   exp:'1,5g/100g altı doymuş yağ yeşil (az) kategorisine girer.'},
+
+  // LIF (4)
+  {cat:'lif', q:'100g için lif 7g olan ürün için hangisi doğrudur?',
+   opts:['Lif kaynağı değil','Lif kaynağı (3g üzeri)','Yüksek lif (6g üzeri)'], ans:2,
+   exp:'6g/100g üzeri lif "yüksek lif" etiketine hak kazandırır.'},
+  {cat:'lif', q:'Lif kaynağı olabilmek için 100g başına en az kaç gram lif gerekir?',
+   opts:['1g','3g','6g'], ans:1,
+   exp:'3g/100g lif "lif kaynağı", 6g/100g ise "yüksek lif" etiketine hak kazandırır.'},
+  {cat:'lif', q:'Lifin sindirim sistemi için temel faydası nedir?',
+   opts:['Kalsiyum emilimini sağlar','Bağırsak hareketlerini destekler','Kan şekerini anında yükseltir'], ans:1,
+   exp:'Lif bağırsak hareketlerini düzenler, tokluk hissi verir ve kan şekerinin dengelenmesine katkı sağlar.'},
+  {cat:'lif', q:'100g başına 1,5g lif içeren ürün için hangisi doğrudur?',
+   opts:['Yüksek lif','Lif kaynağı','Lif kaynağı değil'], ans:2,
+   exp:'3g altı lif "lif kaynağı" etiketine hak kazandırmaz.'},
+
+  // PROTEIN (3)
+  {cat:'protein', q:'100g için protein 6g olan ürün hangi renk kodundadır?',
+   opts:['Yeşil','Sarı','Kırmızı'], ans:0,
+   exp:'5g/100g üzeri protein yeşil (iyi) kategorisine girer.'},
+  {cat:'protein', q:'Protein açısından iyi renk koduna girmek için 100g başına en az kaç gram gerekir?',
+   opts:['1g','3g','5g'], ans:2,
+   exp:'5g/100g ve üzeri protein yeşil (iyi) olarak değerlendirilir.'},
+  {cat:'protein', q:'Bitkisel proteinin hayvansal proteine göre temel farkı nedir?',
+   opts:['Daha az enerji sağlar','Genellikle daha az tam aminoasit içerir','Daha fazla yağ içerir'], ans:1,
+   exp:'Hayvansal proteinler genellikle tüm esansiyel aminoasitleri içerirken bitkisel proteinlerde bazı aminoasitler sınırlı olabilir.'},
+
+  // PORSIYON (4)
+  {cat:'porsiyon', q:'Etikette "porsiyon başına 3g şeker" yazıyor; porsiyon 30g, ürün 90g. Paketteki toplam şeker ne kadardır?',
+   opts:['3g','9g','6g'], ans:1,
+   exp:'90g / 30g = 3 porsiyon. 3 porsiyon x 3g = 9g toplam şeker.'},
+  {cat:'porsiyon', q:'100g için verilen değer neden porsiyon değerinden farklı olabilir?',
+   opts:['Porsiyon 100g değildir','Üretici hata yapmıştır','İkisi her zaman aynıdır'], ans:0,
+   exp:'Porsiyon miktarı 100g olmayabilir. Karşılaştırma için her zaman 100g değerini kullanmak gerekir.'},
+  {cat:'porsiyon', q:'Bir ürünün porsiyonu 25g ve 100g için kalori 400kcal. Bir porsiyondaki kalori kaçtır?',
+   opts:['400kcal','100kcal','200kcal'], ans:1,
+   exp:'25g / 100g = 0,25. 0,25 x 400kcal = 100kcal.'},
+  {cat:'porsiyon', q:'İki farklı ürünü karşılaştırırken hangisi daha güvenilir bir bazdir?',
+   opts:['Porsiyon değeri','100g değeri','Paket değeri'], ans:1,
+   exp:'Porsiyon boyutları ürünler arasında farklı olabilir. 100g bazlı karşılaştırma daha adil bir ölçüm sağlar.'},
+
+  // ETIKET_OKUMA (5)
+  {cat:'etiket_okuma', q:'İçindekiler listesinde malzemeler hangi sırayla yazılır?',
+   opts:['Alfabetik','Miktara göre azalan','Üreticinin tercihine göre'], ans:1,
+   exp:'Malzemeler kütlece en çoktan en aza doğru sıralanır. Listede ilk sıradaki malzeme en fazla kullanılandır.'},
+  {cat:'etiket_okuma', q:'E300 kodu hangi maddeyi ifade eder?',
+   opts:['Boyar madde','C Vitamini (Askorbik asit)','Koruyucu'], ans:1,
+   exp:'E300 C vitamini yani askorbik asittir; antioksidan ve koruyucu olarak kullanılır.'},
+  {cat:'etiket_okuma', q:'"Son kullanma tarihi" ile "en iyi" ifadesi arasındaki fark nedir?',
+   opts:['Fark yoktur','Son kullanma tarihi geçince tüketilmemeli; en iyi tarihi kalite kaybını gösterir','En iyi tarihi geçince tüketilmemelidir'], ans:1,
+   exp:'"Son kullanma tarihi" güvenlik sınırıdır. "En iyi önce" ise kalite ve lezzet açısından tavsiye edilen tarihtir.'},
+  {cat:'etiket_okuma', q:'Bir ürünün etiketinde kJ cinsinden enerji 840kJ. kcal cinsinden yaklaşık kaçtır?',
+   opts:['840kcal','200kcal','420kcal'], ans:1,
+   exp:'1 kcal = 4,18 kJ. 840 / 4,18 = yaklasik 200 kcal.'},
+  {cat:'etiket_okuma', q:'Trafik ışığı renk kodlaması hangi dört besin değerine uygulanır?',
+   opts:['Kalori, protein, lif, vitamin','Yağ, doymuş yağ, şeker, tuz','Karbonhidrat, şeker, sodyum, kalsiyum'], ans:1,
+   exp:'Trafik ışığı sistemi yağ, doymuş yağ, şeker ve tuz için kırmızı/sarı/yeşil renk kodu kullanır.'}
+];
+
+// Hızlı Test state
+var qtState = {
+  questions:   [],
+  lastPlayed:  [],
+  idx:         0,
+  score:       0,
+  wrong:       0,
+  timeouts:    0,
+  xpEarned:   0,
+  streak:      0,
+  maxStreak:   0,
+  answered:   false,
+  timerVal:    15,
+  timerInt:    null
+};
+var QT_ROUND = 10;
+var QT_TIME  = 15;
+
+function qtPickQuestions() {
+  var pool  = QUICK_QUESTIONS.slice();
+  var last  = qtState.lastPlayed;
+  var fresh  = pool.filter(function(q,i){ return last.indexOf(i)===-1; });
+  var played = pool.filter(function(q,i){ return last.indexOf(i)!==-1; });
+  fresh.sort(function(){ return Math.random()-.5; });
+  played.sort(function(){ return Math.random()-.5; });
+  var chosen = fresh.concat(played).slice(0, QT_ROUND);
+  qtState.lastPlayed = chosen.map(function(q){ return QUICK_QUESTIONS.indexOf(q); });
+  return chosen;
+}
+
+function gcOpenQuick() {
+  qtState.questions = qtPickQuestions();
+  qtState.idx=0; qtState.score=0; qtState.wrong=0;
+  qtState.timeouts=0; qtState.xpEarned=0;
+  qtState.streak=0; qtState.maxStreak=0; qtState.answered=false;
+  ['gcHome','gcClassic','gcDuel','gcAchieve'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display='none';
+  });
+  document.getElementById('gcQuick').style.display='block';
+  qtRender();
+}
+
+function qtStop() {
+  if(qtState.timerInt){ clearInterval(qtState.timerInt); qtState.timerInt=null; }
+}
+
+function qtAbort() {
+  qtStop();
+  gcBackToHome();
+}
+
+function qtRender() {
+  var el=document.getElementById('gcQuickContent');
+  if(!el) return;
+  var total=qtState.questions.length;
+  var idx=qtState.idx;
+  if(idx>=total){ qtResult(); return; }
+  var q=qtState.questions[idx];
+  var optsHtml='';
+  q.opts.forEach(function(opt,i){
+    optsHtml+='<button class=\'qt-opt\' id=\'qtOpt'+i+'\' onclick=\'qtAnswer('+i+')\'>'
+      +opt+'</button>';
+  });
+  el.innerHTML=
+    '<div class=\'qt-header\'>'
+      +'<span>Soru '+(idx+1)+' / '+total+'</span>'
+      +'<span>\u2713 '+qtState.score+' dogru'
+        +(qtState.streak>=2 ? ' <span class=\'qt-streak\'>\uD83D\uDD25'+qtState.streak+'</span>' : '')
+      +'</span>'
+    +'</div>'
+    +'<div class=\'qt-timer-num\' id=\'qtTimerNum\'>'+QT_TIME+'s</div>'
+    +'<div class=\'qt-timer-wrap\'><div class=\'qt-timer-bar\' id=\'qtTimerBar\' style=\'width:100%\'></div></div>'
+    +'<div class=\'qt-question\'>'+q.q+'</div>'
+    +'<div class=\'qt-opts\'>'+optsHtml+'</div>'
+    +'<div class=\'qt-feedback\' id=\'qtFb\'></div>'
+    +'<button class=\'qt-next\' id=\'qtNext\' onclick=\'qtNext()\'>Sonraki Soru \u2192</button>';
+  qtState.answered=false;
+  qtState.timerVal=QT_TIME;
+  qtStop();
+  qtState.timerInt=setInterval(function(){
+    if(qtState.answered){ qtStop(); return; }
+    qtState.timerVal--;
+    var pct=(qtState.timerVal/QT_TIME)*100;
+    var bar=document.getElementById('qtTimerBar');
+    var num=document.getElementById('qtTimerNum');
+    if(bar){ bar.style.width=pct+'%';
+      bar.className='qt-timer-bar'+(qtState.timerVal<=5?' danger':qtState.timerVal<=8?' warn':''); }
+    if(num){ num.textContent=qtState.timerVal+'s';
+      num.className='qt-timer-num'+(qtState.timerVal<=5?' danger':qtState.timerVal<=8?' warn':''); }
+    if(qtState.timerVal<=0){ qtTimeout(); }
+  },1000);
+}
+
+function qtAnswer(choice) {
+  if(qtState.answered) return;
+  qtState.answered=true;
+  qtStop();
+  var q=qtState.questions[qtState.idx];
+  var correct=(choice===q.ans);
+  var fb=document.getElementById('qtFb');
+  var next=document.getElementById('qtNext');
+  for(var i=0;i<q.opts.length;i++){
+    var btn=document.getElementById('qtOpt'+i);
+    if(btn){ btn.disabled=true;
+      if(i===q.ans) btn.classList.add('correct');
+      else if(i===choice) btn.classList.add('wrong'); }
+  }
+  if(correct){
+    qtState.score++;
+    qtState.streak++;
+    if(qtState.streak>qtState.maxStreak) qtState.maxStreak=qtState.streak;
+    var xpAmt=10;
+    if(qtState.streak>0 && qtState.streak%3===0){
+      xpAmt+=5;
+      addXP(xpAmt, '\uD83D\uDD25 '+qtState.streak+'\'li Seri! +'+xpAmt+' XP');
+    } else {
+      addXP(xpAmt, 'Dogru! +'+xpAmt+' XP \u26A1');
+    }
+    qtState.xpEarned+=xpAmt;
+    gameRecordAnswer(q.cat, true);
+    if(fb){ fb.className='qt-feedback ok on';
+      fb.innerHTML='\u2705 Dogru! +'+xpAmt+' XP<br><small>'+q.exp+'</small>'; }
+  } else {
+    qtState.wrong++;
+    qtState.streak=0;
+    gameRecordAnswer(q.cat, false);
+    if(fb){ fb.className='qt-feedback fail on';
+      fb.innerHTML='\u274C Yanlis. Dogru: <strong>'+q.opts[q.ans]+'</strong><br><small>'+q.exp+'</small>'; }
+  }
+  gameUpdateHiScore('quick', qtState.score);
+  var isLast=(qtState.idx+1>=qtState.questions.length);
+  if(next){ next.className='qt-next on';
+    next.textContent=isLast ? 'Sonucu Gor \u2192' : 'Sonraki Soru \u2192'; }
+}
+
+function qtTimeout() {
+  if(qtState.answered) return;
+  qtState.answered=true;
+  qtStop();
+  var q=qtState.questions[qtState.idx];
+  qtState.timeouts++;
+  qtState.wrong++;
+  qtState.streak=0;
+  gameRecordAnswer(q.cat, false);
+  for(var i=0;i<q.opts.length;i++){
+    var btn=document.getElementById('qtOpt'+i);
+    if(btn){ btn.disabled=true; if(i===q.ans) btn.classList.add('correct'); }
+  }
+  var fb=document.getElementById('qtFb');
+  if(fb){ fb.className='qt-feedback timeout on';
+    fb.innerHTML='\u23F1\uFE0F Sure doldu. Dogru: <strong>'+q.opts[q.ans]+'</strong><br><small>'+q.exp+'</small>'; }
+  var next=document.getElementById('qtNext');
+  var isLast=(qtState.idx+1>=qtState.questions.length);
+  if(next){ next.className='qt-next on';
+    next.textContent=isLast ? 'Sonucu Gor \u2192' : 'Sonraki Soru \u2192'; }
+}
+
+function qtNext() {
+  qtState.idx++;
+  qtRender();
+}
+
+function qtResult() {
+  qtStop();
+  var el=document.getElementById('gcQuickContent');
+  if(!el) return;
+  var total=qtState.questions.length;
+  var pct=Math.round((qtState.score/total)*100);
+  var icon=pct>=90?'\uD83C\uDFC6':pct>=70?'\uD83C\uDF89':pct>=50?'\uD83D\uDC4F':'\uD83D\uDCAA';
+  var title=pct>=90?'Mükemmel!':pct>=70?'Harika!':pct>=50?'İyi!':'Devam et!';
+  var hi=gameGetHiScore('quick');
+  el.innerHTML=
+    '<div class=\'qt-result\'>'
+      +'<div class=\'qt-result-icon\'>'+icon+'</div>'
+      +'<div class=\'qt-result-title\'>'+title+'</div>'
+      +'<div class=\'qt-result-score\'>'+qtState.score+'/'+total+'</div>'
+      +'<div class=\'qt-result-sub\'>Basari: %'+pct+' \xb7 Kazanilan XP: '+qtState.xpEarned+'</div>'
+      +'<div class=\'qt-stat-row\'>'
+        +'<div class=\'qt-stat\'><div class=\'qt-stat-val\'>'+qtState.score+'</div><div class=\'qt-stat-lbl\'>Dogru</div></div>'
+        +'<div class=\'qt-stat\'><div class=\'qt-stat-val\'>'+qtState.wrong+'</div><div class=\'qt-stat-lbl\'>Yanlis / Sure</div></div>'
+        +'<div class=\'qt-stat\'><div class=\'qt-stat-val\'>'+qtState.timeouts+'</div><div class=\'qt-stat-lbl\'>Sure Doldu</div></div>'
+        +'<div class=\'qt-stat\'><div class=\'qt-stat-val\'>\uD83D\uDD25'+qtState.maxStreak+'</div><div class=\'qt-stat-lbl\'>En Uzun Seri</div></div>'
+      +'</div>'
+      +'<div class=\'qt-result-sub\'>Kisisel rekor: '+hi+' dogru</div>'
+      +'<button class=\'qt-replay\' onclick=\'gcOpenQuick()\'>Tekrar Oyna</button>'
+      +'<button class=\'qt-home\' onclick=\'gcBackToHome()\'>\u2190 Oyun Merkezine Don</button>'
+    +'</div>';
+}
+// -- Hızlı Test SONU
+
+// -- Günlük Görev ----------------------------------------------------
+
+// Günlük görev soru havuzu (21 set, her set 3 soru — 7 gün döngüsü)
+// Her soru: {cat, q, opts, ans, exp}
+var DG_SETS = [
+  // Set 0
+  [
+    {cat:'seker', q:'100g icin seker 8g olan urun hangi renk kodundadir?',
+     opts:['Yesil','Sari','Kirmizi'], ans:1,
+     exp:'5g ile 12,5g arasi sari (orta) kategorisine girer.'},
+    {cat:'tuz', q:'Etikette sodyum 600mg yazan urunun tuz miktari yaklasik kactir?',
+     opts:['0,6g','1,5g','2,4g'], ans:1,
+     exp:'Tuz = Sodyum x 2,5. 600mg x 2,5 = 1,5g tuz.'},
+    {cat:'etiket_okuma', q:'Malzemeler listesinde ilk siradaki malzeme hakkinda ne soylenebilir?',
+     opts:['En az kullanilan malzemedir','En fazla kullanilan malzemedir','Alfabetik olarak ilk gelir'], ans:1,
+     exp:'Malzemeler kitlece coktan aza siralanadir; ilk sira en fazla kullanilandir.'}
+  ],
+  // Set 1
+  [
+    {cat:'yag', q:'Doymus yag icin yesil renk koduna girmek icin 100g basa ne kadarin altinda olmali?',
+     opts:['1,5g','3g','5g'], ans:0,
+     exp:'1,5g/100g alti doymus yag yesil (az) kategorisine girer.'},
+    {cat:'lif', q:'Lif kaynaği olmak icin 100g basina en az kac gram lif gerekir?',
+     opts:['1g','3g','6g'], ans:1,
+     exp:'3g/100g lif kaynagi, 6g/100g yuksek lif etiketine hak kazandirir.'},
+    {cat:'porsiyon', q:'Etikette "porsiyon 30g, seker 6g" yaziyor. 100g basa seker ne kadardir?',
+     opts:['6g','20g','30g'], ans:1,
+     exp:'6g / 30g x 100 = 20g. Porsiyon degerini 100g bazina donusturmek icin bu hesapla yapilir.'}
+  ],
+  // Set 2
+  [
+    {cat:'protein', q:'100g icin protein 4g olan urun hangi kategoridedir?',
+     opts:['Iyi (yesil)','Orta (sari)','Dusunsun'], ans:1,
+     exp:'5g altinda protein orta duzey sayilir; 5g ve uzeri iyi kategorisine girer.'},
+    {cat:'seker', q:'Fruktoz, dekstroz ve maltoz hangi besin grubuna girer?',
+     opts:['Yag','Seker','Protein'], ans:1,
+     exp:'Bu isimlerin hepsi seker turlerinin farkli adlandirilmalaridir.'},
+    {cat:'tuz', q:'Tuz icin kirmizi renk koduna girmek icin 100g basina en az kac gram olmasi gerekir?',
+     opts:['0,3g','1g','1,5g'], ans:2,
+     exp:'1,5g/100g uzeri tuz kirmizi (yuksek) kategorisine girer.'}
+  ],
+  // Set 3
+  [
+    {cat:'etiket_okuma', q:'E300 kodu hangi maddeyi ifade eder?',
+     opts:['Boyar madde','C Vitamini','Koruyucu'], ans:1,
+     exp:'E300 askorbik asit yani C vitaminidir; antioksidan olarak kullanilir.'},
+    {cat:'yag', q:'1 gram yag kac kilokalori enerji saglar?',
+     opts:['4 kcal','7 kcal','9 kcal'], ans:2,
+     exp:'1g yag 9 kcal, 1g karbonhidrat veya protein ise 4 kcal saglar.'},
+    {cat:'lif', q:'Lif sindirim sistemi icin en temel ne ise yarar?',
+     opts:['Kan sekerini aninda yukseldir','Bagisiklik hucreleri olusturur','Bagisak hareketlerini duzenler'], ans:2,
+     exp:'Lif bagisak hareketlerini destekler, tokluk hissi verir ve kan sekerinin dengelenmesine katki saglar.'}
+  ],
+  // Set 4
+  [
+    {cat:'porsiyon', q:'Iki urunu dogru karsilastirmak icin hangi baz kullanilmalidir?',
+     opts:['Porsiyon degeri','100g degeri','Paket agirligina gore'], ans:1,
+     exp:'Porsiyon boyutlari urunler arasinda farkli olabilir; 100g bazli karsilastirma daha adaletlidir.'},
+    {cat:'seker', q:'Bir icecegin etiketinde "seker eklenmemis" yaziyorsa bu ne demektir?',
+     opts:['Hic seker icermez','Uretim sirasinda seker katilmamistir','Kalori yoktur'], ans:1,
+     exp:'"Seker eklenmemis" ifadesi uretim sirasinda seker katilmadigini gosterir; dogal sekerler yine de bulunabilir.'},
+    {cat:'karsilastirma', q:'Hem seker hem tuz dusuk olan urunu secmek icin etikette kac degere bakman gerekir?',
+     opts:['Yalnizca seker satirina','Yalnizca tuz satirina','Her ikisine birden'], ans:2,
+     exp:'Birden fazla kritere gore karsilastirirken her satiri ayri ayri okumak gerekir.'}
+  ],
+  // Set 5
+  [
+    {cat:'yag', q:'"Hidrojene bitkisel yag" ifadesi etikette ne anlama gelir?',
+     opts:['Saglikli doymamis yag','Trans yag icerebilir','Hayvansal yag'], ans:1,
+     exp:'"Hidrojene" veya "kismen hidrojene" ifadesi trans yag varlihina isaret eder.'},
+    {cat:'protein', q:'Protein icin iyi (yesil) kategoriye girmek icin 100g basina en az kac gram gerekir?',
+     opts:['1g','3g','5g'], ans:2,
+     exp:'5g/100g ve uzeri protein yesil (iyi) olarak degerlendirilir.'},
+    {cat:'etiket_okuma', q:'Trafik isigi sistemi kac besin degerine uygulanir?',
+     opts:['2','4','6'], ans:1,
+     exp:'Trafik isigi sistemi yag, doymus yag, seker ve tuz olmak uzere 4 besin degerine uygulanir.'}
+  ],
+  // Set 6
+  [
+    {cat:'tuz', q:'Dusuk tuz icin 100g basina hangi esik deger gecerlidir?',
+     opts:['0,3g alti','1g alti','1,5g alti'], ans:0,
+     exp:'0,3g/100g alti az tuz, 1,5g/100g uzeri yuksek tuz sayilir.'},
+    {cat:'lif', q:'100g basina 6g ve uzeri lif iceren urun icin hangi etiket kullanilabilir?',
+     opts:['Lif kaynaği','Yuksek lif','Az lif'], ans:1,
+     exp:'6g/100g ve uzeri lif "yuksek lif" etiketine hak kazandirir; 3g ise "lif kaynagi" icin yeterlidir.'},
+    {cat:'porsiyon', q:'Bir urunun porsiyonu 40g ve 100g icin kalori 250kcal. Bir porsiyondaki kalori kactir?',
+     opts:['250kcal','100kcal','62,5kcal'], ans:1,
+     exp:'40g / 100g x 250kcal = 100kcal. Porsiyon agirligini 100g degerine oranlayarak hesaplabilirsin.'}
+  ]
+];
+
+var DG_LS_KEY = 'nutrizeka_game_daily_v2';
+
+function dgGetToday() {
+  var d = new Date();
+  return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+}
+
+function dgLoadState() {
+  try {
+    var raw = localStorage.getItem(DG_LS_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch(e) { return null; }
+}
+
+function dgSaveState(state) {
+  try { localStorage.setItem(DG_LS_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function dgGetSetIndex() {
+  // Tarihe gore sabit set secimi: gun sayisini DG_SETS uzunluguna gore mod al
+  var d = new Date();
+  var epoch = Math.floor(d.getTime() / 86400000); // gun sayisi
+  return epoch % DG_SETS.length;
+}
+
+function dgInitState() {
+  var today = dgGetToday();
+  var existing = dgLoadState();
+  if (existing && existing.date === today) return existing;
+  var setIdx = dgGetSetIndex();
+  var state = {
+    date:          today,
+    setIdx:        setIdx,
+    answered:      [false, false, false],
+    correct:       [false, false, false],
+    xpGiven:       [false, false, false], // o soru icin XP verildi mi (tekrar engeli)
+    statsRecorded: [false, false, false], // kazanim istatisgine kaydedildi mi (tekrar engeli)
+    done:          false,
+    bonusGiven:    false,
+    xpEarned:      0,
+    correctCount:  0,
+    attempts:      0   // kac kez denendi
+  };
+  dgSaveState(state);
+  return state;
+}
+
+function dgUpdateCard() {
+  var badge = document.getElementById('dgCardBadge');
+  var desc  = document.getElementById('dgCardDesc');
+  if (!badge || !desc) return;
+  var state = dgLoadState();
+  var today = dgGetToday();
+  if (state && state.date === today && state.done) {
+    var sc = state.xpGiven ? state.xpGiven.filter(Boolean).length : state.correctCount;
+    badge.textContent = '\u2713 Bugun tamamlandi';
+    badge.className   = 'gc-card-badge gc-badge--done';
+    desc.textContent  = sc + '/3 dogru';
+  } else {
+    badge.textContent = 'Bugunun Gorevi \u2192';
+    badge.className   = 'gc-card-badge gc-badge--active';
+    desc.textContent  = 'Her gun kisa bir gorev tamamla';
+  }
+}
+
+function gcOpenDaily() {
+  ['gcHome','gcClassic','gcDuel','gcAchieve','gcQuick'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('gcDaily').style.display = 'block';
+  dgRender();
+}
+
+function dgRenderFailed(successCount) {
+  var el = document.getElementById('gcDailyContent');
+  if (!el) return;
+  var state = dgLoadState();
+  if (!state) return;
+  var questions = DG_SETS[state.setIdx];
+
+  var d = new Date();
+  var months = ['Ocak','Subat','Mart','Nisan','Mayis','Haziran',
+                'Temmuz','Agustos','Eylul','Ekim','Kasim','Aralik'];
+  var dateStr = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+
+  var h = '';
+  // Basarisiz bildirim kutusu
+  h += '<div class=\'dg-done-box\' style=\'background:linear-gradient(135deg,#d97706,#b45309);\'>';
+  h +=   '<div class=\'dg-done-icon\'>\uD83D\uDCAA</div>';
+  h +=   '<div class=\'dg-done-title\'>Bugunku hedefe henuz ulasamadin.</div>';
+  h +=   '<div class=\'dg-done-sub\'>Gorevi tamamlamak icin 3 sorudan en az 2\'sini dogru cevaplamalısın.<br>';
+  h +=     dateStr + ' &mdash; ' + successCount + '/3 dogru</div>';
+  // Onceki turda dograu yapilanlar icin bilgi
+  if (state.xpGiven.some(Boolean)) {
+    var xpSoFar = state.xpGiven.filter(Boolean).length * 10;
+    h += '<div class=\'dg-done-sub\' style=\'font-size:11px;\'>';
+    h +=   'Bu tur kazanilan XP: ' + xpSoFar + ' (onceki dogru cevaplar korundu)';
+    h += '</div>';
+  }
+  h +=   '<button class=\'dg-home-btn\' onclick=\'dgRetry()\'>Tekrar Dene</button>';
+  h += '</div>';
+
+  // Soru ozeti
+  questions.forEach(function(q, i) {
+    var wasCorrect = state.xpGiven[i]; // onceki turda dogru yapilmis mi
+    var cls = wasCorrect ? 'dg-step completed' : 'dg-step';
+    h += '<div class=\'' + cls + '\'>';
+    h +=   '<div class=\'dg-step-head\'>';
+    h +=     '<div class=\'dg-step-num ' + (wasCorrect ? 'done' : '') + '\'>' + (wasCorrect ? '\u2713' : (i+1)) + '</div>';
+    h +=     '<div class=\'dg-step-cat\'>' + (GAME_CATEGORIES[q.cat] ? GAME_CATEGORIES[q.cat].label : q.cat) + '</div>';
+    h +=   '</div>';
+    h +=   '<div class=\'dg-question\' style=\'font-size:12px;\'>' + q.q + '</div>';
+    if (wasCorrect) {
+      h += '<div class=\'dg-feedback ok on\'>\u2705 Dogru (onceki denemede)</div>';
+    }
+    h += '</div>';
+  });
+
+  el.innerHTML = h;
+}
+
+function dgRetry() {
+  // State zaten sifirlanmis (dgAnswer icerisinde): sadece ekrani yeniden render et
+  dgRender();
+}
+
+function dgRender() {
+  var el = document.getElementById('gcDailyContent');
+  if (!el) return;
+  var state = dgInitState();
+  var questions = DG_SETS[state.setIdx];
+  var today = dgGetToday();
+
+  // Tamamlanmis gunu goster
+  if (state.done) {
+    el.innerHTML = dgDoneHtml(state, questions);
+    return;
+  }
+
+  // Tarih formati
+  var d = new Date();
+  var months = ['Ocak','Subat','Mart','Nisan','Mayis','Haziran',
+                'Temmuz','Agustos','Eylul','Ekim','Kasim','Aralik'];
+  var dateStr = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+
+  // Ilerleme
+  var answered = state.answered.filter(Boolean).length;
+  var pct = Math.round((answered / 3) * 100);
+
+  var html = '';
+  html += '<div class=\'dg-header\'>';
+  html +=   '<div class=\'dg-date\'>' + dateStr + '</div>';
+  html +=   '<div class=\'dg-title\'>Bugunun Gorevi</div>';
+  html +=   '<div class=\'dg-prog-row\'>';
+  html +=     '<div class=\'dg-prog-wrap\'>';
+  html +=       '<div class=\'dg-prog-bar\' style=\'width:' + pct + '%\'></div>';
+  html +=     '</div>';
+  html +=     '<div class=\'dg-prog-txt\'>' + answered + '/3</div>';
+  html +=   '</div>';
+  html += '</div>';
+
+  questions.forEach(function(q, i) {
+    var isAnswered = state.answered[i];
+    var isCorrect  = state.correct[i];
+    var stepClass  = isAnswered ? 'dg-step completed' : 'dg-step';
+    var numClass   = isAnswered ? 'dg-step-num done' : 'dg-step-num';
+    var numTxt     = isAnswered ? '\u2713' : (i + 1);
+
+    html += '<div class=\'' + stepClass + '\' id=\'dgStep' + i + '\'>';
+    html +=   '<div class=\'dg-step-head\'>';
+    html +=     '<div class=\'' + numClass + '\'>' + numTxt + '</div>';
+    html +=     '<div class=\'dg-step-cat\'>' + (GAME_CATEGORIES[q.cat] ? GAME_CATEGORIES[q.cat].label : q.cat) + '</div>';
+    html +=   '</div>';
+    html +=   '<div class=\'dg-question\'>' + q.q + '</div>';
+
+    if (isAnswered) {
+      // Zaten cevaplanmis: sonucu goster
+      var fbClass = isCorrect ? 'dg-feedback ok on' : 'dg-feedback fail on';
+      var fbTxt   = isCorrect
+        ? '\u2705 Dogru! +10 XP &mdash; ' + q.exp
+        : '\u274C Yanlis. Dogru cevap: <strong>' + q.opts[q.ans] + '</strong> &mdash; ' + q.exp;
+      html += '<div class=\'' + fbClass + '\'>' + fbTxt + '</div>';
+    } else {
+      // Cevaplanmamis: secenekleri goster
+      html += '<div class=\'dg-opts\'>';
+      q.opts.forEach(function(opt, j) {
+        html += '<button class=\'dg-opt\' id=\'dgOpt' + i + '_' + j + '\' onclick=\'dgAnswer(' + i + ',' + j + ')\'>' + opt + '</button>';
+      });
+      html += '</div>';
+      html += '<div class=\'dg-feedback\' id=\'dgFb' + i + '\'></div>';
+    }
+    html += '</div>';
+  });
+
+  el.innerHTML = html;
+}
+
+function dgAnswer(stepIdx, choice) {
+  var state = dgInitState();
+  if (state.answered[stepIdx]) return; // Bu soru zaten cevaplanmis
+
+  var q = DG_SETS[state.setIdx][stepIdx];
+  var correct = (choice === q.ans);
+
+  // Secenekleri kilitle
+  for (var j = 0; j < q.opts.length; j++) {
+    var btn = document.getElementById('dgOpt' + stepIdx + '_' + j);
+    if (btn) {
+      btn.disabled = true;
+      if (j === q.ans)       btn.classList.add('correct');
+      else if (j === choice) btn.classList.add('wrong');
+    }
+  }
+
+  // Geri bildirim goster
+  var fb = document.getElementById('dgFb' + stepIdx);
+  if (fb) {
+    fb.className = correct ? 'dg-feedback ok on' : 'dg-feedback fail on';
+    var xpNote = (correct && !state.xpGiven[stepIdx]) ? ' +10 XP' : '';
+    fb.innerHTML = correct
+      ? '\u2705 Dogru!' + xpNote + ' &mdash; ' + q.exp
+      : '\u274C Yanlis. Dogru cevap: <strong>' + q.opts[q.ans] + '</strong> &mdash; ' + q.exp;
+  }
+
+  // State guncelle
+  state.answered[stepIdx] = true;
+  state.correct[stepIdx]  = correct;
+
+  // XP: ayni soru icin ayni gun sadece ilk dogru cevaplamada ver
+  if (correct && !state.xpGiven[stepIdx]) {
+    state.xpGiven[stepIdx] = true;
+    state.xpEarned += 10;
+    state.correctCount++;
+    addXP(10, 'Gunluk gorev dogru! +10 XP');
+  } else if (!correct && state.xpGiven[stepIdx]) {
+    // Onceki turda dogru yapilmisti, simdi yanlis: correctCount dusur
+    // (Bu durum olmaz cunku answered[stepIdx]=true iken return edilir)
+  }
+
+  // Kazanim istatistigi: ayni soru icin ayni gun sadece bir kez kaydet
+  if (!state.statsRecorded[stepIdx]) {
+    state.statsRecorded[stepIdx] = true;
+    gameRecordAnswer(q.cat, correct);
+  }
+
+  dgSaveState(state);
+
+  // Tum sorular cevaplandi mi?
+  var allAnswered = state.answered.every(Boolean);
+  if (!allAnswered) return;
+
+  // Basari esigi kontrolu: en az 2/3 dogru gerekli
+  // correctCount: o gun ilk kez dogru yapilanlar (xpGiven ile esit)
+  var successCount = state.xpGiven.filter(Boolean).length;
+  var success = successCount >= 2;
+
+  if (success && !state.done) {
+    // Basarili tamamlama
+    state.done = true;
+    if (!state.bonusGiven) {
+      state.bonusGiven = true;
+      state.xpEarned += 20;
+      addXP(20, '\uD83C\uDF89 Gunluk gorev tamamlandi! +20 Bonus XP');
+    }
+    dgSaveState(state);
+    setTimeout(function() { dgRender(); }, 900);
+  } else if (!success) {
+    // Basarisiz: tekrar dene secenegi goster
+    state.attempts++;
+    // Answered sifirlaniyor ki kullanici tekrar deneyebilsin
+    // Ama xpGiven ve statsRecorded KORUNUYOR (XP/istatistik tekrar engeli)
+    state.answered = [false, false, false];
+    // Onceki dogru cevaplanan sorularin correct degerleri de sifirlanir
+    // ki kullanici tekrar cevaplasin
+    state.correct = [false, false, false];
+    dgSaveState(state);
+    setTimeout(function() { dgRenderFailed(successCount); }, 900);
+  }
+}
+
+function dgDoneHtml(state, questions) {
+  var d = new Date();
+  var months = ['Ocak','Subat','Mart','Nisan','Mayis','Haziran',
+                'Temmuz','Agustos','Eylul','Ekim','Kasim','Aralik'];
+  var dateStr = d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  var successCount = state.xpGiven.filter(Boolean).length;
+
+  var h = '';
+  h += '<div class=\'dg-done-box\'>';
+  h +=   '<div class=\'dg-done-icon\'>\uD83C\uDF89</div>';
+  h +=   '<div class=\'dg-done-title\'>Bugunun gorevini basariyla tamamladin!</div>';
+  h +=   '<div class=\'dg-done-sub\'>' + dateStr + ' &mdash; ' + successCount + '/3 dogru</div>';
+  h +=   '<div class=\'dg-done-stat\'>';
+  h +=     '<div class=\'dg-done-stat-item\'>';
+  h +=       '<div class=\'dg-done-stat-val\'>' + successCount + '/3</div>';
+  h +=       '<div class=\'dg-done-stat-lbl\'>Dogru</div>';
+  h +=     '</div>';
+  h +=     '<div class=\'dg-done-stat-item\'>';
+  h +=       '<div class=\'dg-done-stat-val\'>' + state.xpEarned + ' XP</div>';
+  h +=       '<div class=\'dg-done-stat-lbl\'>Kazanilan</div>';
+  h +=     '</div>';
+  h +=   '</div>';
+  h +=   '<div class=\'dg-done-sub\'>Yarin yeni gorev seni bekliyor!</div>';
+  h +=   '<button class=\'dg-home-btn\' onclick=\'gcBackToHome()\'>\u2190 Oyun Merkezine Don</button>';
+  h += '</div>';
+  return h;
+}
+// -- Günlük Görev SONU
+
+// -- Rozetlerim / Seviyem ------------------------------------
+
+// Seviye tablosu (yeni, Oyun Merkezi'ne özgü)
+var BV_LEVELS = [
+  { min:   0, max:  99,  num: 1, name: 'Caylak',           icon: '\uD83C\uDF31' },
+  { min: 100, max: 249,  num: 2, name: 'Etiket Kasifi',     icon: '\uD83D\uDD0D' },
+  { min: 250, max: 499,  num: 3, name: 'Bilincli Secici',   icon: '\uD83D\uDC9A' },
+  { min: 500, max: 799,  num: 4, name: 'Etiket Uzmani',     icon: '\uD83C\uDF1F' },
+  { min: 800, max: 99999,num: 5, name: 'Nutri Ustasi',      icon: '\uD83C\uDFC6' },
+];
+
+function bvGetLevel(xpVal) {
+  for (var i = BV_LEVELS.length - 1; i >= 0; i--) {
+    if (xpVal >= BV_LEVELS[i].min) return BV_LEVELS[i];
+  }
+  return BV_LEVELS[0];
+}
+
+// Rozet şartlarını hesapla — mevcut nutrizeka_game_ verilerinden
+function bvComputeBadges() {
+  var stats    = gameGetAllStats();
+  var hiScores = gameLoadHiScores();
+
+  // Gunluk gorev tamamlama bilgisi
+  var dailyDone = false;
+  try {
+    var ds = localStorage.getItem('nutrizeka_game_daily_v2');
+    if (ds) {
+      var dp = JSON.parse(ds);
+      dailyDone = !!(dp && dp.done);
+    }
+  } catch(e) {}
+
+  // Kac kategoride soru cozulmus
+  var catsWithData = Object.keys(stats).filter(function(c) {
+    return stats[c].total > 0;
+  });
+
+  return [
+    {
+      id: 'seker_dedektifi',
+      icon: '\uD83C\uDF6C',
+      name: 'Seker Dedektifi',
+      cond: 'seker kategorisinde en az 5 soru, %80+ basari',
+      earned: stats.seker && stats.seker.total >= 5 && stats.seker.pct >= 80
+    },
+    {
+      id: 'tuz_uzmani',
+      icon: '\uD83E\uDDC2',
+      name: 'Tuz Uzmani',
+      cond: 'tuz kategorisinde en az 5 soru, %80+ basari',
+      earned: stats.tuz && stats.tuz.total >= 5 && stats.tuz.pct >= 80
+    },
+    {
+      id: 'lif_kasifi',
+      icon: '\uD83C\uDF3E',
+      name: 'Lif Kasifi',
+      cond: 'lif kategorisinde en az 5 soru, %80+ basari',
+      earned: stats.lif && stats.lif.total >= 5 && stats.lif.pct >= 80
+    },
+    {
+      id: 'etiket_ustasi',
+      icon: '\uD83C\uDFF7\uFE0F',
+      name: 'Etiket Ustasi',
+      cond: 'etiket_okuma kategorisinde en az 5 soru, %80+ basari',
+      earned: stats.etiket_okuma && stats.etiket_okuma.total >= 5 && stats.etiket_okuma.pct >= 80
+    },
+    {
+      id: 'duello_ustasi',
+      icon: '\u2694\uFE0F',
+      name: 'Duello Ustasi',
+      cond: 'Etiket Duellosu\'nda %80+ basari (8/10 veya uzeri dogru)',
+      earned: !!(hiScores && hiScores.duel >= 8)
+    },
+    {
+      id: 'hiz_sampiyonu',
+      icon: '\u26A1',
+      name: 'Hiz Sampiyonu',
+      cond: 'Hizli Test\'te 8/10 veya uzeri dogru',
+      earned: !!(hiScores && hiScores.quick >= 8)
+    },
+    {
+      id: 'gunun_yildizi',
+      icon: '\uD83C\uDF1F',
+      name: 'Gunun Yildizi',
+      cond: 'Bir Gunluk Gorevi basariyla tamamla',
+      earned: dailyDone
+    },
+    {
+      id: 'cok_yonlu',
+      icon: '\uD83D\uDCDA',
+      name: 'Cok Yonlu Ogrenci',
+      cond: '8 kategorinin en az 6\'sinda soru coz',
+      earned: catsWithData.length >= 6
+    },
+  ];
+}
+
+function gcOpenBadges() {
+  ['gcHome','gcClassic','gcDuel','gcAchieve','gcQuick','gcDaily'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('gcBadges').style.display = 'block';
+  renderBadges();
+}
+
+function renderBadges() {
+  var el = document.getElementById('gcBadgesContent');
+  if (!el) return;
+
+  var curXp  = xp;
+  var level  = bvGetLevel(curXp);
+  var nextLv = BV_LEVELS[Math.min(level.num, BV_LEVELS.length - 1)];
+  var isMax  = (level.num === BV_LEVELS.length);
+  var toNext = isMax ? 0 : (nextLv.min - curXp);
+  var progPct;
+  if (isMax) {
+    progPct = 100;
+  } else {
+    var rangeTotal = nextLv.min - level.min;
+    var rangeDone  = curXp - level.min;
+    progPct = Math.min(100, Math.round((rangeDone / rangeTotal) * 100));
+  }
+
+  // Seviye karti
+  var h = '';
+  h += '<div class=\'bv-level-card\'>';
+  h +=   '<div class=\'bv-level-row\'>';
+  h +=     '<div class=\'bv-level-icon\'>' + level.icon + '</div>';
+  h +=     '<div class=\'bv-level-info\'>';
+  h +=       '<div class=\'bv-level-name\'>Seviye ' + level.num + ' \u2014 ' + level.name + '</div>';
+  h +=       '<div class=\'bv-level-xp\'>' + curXp + ' XP kazanildi</div>';
+  h +=     '</div>';
+  h +=     '<div class=\'bv-level-num\'>' + curXp + ' XP</div>';
+  h +=   '</div>';
+  h +=   '<div class=\'bv-prog-wrap\'>';
+  h +=     '<div class=\'bv-prog-bar\' style=\'width:' + progPct + '%\'></div>';
+  h +=   '</div>';
+  if (isMax) {
+    h += '<div class=\'bv-prog-txt\'>Maksimum seviyeye ulastiniz!</div>';
+  } else {
+    h += '<div class=\'bv-prog-txt\'>Seviye ' + nextLv.num + ' icin ' + toNext + ' XP daha gerekli</div>';
+  }
+  h += '</div>';
+
+  // Rozetler
+  var badges = bvComputeBadges();
+  var earnedCount = badges.filter(function(b){ return b.earned; }).length;
+
+  h += '<div class=\'bv-section-title\'>';
+  h +=   'Rozetler (' + earnedCount + '/' + badges.length + ')';
+  h += '</div>';
+  h += '<div class=\'bv-badge-grid\'>';
+
+  badges.forEach(function(b) {
+    var cls = b.earned ? 'bv-badge earned' : 'bv-badge locked';
+    h += '<div class=\'' + cls + '\'>';
+    h +=   '<div class=\'bv-badge-icon\'>' + b.icon + '</div>';
+    h +=   '<div class=\'bv-badge-name\'>' + b.name + '</div>';
+    if (b.earned) {
+      h += '<span class=\'bv-badge-status bv-status-earned\'>\u2705 Kazanildi</span>';
+    } else {
+      h += '<span class=\'bv-badge-status bv-status-locked\'>\uD83D\uDD12 Kilitli</span>';
+      h += '<div class=\'bv-badge-cond\'>' + b.cond + '</div>';
+    }
+    h += '</div>';
+  });
+
+  h += '</div>';
+  el.innerHTML = h;
+}
+// -- Rozetlerim / Seviyem SONU --------------------------------
+//-----------------------------------------------
+//------------------------------------------------
+// Kazanımlarım ─────────────────────────────────────────────────────
+function gcOpenAchieve() {
+  document.getElementById("gcHome").style.display    = "none";
+  document.getElementById("gcClassic").style.display = "none";
+  document.getElementById("gcDuel").style.display    = "none";
+  document.getElementById("gcAchieve").style.display = "block";
+  renderAchieve();
+}
+
+function renderAchieve() {
+  var el = document.getElementById("gcAchieveContent");
+  if (!el) return;
+
+  var allStats = gameGetAllStats();
+
+  // Genel toplamlar
+  var totalQ = 0, totalC = 0;
+  Object.keys(allStats).forEach(function(cat) {
+    totalQ += allStats[cat].total;
+    totalC += allStats[cat].correct;
+  });
+  var generalPct = totalQ > 0 ? Math.round((totalC / totalQ) * 100) : null;
+
+  // Seviye (mevcut xp değişkenini kullan)
+  var lvNum  = Math.floor(xp / 50) + 1;
+  var lvName = xp < 50 ? 'Çaylak' : xp < 150 ? 'Acemi' : xp < 300 ? 'Uzman' : 'Usta';
+
+  // Özet banner — tek tırnaklı template literal yerine string concat
+  var sb = '';
+  sb += '<div class=\'ach-summary\'>';
+  sb +=   '<div class=\'ach-sum-item\'>';
+  sb +=     '<div class=\'ach-sum-val\'>' + totalQ + '</div>';
+  sb +=     '<div class=\'ach-sum-lbl\'>Toplam Soru</div>';
+  sb +=   '</div>';
+  sb +=   '<div class=\'ach-sum-item\'>';
+  sb +=     '<div class=\'ach-sum-val\'>' + totalC + '</div>';
+  sb +=     '<div class=\'ach-sum-lbl\'>Doğru Cevap</div>';
+  sb +=   '</div>';
+  sb +=   '<div class=\'ach-sum-item\'>';
+  sb +=     '<div class=\'ach-sum-val\'>' + (generalPct !== null ? '%' + generalPct : '-') + '</div>';
+  sb +=     '<div class=\'ach-sum-lbl\'>Genel Başarı</div>';
+  sb +=   '</div>';
+  sb +=   '<div class=\'ach-sum-item\'>';
+  sb +=     '<div class=\'ach-sum-val\'>' + xp + ' XP</div>';
+  sb +=     '<div class=\'ach-sum-lbl\'>Seviye ' + lvNum + ' \xb7 ' + lvName + '</div>';
+  sb +=   '</div>';
+  sb += '</div>';
+
+  // Veri yoksa yönlendirici mesaj
+  if (totalQ === 0) {
+    el.innerHTML = sb +
+      '<div class=\'ach-empty\'>' +
+        '<div class=\'ach-empty-icon\'>\ud83c\udfae</div>' +
+        '<div class=\'ach-empty-txt\'>Henüz veri yok.<br>Etiket Düellosu veya Klasik Testleri oyna;<br>kazanımların burada görünecek.</div>' +
+      '</div>';
+    return;
+  }
+
+  // Kategori kartları
+  var cb = '';
+  Object.keys(allStats).forEach(function(cat) {
+    var s = allStats[cat];
+    if (s.total === 0) {
+      cb += '<div class=\'ach-cat\'>';
+      cb +=   '<div class=\'ach-cat-head\'>';
+      cb +=     '<div class=\'ach-cat-icon\'>' + s.icon + '</div>';
+      cb +=     '<div class=\'ach-cat-info\'>';
+      cb +=       '<div class=\'ach-cat-label\'>' + s.label + '</div>';
+      cb +=       '<div class=\'ach-no-data\'>Henüz veri yok \u2014 oyun oynadıkça gelişimin burada görünecek.</div>';
+      cb +=     '</div>';
+      cb +=     '<div class=\'ach-cat-badge ach-badge-none\'>-</div>';
+      cb +=   '</div>';
+      cb += '</div>';
+      return;
+    }
+    var badgeClass, badgeText, barClass, scoreColor;
+    if (s.pct >= 80) {
+      badgeClass = 'ach-badge-hi';  barClass = 'ach-bar-hi';
+      badgeText  = 'Çok İyi';       scoreColor = 'var(--green-text)';
+    } else if (s.pct >= 50) {
+      badgeClass = 'ach-badge-mid'; barClass = 'ach-bar-mid';
+      badgeText  = 'İyi';           scoreColor = 'var(--yellow-text)';
+    } else {
+      badgeClass = 'ach-badge-low'; barClass = 'ach-bar-low';
+      badgeText  = 'Geliştirilmeli'; scoreColor = 'var(--red-text)';
+    }
+    cb += '<div class=\'ach-cat\'>';
+    cb +=   '<div class=\'ach-cat-head\'>';
+    cb +=     '<div class=\'ach-cat-icon\'>' + s.icon + '</div>';
+    cb +=     '<div class=\'ach-cat-info\'>';
+    cb +=       '<div class=\'ach-cat-label\'>' + s.label + '</div>';
+    cb +=       '<div class=\'ach-cat-score\' style=\'color:' + scoreColor + '\'>';
+    cb +=         s.correct + '/' + s.total + ' doğru \xb7 %' + s.pct;
+    cb +=       '</div>';
+    cb +=     '</div>';
+    cb +=     '<div class=\'ach-cat-badge ' + badgeClass + '\'>' + badgeText + '</div>';
+    cb +=   '</div>';
+    cb +=   '<div class=\'ach-bar-wrap\'>';
+    cb +=     '<div class=\'ach-bar ' + barClass + '\' style=\'width:' + s.pct + '%\'></div>';
+    cb +=   '</div>';
+    cb += '</div>';
+  });
+
+  el.innerHTML = sb + cb;
+}
+// ── Kazanımlarım SONU ─────────────────────────────────────────────────
+
+
+// ── Etiket Düellosu ──────────────────────────────────────────────────
+
+// 30 soruluk havuz — tüm stringler çift tırnak, Türkçe kesme yok
+const DUEL_QUESTIONS = [
+  // ── ŞEKER (5 soru) ───────────────────────────────────────────────
+  {
+    category: "seker",
+    question: "Şeker miktarı daha düşük olan ürünü seç.",
+    explanation: "100 gramda 5g altı şeker az sayılır. Şeker miktarı düşük ürünler kan şekeri dengesi için daha uygundur.",
+    productA: { name: "Meyveli Yoğurt", nutrients: { "Şeker": "18 g", "Yağ": "3 g", "Tuz": "0,1 g", "Lif": "0 g" } },
+    productB: { name: "Sade Yoğurt",    nutrients: { "Şeker": "4 g",  "Yağ": "3 g", "Tuz": "0,1 g", "Lif": "0 g" } },
+    highlight: "Şeker", correctProduct: "B", correctLabel: "Şeker: 4 g"
+  },
+  {
+    category: "seker",
+    question: "İçindekiler listesinde şeker daha önce yer alan ürünü belirle. (Malzemeler çoktan aza sıralanır.)",
+    explanation: "İçindekiler listesinde malzemeler miktara göre büyükten küçüğe sıralanır. Şeker ilk sıralarda yer alıyorsa ürün şeker ağırlıklıdır.",
+    productA: { name: "Granola Bar",  nutrients: { "İçindekiler": "Yulaf, şeker, fındık", "Şeker": "22 g", "Lif": "3 g", "Protein": "5 g" } },
+    productB: { name: "Yulaf Keki",   nutrients: { "İçindekiler": "Yulaf, fındık, bal",   "Şeker": "8 g",  "Lif": "5 g", "Protein": "7 g" } },
+    highlight: "İçindekiler", correctProduct: "A", correctLabel: "Şeker içindekiler listesinde ikinci sırada"
+  },
+  {
+    category: "seker",
+    question: "Fruktoz veya glikoz şurubu içeren — gizli şeker barındıran — ürünü bul.",
+    explanation: "Fruktoz, glikoz şurubu, malt şurubu, dekstroz gibi isimler şekerin farklı adlarıdır. Bunları tanımak etiket okuma becerisidir.",
+    productA: { name: "Meyve Aromalı İçecek", nutrients: { "İçindekiler": "Su, fruktoz şurubu, aroma", "Şeker": "11 g", "Kalori": "48 kcal", "Tuz": "0,0 g" } },
+    productB: { name: "Maden Suyu",           nutrients: { "İçindekiler": "Doğal kaynak suyu",          "Şeker": "0 g",  "Kalori": "0 kcal",  "Tuz": "0,0 g" } },
+    highlight: "İçindekiler", correctProduct: "A", correctLabel: "Fruktoz şurubu = gizli şeker"
+  },
+  {
+    category: "seker",
+    question: "Bir ürün 40 g porsiyonda 8 g şeker içeriyor. Diğer ürün 25 g porsiyonda 4 g şeker içeriyor. 100 g üzerinden hangisinin şeker oranı daha düşüktür?",
+    explanation: "Ürün A: 8/40 x 100 = 20 g şeker/100g. Ürün B: 4/25 x 100 = 16 g şeker/100g. Porsiyon farklı olduğunda 100 g üzerinden hesaplamak gerekir.",
+    productA: { name: "Bisküvi A (40g porsiyon)", nutrients: { "Şeker (porsiyon)": "8 g", "Porsiyon": "40 g", "Yağ": "6 g", "Tuz": "0,3 g" } },
+    productB: { name: "Kraker B (25g porsiyon)",  nutrients: { "Şeker (porsiyon)": "4 g", "Porsiyon": "25 g", "Yağ": "3 g", "Tuz": "0,4 g" } },
+    highlight: "Şeker (porsiyon)", correctProduct: "B", correctLabel: "16 g/100g (daha düşük oran)"
+  },
+  {
+    category: "seker",
+    question: "100 g başına şeker miktarı daha yüksek olan ürünü belirle.",
+    explanation: "Yüksek şeker içeriğini fark etmek, bilinçli tüketim için önemli bir etiket okuma becerisidir.",
+    productA: { name: "Çikolatalı Krema", nutrients: { "Şeker": "45 g", "Yağ": "30 g", "Protein": "6 g",  "Tuz": "0,1 g" } },
+    productB: { name: "Fıstık Ezmesi",   nutrients: { "Şeker": "6 g",  "Yağ": "50 g", "Protein": "25 g", "Tuz": "0,3 g" } },
+    highlight: "Şeker", correctProduct: "A", correctLabel: "Şeker: 45 g (daha yüksek)"
+  },
+
+  // ── TUZ (4 soru) ─────────────────────────────────────────────────
+  {
+    category: "tuz",
+    question: "Tuz miktarı daha düşük olan ürünü seç.",
+    explanation: "100 gramda 0,3 g altı tuz az sayılır. Günlük tuz alımı 6 g geçmemeli. Yüksek tuz tansiyonu olumsuz etkiler.",
+    productA: { name: "Tam Buğday Bisküvi", nutrients: { "Şeker": "8 g",  "Yağ": "12 g", "Tuz": "1,2 g", "Lif": "4 g" } },
+    productB: { name: "Pirinç Keki",        nutrients: { "Şeker": "8 g",  "Yağ": "6 g",  "Tuz": "0,2 g", "Lif": "1 g" } },
+    highlight: "Tuz", correctProduct: "B", correctLabel: "Tuz: 0,2 g"
+  },
+  {
+    category: "tuz",
+    question: "100 g üzerinden karşılaştırıldığında tuz miktarı daha düşük olan ürünü seç.",
+    explanation: "Sodyum ve tuz farklıdır. Tuz = Sodyum x 2,5. Etikette sodyum yazıyorsa tuz miktarını bulmak için 2,5 ile çarpmak gerekir.",
+    productA: { name: "Hazır Çorba",      nutrients: { "Sodyum": "900 mg", "Yağ": "3 g",  "Protein": "4 g",  "Lif": "1 g" } },
+    productB: { name: "Ev Yapımı Mercimek", nutrients: { "Sodyum": "120 mg", "Yağ": "2 g",  "Protein": "7 g",  "Lif": "5 g" } },
+    highlight: "Sodyum", correctProduct: "B", correctLabel: "Sodyum 120 mg = Tuz 0,3 g"
+  },
+  {
+    category: "tuz",
+    question: "Tuz miktarı 0,3 g altında olan — az tuzlu sayılan — ürünü seç.",
+    explanation: "0,3 g/100g altı tuz az, 1,5 g/100g üzeri yüksek tuz sayılır. Bu eşikleri bilmek trafik ışığı sistemini anlamak için önemlidir.",
+    productA: { name: "Cips A",      nutrients: { "Yağ": "30 g", "Tuz": "1,8 g", "Karbonhidrat": "55 g", "Protein": "5 g" } },
+    productB: { name: "Mısır Patlağı", nutrients: { "Yağ": "4 g",  "Tuz": "0,2 g", "Karbonhidrat": "70 g", "Protein": "9 g" } },
+    highlight: "Tuz", correctProduct: "B", correctLabel: "Tuz: 0,2 g (az tuzlu)"
+  },
+  {
+    category: "tuz",
+    question: "Bir porsiyon (30g) tuz miktarı daha düşük olan ürünü seç.",
+    explanation: "Porsiyon bazında karşılaştırma yaparken porsiyon ağırlıklarının eşit olduğuna dikkat etmek gerekir.",
+    productA: { name: "Simit (30g)",        nutrients: { "Tuz": "0,9 g", "Karbonhidrat": "20 g", "Protein": "3 g", "Yağ": "1 g" } },
+    productB: { name: "Tam Tahıl Kraker (30g)", nutrients: { "Tuz": "0,4 g", "Karbonhidrat": "22 g", "Protein": "4 g", "Yağ": "2 g" } },
+    highlight: "Tuz", correctProduct: "B", correctLabel: "Tuz: 0,4 g"
+  },
+
+  // ── YAĞ / DOYMUŞ YAĞ (4 soru) ───────────────────────────────────
+  {
+    category: "yag",
+    question: "Doymuş yağ miktarı daha düşük olan ürünü seç.",
+    explanation: "Doymuş yağ kalp sağlığını olumsuz etkiler. 100 gramda 1,5 g altı az sayılır. Toplam yağ değil doymuş yağ miktarına bakmak önemlidir.",
+    productA: { name: "Sütlü Çikolata",  nutrients: { "Toplam Yağ": "30 g", "Doymuş Yağ": "18 g", "Şeker": "52 g", "Tuz": "0,2 g" } },
+    productB: { name: "Bitter Çikolata", nutrients: { "Toplam Yağ": "32 g", "Doymuş Yağ": "9 g",  "Şeker": "28 g", "Tuz": "0,1 g" } },
+    highlight: "Doymuş Yağ", correctProduct: "B", correctLabel: "Doymuş Yağ: 9 g"
+  },
+  {
+    category: "yag",
+    question: "Toplam yağ miktarı daha düşük olan ürünü seç.",
+    explanation: "Yağ enerji yoğun bir besindir; 1 gramı 9 kilokaloridir. 100 gramda 3 g altı az yağ sayılır.",
+    productA: { name: "Kızartılmış Patates", nutrients: { "Yağ": "32 g", "Doymuş Yağ": "4 g",   "Tuz": "1,5 g", "Şeker": "0,5 g" } },
+    productB: { name: "Fırın Patates",        nutrients: { "Yağ": "5 g",  "Doymuş Yağ": "0,5 g", "Tuz": "0,4 g", "Şeker": "0,5 g" } },
+    highlight: "Yağ", correctProduct: "B", correctLabel: "Yağ: 5 g"
+  },
+  {
+    category: "yag",
+    question: "Trans yağ (hidrojene yağ) içermeyen ürünü seç.",
+    explanation: "Etiketlerde hidrojenize veya kısmen hidrojenize bitkisel yağ ifadesi trans yağı gösterir. Trans yağ kalp hastalığı riskini artırır.",
+    productA: { name: "Hazır Kek",     nutrients: { "Yağ": "18 g", "İçindekiler": "Hidrojenize bitkisel yağ, un, şeker", "Şeker": "32 g", "Tuz": "0,5 g" } },
+    productB: { name: "Ev Yapımı Kek", nutrients: { "Yağ": "12 g", "İçindekiler": "Un, yumurta, tereyağı, şeker",       "Şeker": "25 g", "Tuz": "0,3 g" } },
+    highlight: "İçindekiler", correctProduct: "B", correctLabel: "Hidrojenize yağ yok"
+  },
+  {
+    category: "yag",
+    question: "Doymuş yağ oranı 1,5 g altında olan — az doymuş yağlı sayılan — ürünü seç.",
+    explanation: "1,5 g/100g altı doymuş yağ az sayılır. Bu eşiğin bilinmesi trafik ışığı sistemini anlamak için önemlidir.",
+    productA: { name: "Tam Yağlı Peynir", nutrients: { "Toplam Yağ": "28 g", "Doymuş Yağ": "18 g", "Protein": "20 g", "Tuz": "1,8 g" } },
+    productB: { name: "Az Yağlı Yoğurt",  nutrients: { "Toplam Yağ": "2 g",  "Doymuş Yağ": "1,2 g","Protein": "10 g", "Tuz": "0,1 g" } },
+    highlight: "Doymuş Yağ", correctProduct: "B", correctLabel: "Doymuş Yağ: 1,2 g (1,5 g altı)"
+  },
+
+  // ── LİF (4 soru) ─────────────────────────────────────────────────
+  {
+    category: "lif",
+    question: "Lif miktarı daha yüksek olan ürünü seç.",
+    explanation: "Günlük 25-30 g lif alınması önerilir. 100 gramda 3 g üzeri lif kaynağı, 6 g üzeri yüksek lif olarak etiketlenebilir.",
+    productA: { name: "Beyaz Ekmek",     nutrients: { "Karbonhidrat": "52 g", "Lif": "2 g", "Şeker": "4 g", "Tuz": "1,1 g" } },
+    productB: { name: "Tam Tahıl Ekmek", nutrients: { "Karbonhidrat": "46 g", "Lif": "7 g", "Şeker": "3 g", "Tuz": "0,9 g" } },
+    highlight: "Lif", correctProduct: "B", correctLabel: "Lif: 7 g"
+  },
+  {
+    category: "lif",
+    question: "Lif kaynağı sayılabilmek için 100 gramda en az 3 g lif gerekir. Bu koşulu sağlayan ürünü seç.",
+    explanation: "Lif kaynağı etiketi icin 3 g/100g, yüksek lif etiketi için 6 g/100g lif şartı aranır. Sindirim sağlığı için lif önemlidir.",
+    productA: { name: "Mısır Gevreği", nutrients: { "Karbonhidrat": "84 g", "Lif": "1,2 g", "Şeker": "35 g", "Protein": "6 g" } },
+    productB: { name: "Kepek Gevreği", nutrients: { "Karbonhidrat": "68 g", "Lif": "8,5 g", "Şeker": "18 g", "Protein": "8 g" } },
+    highlight: "Lif", correctProduct: "B", correctLabel: "Lif: 8,5 g (3 g üzeri)"
+  },
+  {
+    category: "lif",
+    question: "100 g başına lif miktarı açısından daha avantajlı olan meyveyi seç.",
+    explanation: "Taze meyvelerde lif miktarı değişir. Kabuklu meyveler genellikle daha fazla lif içerir.",
+    productA: { name: "Elma (Kabuklu)", nutrients: { "Kalori": "52 kcal", "Lif": "2,4 g", "Şeker": "10 g", "C Vitamini": "5 mg" } },
+    productB: { name: "Muz",            nutrients: { "Kalori": "89 kcal", "Lif": "2,6 g", "Şeker": "12 g", "C Vitamini": "9 mg" } },
+    highlight: "Lif", correctProduct: "B", correctLabel: "Lif: 2,6 g"
+  },
+  {
+    category: "lif",
+    question: "Hem lif miktarı yüksek hem de şeker miktarı düşük olan ürünü seç.",
+    explanation: "Lif ve şeker değerlerini birlikte değerlendirmek daha kapsamlı bir etiket okuma becerisidir. Lif yüksek, şeker düşük ideal kombinasyondur.",
+    productA: { name: "Şekerli Müsli",    nutrients: { "Lif": "4 g", "Şeker": "28 g", "Yağ": "6 g",  "Protein": "7 g" } },
+    productB: { name: "Sade Yulaf Ezmesi", nutrients: { "Lif": "9 g", "Şeker": "1 g",  "Yağ": "7 g",  "Protein": "13 g" } },
+    highlight: "Lif", correctProduct: "B", correctLabel: "Lif: 9 g ve Şeker: 1 g"
+  },
+
+  // ── PROTEİN (3 soru) ──────────────────────────────────────────────
+  {
+    category: "protein",
+    question: "Protein miktarı daha yüksek olan ürünü seç.",
+    explanation: "100 gramda 5 g üzeri protein iyi sayılır. Protein kas gelişimi ve tokluk için önemlidir.",
+    productA: { name: "Mısır Gevreği", nutrients: { "Karbonhidrat": "82 g", "Protein": "7 g",  "Yağ": "1 g", "Şeker": "28 g" } },
+    productB: { name: "Yulaf Ezmesi",  nutrients: { "Karbonhidrat": "60 g", "Protein": "14 g", "Yağ": "7 g", "Şeker": "1 g"  } },
+    highlight: "Protein", correctProduct: "B", correctLabel: "Protein: 14 g"
+  },
+  {
+    category: "protein",
+    question: "Protein miktarı 5 g üzerinde olan — iyi protein kaynağı sayılan — ürünü seç.",
+    explanation: "100 gramda 5 g ve üzeri protein yeşil (iyi) kategoriye girer. Protein doygunluk hissi verir ve kas onarımına katkı sağlar.",
+    productA: { name: "Meyve Suyu",   nutrients: { "Kalori": "45 kcal", "Şeker": "10 g", "Protein": "0,3 g", "Vitamin C": "30 mg" } },
+    productB: { name: "Ayran",        nutrients: { "Kalori": "35 kcal", "Şeker": "3 g",  "Protein": "3,5 g", "Kalsiyum": "120 mg" } },
+    highlight: "Protein", correctProduct: "B", correctLabel: "Protein: 3,5 g (daha yüksek)"
+  },
+  {
+    category: "protein",
+    question: "Hem protein yüksek hem şeker düşük olan — protein-şeker oranı daha iyi olan — ürünü seç.",
+    explanation: "Birden fazla besin değerini birlikte değerlendirmek etiket okuma becerisini geliştirir. Yüksek protein ve düşük şeker birlikte değerlendirilmelidir.",
+    productA: { name: "Cikolatalı Süt", nutrients: { "Protein": "3 g",   "Şeker": "12 g", "Yağ": "2 g", "Kalsiyum": "120 mg" } },
+    productB: { name: "Sade Süt",       nutrients: { "Protein": "3,4 g", "Şeker": "4,7 g","Yağ": "2 g", "Kalsiyum": "120 mg" } },
+    highlight: "Şeker", correctProduct: "B", correctLabel: "Protein: 3,4 g, Şeker: 4,7 g"
+  },
+
+  // ── PORSİYON / 100g (4 soru) ─────────────────────────────────────
+  {
+    category: "porsiyon",
+    question: "100 g üzerinden lif miktarı daha yüksek olan hangisi?",
+    explanation: "Etiketlerdeki değerler 100g veya porsiyon bazında verilebilir. Karşılaştırmak için aynı birimi kullanmak gerekir.",
+    productA: { name: "Meyve Suyu (100g)",   nutrients: { "Enerji": "45 kcal", "Şeker": "10 g", "Lif": "0,2 g", "C Vitamini": "12 mg" } },
+    productB: { name: "Meyve Puresi (100g)", nutrients: { "Enerji": "60 kcal", "Şeker": "12 g", "Lif": "2,1 g", "C Vitamini": "8 mg"  } },
+    highlight: "Lif", correctProduct: "B", correctLabel: "Lif: 2,1 g"
+  },
+  {
+    category: "porsiyon",
+    question: "Ürün A etiketi 100 g için hazırlanmış. Ürün B etiketi 50 g porsiyon için hazırlanmış ve 3 g tuz içeriyor. 100 g karşılaştırmasında tuzu daha az olan hangisi?",
+    explanation: "Ürün B 50 gramda 3 g tuz içeriyorsa 100 gramda 6 g tuz içerir. Porsiyon ve 100g degerleri farkli olabilir; dönüşüm yapmak gerekir.",
+    productA: { name: "Ürün A (100g bazında)", nutrients: { "Tuz (100g)": "4 g",     "Yağ": "10 g", "Protein": "5 g", "Şeker": "2 g" } },
+    productB: { name: "Ürün B (50g porsiyon)", nutrients: { "Tuz (porsiyon)": "3 g", "Yağ": "5 g",  "Protein": "3 g", "Şeker": "1 g" } },
+    highlight: "Tuz (100g)", correctProduct: "A", correctLabel: "A: 4 g/100g, B: 6 g/100g"
+  },
+  {
+    category: "porsiyon",
+    question: "Her ikisi de 30 g porsiyon. Porsiyon basına protein miktari daha yüksek olan ürünü seç.",
+    explanation: "Porsiyon miktarları eşit olduğunda doğrudan karşılaştırma yapılabilir. Ancak porsiyon boyutları farklıysa 100g baz almak gerekir.",
+    productA: { name: "Findikli Bar (30g)",     nutrients: { "Protein": "4 g", "Şeker": "12 g", "Yağ": "10 g", "Lif": "2 g" } },
+    productB: { name: "Protein Bar (30g)",      nutrients: { "Protein": "12 g","Şeker": "3 g",  "Yağ": "5 g",  "Lif": "1 g" } },
+    highlight: "Protein", correctProduct: "B", correctLabel: "Protein: 12 g / porsiyon"
+  },
+  {
+    category: "porsiyon",
+    question: "Ürün A bir pakette 4 porsiyon ve porsiyonu 25 g şeker iceriyor. Ürün B bir pakette 2 porsiyon ve porsiyonu 30 g şeker iceriyor. Paketteki toplam şeker miktarı daha az olan hangisi?",
+    explanation: "Paketteki toplam miktar = porsiyon basina miktar x porsiyon sayisi. A: 4x25=100g, B: 2x30=60g. Toplam tüketim hesabı için porsiyon sayisini da göz önünde bulundurmak gerekir.",
+    productA: { name: "Atistirmalik A (4 porsiyon)", nutrients: { "Şeker/porsiyon": "25 g", "Porsiyon sayisi": "4", "Yağ": "8 g",  "Lif": "1 g" } },
+    productB: { name: "Atistirmalik B (2 porsiyon)", nutrients: { "Şeker/porsiyon": "30 g", "Porsiyon sayisi": "2", "Yağ": "10 g", "Lif": "0 g" } },
+    highlight: "Şeker/porsiyon", correctProduct: "B", correctLabel: "Toplam: 60 g (2x30) vs 100 g (4x25)"
+  },
+
+  // ── ETİKET OKUMA (3 soru) ────────────────────────────────────────
+  {
+    category: "etiket_okuma",
+    question: "Katkı maddesi (E kodu) içermeyen ürünü seç.",
+    explanation: "E kodları Avrupa Birliği tarafından onaylı katkı maddelerini gösterir. Bazıları zararsızdır (E300 = C vitamini), bazıları dikkat gerektirir.",
+    productA: { name: "Hazır Puding",    nutrients: { "Şeker": "14 g", "Yağ": "3 g", "Katkı Maddeleri": "E471, E102, E110", "Tuz": "0,2 g" } },
+    productB: { name: "Ev Yapımı Puding", nutrients: { "Şeker": "12 g", "Yağ": "4 g", "Katkı Maddeleri": "Yok",             "Tuz": "0,1 g" } },
+    highlight: "Katkı Maddeleri", correctProduct: "B", correctLabel: "Katkı maddesi yok"
+  },
+  {
+    category: "etiket_okuma",
+    question: "Enerji degeri daha düşük olan ürünü seç.",
+    explanation: "Kalori (kcal) veya kilojoule (kJ) cinsinden gösterilen enerji degeri ürünün ne kadar enerji sagladigini gosterir. 1 kcal = 4,18 kJ.",
+    productA: { name: "Sütlü Bisküvi", nutrients: { "Enerji": "480 kcal", "Yağ": "20 g", "Şeker": "25 g", "Protein": "7 g"  } },
+    productB: { name: "Galeta",        nutrients: { "Enerji": "370 kcal", "Yağ": "8 g",  "Şeker": "4 g",  "Protein": "10 g" } },
+    highlight: "Enerji", correctProduct: "B", correctLabel: "Enerji: 370 kcal"
+  },
+  {
+    category: "etiket_okuma",
+    question: "Malzeme listesi daha kısa olan — daha az içerikli — ürünü seç.",
+    explanation: "İçindekiler listesi ne kadar kısaysa ürün o kadar sade bir içeriğe sahiptir. Uzun listeler katkı maddesi veya karmaşık katkılar içerebilir.",
+    productA: { name: "Hazır Kek",     nutrients: { "İçindekiler": "Un, şeker, bitkisel yağ, yumurta tozu, E471, E322, aroma, E110", "Kalori": "420 kcal", "Yağ": "18 g", "Tuz": "0,6 g" } },
+    productB: { name: "Ev Yapımı Kek", nutrients: { "İçindekiler": "Un, yumurta, tereyağı, şeker",                                    "Kalori": "380 kcal", "Yağ": "15 g", "Tuz": "0,3 g" } },
+    highlight: "İçindekiler", correctProduct: "B", correctLabel: "4 malzeme (daha kısa liste)"
+  },
+
+  // ── KARŞILAŞTIRMA (3 soru) ───────────────────────────────────────
+  {
+    category: "karsilastirma",
+    question: "Hem şeker hem tuz miktarı daha düşük olan ürünü seç.",
+    explanation: "Birden fazla besin değerini birlikte değerlendirmek gerekir. İki değeri de düşük olan ürünü tercih etmek için her satırı ayrı ayrı okumak önemlidir.",
+    productA: { name: "Ketçap",       nutrients: { "Şeker": "22 g", "Tuz": "2,1 g", "Yağ": "0,1 g", "Lif": "1 g" } },
+    productB: { name: "Domates Sosu", nutrients: { "Şeker": "6 g",  "Tuz": "0,4 g", "Yağ": "3 g",   "Lif": "2 g" } },
+    highlight: "Şeker", correctProduct: "B", correctLabel: "Şeker: 6 g ve Tuz: 0,4 g"
+  },
+  {
+    category: "karsilastirma",
+    question: "Yağ miktarı düşük, protein miktarı yüksek olan ürünü seç.",
+    explanation: "Birden fazla ölçütü birlikte değerlendirmek kapsamlı etiket okuma becerisi gerektirir. Düşük yağ ve yüksek protein birlikte değerlendirilmelidir.",
+    productA: { name: "Tam Yağlı Süt",  nutrients: { "Protein": "3,2 g", "Yağ": "3,5 g", "Şeker": "4,7 g", "Kalsiyum": "120 mg" } },
+    productB: { name: "Yarım Yağlı Süt", nutrients: { "Protein": "3,3 g", "Yağ": "1,5 g", "Şeker": "4,8 g", "Kalsiyum": "125 mg" } },
+    highlight: "Yağ", correctProduct: "B", correctLabel: "Yağ: 1,5 g (düşük), Protein: 3,3 g (yüksek)"
+  },
+  {
+    category: "karsilastirma",
+    question: "Lif yüksek, şeker düşük, tuz düşük — üç ölçütte de daha iyi olan ürünü seç.",
+    explanation: "Gerçek etiket karşılaştırmasında birden fazla degeri birlikte degerlendirmek gerekir. Tüm ölçütlerde üstün olan ürünü bulmak analitik okuma becerisi ister.",
+    productA: { name: "Şekerli Tahıl Gevreği", nutrients: { "Lif": "2 g", "Şeker": "32 g", "Tuz": "0,8 g", "Protein": "5 g"  } },
+    productB: { name: "Tam Tahıl Gevreği",      nutrients: { "Lif": "8 g", "Şeker": "5 g",  "Tuz": "0,2 g", "Protein": "10 g" } },
+    highlight: "Lif", correctProduct: "B", correctLabel: "Lif: 8g (yüksek), Şeker: 5g (düşük), Tuz: 0,2g (düşük)"
+  },
+];
+
+// Düello state
+let duelState = {
+  questions:   [],
+  lastPlayed:  [],   // önceki turda oynanan soru indexleri
+  idx:         0,
+  score:       0,
+  xpEarned:   0,
+  answered:   false,
+};
+
+const DUEL_ROUND_SIZE = 10;  // Her turda 10 soru
+
+function duelPickQuestions() {
+  var pool = DUEL_QUESTIONS.slice();
+  var last = duelState.lastPlayed;
+  // Önce önceki turda oynanmayanları tercih et
+  var fresh   = pool.filter(function(q, i) { return last.indexOf(i) === -1; });
+  var played  = pool.filter(function(q, i) { return last.indexOf(i) !== -1; });
+  // Karıştır
+  fresh.sort(function()  { return Math.random() - 0.5; });
+  played.sort(function() { return Math.random() - 0.5; });
+  var merged = fresh.concat(played);
+  // İlk DUEL_ROUND_SIZE soruyu al ve her birinde konumu rastgele belirle
+  var chosen = merged.slice(0, DUEL_ROUND_SIZE);
+  duelState.lastPlayed = chosen.map(function(q) { return DUEL_QUESTIONS.indexOf(q); });
+  // Her soruya rastgele taraf ata
+  return chosen.map(function(q) {
+    var flip = Math.random() < 0.5;
+    return Object.assign({}, q, { _flipped: flip });
+  });
+}
+
+function gcOpenDuel() {
+  duelState.questions = duelPickQuestions();
+  duelState.idx       = 0;
+  duelState.score     = 0;
+  duelState.xpEarned  = 0;
+  duelState.answered  = false;
+  document.getElementById("gcHome").style.display    = "none";
+  document.getElementById("gcClassic").style.display = "none";
+  document.getElementById("gcDuel").style.display    = "block";
+  duelRenderQuestion();
+}
+
+function duelRenderQuestion() {
+  var el = document.getElementById("gcDuelContent");
+  if (!el) return;
+  var total = duelState.questions.length;
+  var idx   = duelState.idx;
+  if (idx >= total) { duelShowResult(); return; }
+
+  var q    = duelState.questions[idx];
+  var pct  = Math.round((idx / total) * 100);
+  // _flipped: true ise B solda A sağda gösterilir
+  var leftQ  = q._flipped ? q.productB : q.productA;
+  var rightQ = q._flipped ? q.productA : q.productB;
+  var leftId  = q._flipped ? "B" : "A";
+  var rightId = q._flipped ? "A" : "B";
+
+  function buildNutrients(prod, hlKey) {
+    return Object.entries(prod.nutrients).map(function(entry) {
+      var k = entry[0]; var v = entry[1];
+      var hl = (k === hlKey);
+      return "<div class=\"duel-nutrient\">" +
+        "<span class=\"duel-nutrient-lbl\">" + k + "</span>" +
+        "<span class=\"duel-nutrient-val" + (hl ? " hl" : "") + "\">" + v + "</span>" +
+        "</div>";
+    }).join("");
+  }
+
+  el.innerHTML =
+    "<div class=\"duel-prog-wrap\"><div class=\"duel-prog\" style=\"width:" + pct + "%\"></div></div>" +
+    "<div class=\"duel-meta\">" +
+      "<span>Soru " + (idx + 1) + " / " + total + "</span>" +
+      "<span>\u2713 " + duelState.score + " dogru \u00b7 \u2b50 " + duelState.xpEarned + " XP</span>" +
+    "</div>" +
+    "<div class=\"duel-question\">" + q.question + "</div>" +
+    "<div class=\"duel-cards\">" +
+      "<div class=\"duel-card\" id=\"duelCardLeft\" onclick=\"duelAnswer('" + leftId + "')\">" +
+        "<div class=\"duel-card-label\">Ürün A</div>" +
+        "<div class=\"duel-card-name\">" + leftQ.name + "</div>" +
+        buildNutrients(leftQ, q.highlight) +
+      "</div>" +
+      "<div class=\"duel-card\" id=\"duelCardRight\" onclick=\"duelAnswer('" + rightId + "')\">" +
+        "<div class=\"duel-card-label\">Ürün B</div>" +
+        "<div class=\"duel-card-name\">" + rightQ.name + "</div>" +
+        buildNutrients(rightQ, q.highlight) +
+      "</div>" +
+    "</div>" +
+    "<div class=\"duel-feedback\" id=\"duelFb\"></div>" +
+    "<button class=\"duel-next\" id=\"duelNext\" onclick=\"duelNext()\">Sonraki Soru \u2192</button>";
+
+  duelState.answered = false;
+}
+
+function duelAnswer(choice) {
+  if (duelState.answered) return;
+  duelState.answered = true;
+  var q       = duelState.questions[duelState.idx];
+  var correct = (choice === q.correctProduct);
+  var leftEl  = document.getElementById("duelCardLeft");
+  var rightEl = document.getElementById("duelCardRight");
+  var fb      = document.getElementById("duelFb");
+  var next    = document.getElementById("duelNext");
+  if (leftEl)  leftEl.onclick  = null;
+  if (rightEl) rightEl.onclick = null;
+
+  // Hangi DOM elementi doğru cevaba karşılık geliyor?
+  var correctIsLeft = (q.correctProduct === (q._flipped ? "B" : "A"));
+  var correctEl = correctIsLeft ? leftEl : rightEl;
+  var chosenEl  = (choice === (q._flipped ? "B" : "A")) ? leftEl : rightEl;
+
+  if (correct) {
+    duelState.score++;
+    var xpAmt = 20;
+    duelState.xpEarned += xpAmt;
+    addXP(xpAmt, "Düello dogru! +" + xpAmt + " XP");
+    gameRecordAnswer(q.category, true);
+    if (chosenEl) chosenEl.classList.add("correct");
+    if (fb) {
+      fb.className = "duel-feedback ok on";
+      fb.innerHTML = "\u2713 Dogru! <strong>" + q.correctLabel + "</strong><br><small>" + q.explanation + "</small>";
+    }
+  } else {
+    gameRecordAnswer(q.category, false);
+    if (chosenEl)  chosenEl.classList.add("wrong");
+    if (correctEl) correctEl.classList.add("correct");
+    if (fb) {
+      fb.className = "duel-feedback fail on";
+      fb.innerHTML = "\u2717 Yanlis. Dogru cevap: <strong>" + q.correctLabel + "</strong><br><small>" + q.explanation + "</small>";
+    }
+  }
+  gameUpdateHiScore("duel", duelState.score);
+  var isLast = (duelState.idx + 1 >= duelState.questions.length);
+  if (next) {
+    next.className   = "duel-next on";
+    next.textContent = isLast ? "Sonucu Gör \u2192" : "Sonraki Soru \u2192";
+  }
+}
+
+function duelNext() {
+  duelState.idx++;
+  duelRenderQuestion();
+}
+
+function duelShowResult() {
+  var el = document.getElementById("gcDuelContent");
+  if (!el) return;
+  var total = duelState.questions.length;
+  var score = duelState.score;
+  var pct   = Math.round((score / total) * 100);
+  var icon  = pct >= 90 ? "\ud83c\udfc6" : pct >= 70 ? "\ud83c\udf89" : pct >= 50 ? "\ud83d\udc4f" : "\ud83d\udcaa";
+  var title = pct >= 90 ? "Mükemmel!" : pct >= 70 ? "Harika!" : pct >= 50 ? "İyi iş!" : "Devam et!";
+  var hi    = gameGetHiScore("duel");
+  el.innerHTML =
+    "<div class=\"duel-result\">" +
+      "<div class=\"duel-result-icon\">" + icon + "</div>" +
+      "<div class=\"duel-result-title\">" + title + "</div>" +
+      "<div class=\"duel-result-score\">" + score + "/" + total + "</div>" +
+      "<div class=\"duel-result-sub\">Başarı: %" + pct + " \u00b7 Kazanılan XP: " + duelState.xpEarned + "<br>Kişisel rekor: " + hi + " dogru</div>" +
+      "<button class=\"duel-restart\" onclick=\"gcOpenDuel()\">Tekrar Oyna</button>" +
+      "<button class=\"duel-home\" onclick=\"gcBackToHome()\">\u2190 Oyun Merkezine Dön</button>" +
+    "</div>";
+}
+// ── Etiket Düellosu SONU ─────────────────────────────────────────────
+
+
+// ─── OYUN ALTYAPISI (nutrizeka_game_ öneki) ──────────────────────────
+// Mevcut save(), load(), xp, nz2_* sistemine DOKUNMAZ
+// Tüm oyun verileri ayrı nutrizeka_game_ anahtarlarında saklanır
+
+// Kazanım kategorileri ve Türkçe adları
+const GAME_CATEGORIES = {
+  seker:         { label: 'Şeker Okuryazarlığı',        icon: '🍬' },
+  tuz:           { label: 'Tuz Okuryazarlığı',           icon: '🧂' },
+  yag:           { label: 'Yağ ve Doymuş Yağ',           icon: '🧈' },
+  lif:           { label: 'Lif Okuryazarlığı',           icon: '🌾' },
+  protein:       { label: 'Protein Okuryazarlığı',       icon: '💪' },
+  porsiyon:      { label: 'Porsiyon / 100g Ayırımı',     icon: '⚖️'  },
+  karsilastirma: { label: 'Ürün Karşılaştırma',          icon: '⚖️'  },
+  etiket_okuma:  { label: 'Etiket Okuma Temelleri',      icon: '📋' },
+};
+
+// Oyun verisi yapısı — tüm anahtarlar nutrizeka_game_ önekli
+// nutrizeka_game_stats  → kazanım bazında istatistikler
+// nutrizeka_game_hiscore → kişisel yüksek skorlar (quiz tipine göre)
+// nutrizeka_game_daily  → günlük görev durumu
+
+function gameLoadStats() {
+  try {
+    const raw = localStorage.getItem('nutrizeka_game_stats');
+    if (!raw) return _gameEmptyStats();
+    return JSON.parse(raw);
+  } catch(e) { return _gameEmptyStats(); }
+}
+
+function _gameEmptyStats() {
+  const stats = {};
+  Object.keys(GAME_CATEGORIES).forEach(cat => {
+    stats[cat] = { correct: 0, total: 0 };
+  });
+  return stats;
+}
+
+function gameSaveStats(stats) {
+  try { localStorage.setItem('nutrizeka_game_stats', JSON.stringify(stats)); } catch(e) {}
+}
+
+// Bir soruya verilen cevabı kaydet
+// cat: kategori anahtarı (örn. 'seker'), isCorrect: boolean
+function gameRecordAnswer(cat, isCorrect) {
+  if (!cat || !GAME_CATEGORIES[cat]) return;
+  const stats = gameLoadStats();
+  stats[cat].total += 1;
+  if (isCorrect) stats[cat].correct += 1;
+  gameSaveStats(stats);
+}
+
+// Kazanım başarı yüzdesini döndür (0-100)
+function gameGetPct(cat) {
+  const stats = gameLoadStats();
+  const s = stats[cat];
+  if (!s || s.total === 0) return null;
+  return Math.round((s.correct / s.total) * 100);
+}
+
+// Tüm kazanım istatistiklerini döndür
+function gameGetAllStats() {
+  const stats = gameLoadStats();
+  const result = {};
+  Object.keys(GAME_CATEGORIES).forEach(cat => {
+    const s = stats[cat];
+    result[cat] = {
+      ...GAME_CATEGORIES[cat],
+      correct: s.correct,
+      total:   s.total,
+      pct:     s.total > 0 ? Math.round((s.correct / s.total) * 100) : null,
+    };
+  });
+  return result;
+}
+
+// Yüksek skor yönetimi
+// type: 'mcq' | 'match' | 'fill' | 'sort' | 'duel' | 'speed'
+function gameLoadHiScores() {
+  try {
+    const raw = localStorage.getItem('nutrizeka_game_hiscore');
+    return raw ? JSON.parse(raw) : {};
+  } catch(e) { return {}; }
+}
+
+function gameUpdateHiScore(type, score) {
+  const hi = gameLoadHiScores();
+  if (!hi[type] || score > hi[type]) {
+    hi[type] = score;
+    try { localStorage.setItem('nutrizeka_game_hiscore', JSON.stringify(hi)); } catch(e) {}
+    return true; // yeni rekor
+  }
+  return false;
+}
+
+function gameGetHiScore(type) {
+  const hi = gameLoadHiScores();
+  return hi[type] || 0;
+}
+
+// Günlük görev yönetimi
+function gameLoadDaily() {
+  try {
+    const raw = localStorage.getItem('nutrizeka_game_daily');
+    return raw ? JSON.parse(raw) : { date: null, done: false, streak: 0 };
+  } catch(e) { return { date: null, done: false, streak: 0 }; }
+}
+
+function gameSaveDaily(data) {
+  try { localStorage.setItem('nutrizeka_game_daily', JSON.stringify(data)); } catch(e) {}
+}
+
+function gameGetTodayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+}
+
+function gameIsDailyDone() {
+  const d = gameLoadDaily();
+  return d.date === gameGetTodayKey() && d.done;
+}
+
+function gameMarkDailyDone() {
+  const d = gameLoadDaily();
+  const today = gameGetTodayKey();
+  // Streak hesapla
+  const yesterday = (() => {
+    const y = new Date(); y.setDate(y.getDate()-1);
+    return `${y.getFullYear()}-${y.getMonth()+1}-${y.getDate()}`;
+  })();
+  const streak = (d.date === yesterday) ? (d.streak || 0) + 1 : 1;
+  gameSaveDaily({ date: today, done: true, streak });
+}
+
+function gameGetStreak() {
+  const d = gameLoadDaily();
+  const today = gameGetTodayKey();
+  const yesterday = (() => {
+    const y = new Date(); y.setDate(y.getDate()-1);
+    return `${y.getFullYear()}-${y.getMonth()+1}-${y.getDate()}`;
+  })();
+  // Streak yalnızca bugün veya dün tamamlandıysa geçerli
+  if (d.date === today || d.date === yesterday) return d.streak || 0;
+  return 0;
+}
+// ─── OYUN ALTYAPISI SONU ──────────────────────────────────────────────
+
 // ─── BADGES ──────────────────────────────────────────────────────────
 const BADGES=[
   {id:"scan1",ico:"🔍",nm:"İlk Tarama",c:()=>scanCnt>=1},
@@ -897,14 +3088,14 @@ const BADGES=[
 ];
 
 function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500);}
-function addXP(n,msg){xp+=n;document.getElementById("xpShow").textContent=xp;toast(msg||`+${n} XP 🎉`);save();upProf();}
+function addXP(n,msg){xp+=n;document.getElementById("xpShow").textContent=xp;toast(msg||`+${n} XP 🎉`);save();upProf();lbScheduleSync();}
 
 // ─── NAV ─────────────────────────────────────────────────────────────
 const SCRIDS=["scanScr","arcScr","learnScr","quizScr","profScr"];
 function sw(i){
   SCRIDS.forEach((s,j)=>{document.getElementById(s).classList.toggle("on",j===i);document.getElementById("n"+j).classList.toggle("on",j===i);});
   if(i===1)renderArchive();
-  if(i===3){currentQuizType=0;renderQuizHome(0);}
+  if(i===3){renderGameCenter();}
   if(i===4)upProf();
 }
 function upProf(){
@@ -1507,16 +3698,16 @@ function startQuiz(type){if(type===0)startMCQ();else if(type===1)startMatch();el
 
 // MCQ
 const MCQ=[
-  {q:"100g başına 15g şeker içeren ürün hangi renk kodunu alır?",o:["Yeşil","Sarı","Kırmızı"],a:2,e:"12.5g üzeri kırmızı!"},
-  {q:"İçerik listesinde malzemeler nasıl sıralanır?",o:["Alfabetik","En çoktan en aza","Rastgele"],a:1,e:"En çok kullanılan malzeme başta yazılır."},
-  {q:"Doymuş yağ için 100g başına 'az' sınırı nedir?",o:["1.5g altı","5g altı","10g altı"],a:0,e:"1.5g altı az kabul edilir."},
-  {q:"E300 kodu nedir?",o:["Şeker","C vitamini","Boyar madde"],a:1,e:"E300 = C vitamini (askorbik asit)!"},
-  {q:"Tuz için 'az' sayılan sınır?",o:["0.3g altı","3g altı","1g altı"],a:0,e:"0.3g altı az, 1.5g üzeri fazladır."},
-  {q:"Trans yağ etikette nasıl görünür?",o:["Omega-3 yağ asidi","Hidrojene bitkisel yağ","Zeytinyağı"],a:1,e:"'Hidrojene' veya 'kısmen hidrojene' = trans yağ!"},
-  {q:"Protein için 'iyi (yeşil)' sınır?",o:["5g üzeri","1g üzeri","0.5g üzeri"],a:0,e:"100g başına 5g ve üzeri yeşil (iyi) sayılır."},
-  {q:"Aşağıdakilerden hangisi gizli şekerdir?",o:["E300","Fruktoz","Pektin"],a:1,e:"Fruktoz bir şeker çeşididir!"},
-  {q:"Lifin faydası nedir?",o:["Diş çürütür","Sindirimi düzenler","Tansiyonu yükseltir"],a:1,e:"Lif sindirimi düzenler ve tok tutar."},
-  {q:"Hangisi en sağlıklı?",o:["Şeker 25g, Tuz 2g","Şeker 3g, Tuz 0.2g","Şeker 15g, Tuz 0.8g"],a:1,e:"Her iki değeri düşük olan her zaman daha sağlıklı!"},
+  {q:"100g başına 15g şeker içeren ürün hangi renk kodunu alır?",o:["Yeşil","Sarı","Kırmızı"],a:2,e:"12.5g üzeri kırmızı!",category:"seker"},
+  {q:"İçerik listesinde malzemeler nasıl sıralanır?",o:["Alfabetik","En çoktan en aza","Rastgele"],a:1,e:"En çok kullanılan malzeme başta yazılır.",category:"etiket_okuma"},
+  {q:"Doymuş yağ için 100g başına 'az' sınırı nedir?",o:["1.5g altı","5g altı","10g altı"],a:0,e:"1.5g altı az kabul edilir.",category:"yag"},
+  {q:"E300 kodu nedir?",o:["Şeker","C vitamini","Boyar madde"],a:1,e:"E300 = C vitamini (askorbik asit)!",category:"etiket_okuma"},
+  {q:"Tuz için 'az' sayılan sınır?",o:["0.3g altı","3g altı","1g altı"],a:0,e:"0.3g altı az, 1.5g üzeri fazladır.",category:"tuz"},
+  {q:"Trans yağ etikette nasıl görünür?",o:["Omega-3 yağ asidi","Hidrojene bitkisel yağ","Zeytinyağı"],a:1,e:"'Hidrojene' veya 'kısmen hidrojene' = trans yağ!",category:"yag"},
+  {q:"Protein için 'iyi (yeşil)' sınır?",o:["5g üzeri","1g üzeri","0.5g üzeri"],a:0,e:"100g başına 5g ve üzeri yeşil (iyi) sayılır.",category:"protein"},
+  {q:"Aşağıdakilerden hangisi gizli şekerdir?",o:["E300","Fruktoz","Pektin"],a:1,e:"Fruktoz bir şeker çeşididir!",category:"seker"},
+  {q:"Lifin faydası nedir?",o:["Diş çürütür","Sindirimi düzenler","Tansiyonu yükseltir"],a:1,e:"Lif sindirimi düzenler ve tok tutar.",category:"lif"},
+  {q:"Hangisi en sağlıklı?",o:["Şeker 25g, Tuz 2g","Şeker 3g, Tuz 0.2g","Şeker 15g, Tuz 0.8g"],a:1,e:"Her iki değeri düşük olan her zaman daha sağlıklı!",category:"karsilastirma"},
 ];
 let mcqIdx=0,mcqScore=0,mcqAnswered=false;
 function startMCQ(){mcqIdx=0;mcqScore=0;renderMCQ();}
@@ -1645,6 +3836,359 @@ function showResult(score,total,type){
   let bh="";BADGES.forEach(b=>{if(b.c())bh+=`<div class="bp" style="background:var(--green-bg);border-color:var(--green-border);color:var(--green-text)">${b.ico} ${b.nm}</div>`;});
   document.getElementById("quizArea").innerHTML=`<div class="qr-wrap"><div class="qr-ico">${e}</div><div class="qr-title">${tt}</div><div class="qr-score">${score}/${total}</div><div class="qr-sub">${pct>=70?"Harika iş çıkardın!":"Öğren sekmesini tekrar incele!"}</div><div class="badges-row">${bh}</div><button class="retry-btn" onclick="renderQuizHome(${currentQuizType})">🔄 Tekrar dene</button></div>`;
 }
+
+// ── Leaderboard Altyapısı (B1) ───────────────────────────────────────
+// Mevcut WORKER_URL ve callAPI() fonksiyonuna dokunulmamıştır.
+const LB_URL = 'https://nutrizeka-lb.yrnklc-2017.workers.dev';
+const LB_ID_KEY = 'nutrizeka_player_id';
+
+// Cihaz UUID'sini döndür; yoksa oluştur ve localStorage'a kaydet
+function lbGetOrCreateId() {
+  try {
+    var existing = localStorage.getItem(LB_ID_KEY);
+    if (existing) return existing;
+    var newId = (typeof crypto !== 'undefined' && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : 'uid-' + Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+    localStorage.setItem(LB_ID_KEY, newId);
+    return newId;
+  } catch(e) { return 'fallback-' + Date.now(); }
+}
+
+// Anonim takma adla sıralamaya kayıt ol
+// Döner: {ok: true} veya {ok: false, error: 'nickname_taken' | ...}
+async function lbRegister(nickname) {
+  try {
+    var id = lbGetOrCreateId();
+    var resp = await fetch(LB_URL + '/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id, nickname: nickname })
+    });
+    return await resp.json();
+  } catch(e) {
+    return { ok: false, error: 'network_error' };
+  }
+}
+
+// İlk 20 oyuncuyu getir
+// Döner: [{rank, nickname, xp, level}, ...] veya []
+async function lbFetchLeaderboard() {
+  try {
+    var resp = await fetch(LB_URL + '/leaderboard?limit=20');
+    var data = await resp.json();
+    return Array.isArray(data) ? data : (data.players || data.results || data.rows || []);
+  } catch(e) { return []; }
+}
+
+// Mevcut cihazın sıralamasını getir
+// Döner: {rank, nickname, xp, level} veya null
+async function lbFetchMyRank() {
+  try {
+    var id = lbGetOrCreateId();
+    var resp = await fetch(LB_URL + '/rank?id=' + encodeURIComponent(id));
+    var data = await resp.json();
+    return data.ok === false ? null : data;
+  } catch(e) { return null; }
+}
+// ── Leaderboard Altyapısı SONU ────────────────────────────────────────
+
+// ── Leaderboard XP Senkronizasyonu (B4) ──────────────────────────────
+var _lbSyncTimer   = null;   // debounce timer
+var _lbSyncing     = false;  // uçuşta istek var mı
+var _lbPendingXP   = null;   // bekleyen en güncel XP değeri
+
+// XP'yi Worker'a gönder (toplam xp, artış değil)
+async function lbUpdateScore() {
+  if (!lbGetNickname()) return;
+
+  var id      = lbGetOrCreateId();
+  var totalXP = xp;  // global xp — addXP sonrasi guncel
+
+  if (_lbSyncing) { _lbPendingXP = totalXP; return; }
+  _lbSyncing = true;
+
+  try {
+    // 1. Once mevcut sunucu XP'sini oku
+    var rankResp = await fetch(LB_URL + '/rank?id=' + encodeURIComponent(id));
+    var serverXP = 0;
+    if (rankResp.ok) {
+      var rankData = await rankResp.json();
+      if (rankData && typeof rankData.xp === 'number') serverXP = rankData.xp;
+    }
+
+    // 2. Fark hesapla; Worker +50 siniri var, adim adim gonder
+    var diff = totalXP - serverXP;
+    if (diff <= 0) { _lbSyncing = false; return; }  // zaten guncel veya daha yuksek
+
+    var STEP = 45;  // guvenli adim (50 sinirinin altinda)
+    var sent = serverXP;
+    while (sent < totalXP) {
+      var next = Math.min(sent + STEP, totalXP);
+      var resp = await fetch(LB_URL + '/update', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ id: id, xp: next })
+      });
+      if (!resp.ok) {
+        var errData = await resp.json().catch(function(){ return {}; });
+        console.warn('[LB] /update hata:', resp.status, errData);
+        break;
+      }
+      sent = next;
+    }
+  } catch(e) {
+    console.warn('[LB] lbUpdateScore network hata:', e.message);
+    _lbPendingXP = totalXP;  // tekrar dene
+  } finally {
+    _lbSyncing = false;
+    if (_lbPendingXP !== null) {
+      var pending = _lbPendingXP;
+      _lbPendingXP = null;
+      setTimeout(function() { lbUpdateScore(); }, 500);
+    }
+  }
+}
+
+// Debounce sarmalayıcı — art arda gelen addXP çağrılarını 600ms'de bir toplar
+function lbScheduleSync() {
+  if (!lbGetNickname()) return;   // kayıtsızsa hiç timer kurma
+  if (_lbSyncTimer) clearTimeout(_lbSyncTimer);
+  _lbSyncTimer = setTimeout(function() {
+    _lbSyncTimer = null;
+    lbUpdateScore();
+  }, 600);
+}
+// ── Leaderboard XP Senkronizasyonu SONU ──────────────────────────────
+
+
+// ── Leaderboard Kayıt Sistemi (B2) ───────────────────────────────────
+var LB_NICK_KEY = 'nutrizeka_player_nickname';
+
+// Kayıtlı takma adı döndür; yoksa null
+function lbGetNickname() {
+  try { return localStorage.getItem(LB_NICK_KEY) || null; } catch(e) { return null; }
+}
+
+// Oyun Merkezi'ndeki katılım satırını güncelle
+function lbUpdateJoinRow() {
+  var joinRow    = document.getElementById('lbJoinRow');
+  var joinedRow  = document.getElementById('lbJoinedRow');
+  var nickDisp   = document.getElementById('lbNicknameDisplay');
+  var nick = lbGetNickname();
+  if (nick) {
+    if (joinRow)   joinRow.style.display   = 'none';
+    if (joinedRow) joinedRow.style.display = 'block';
+    if (nickDisp)  nickDisp.textContent    = nick;
+  } else {
+    if (joinRow)   joinRow.style.display   = 'block';
+    if (joinedRow) joinedRow.style.display = 'none';
+  }
+}
+
+// Kayıt modalını aç
+function lbShowRegister() {
+  var modal = document.getElementById('lbRegisterModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  var inp = document.getElementById('lbNicknameInput');
+  if (inp) { inp.value = ''; inp.focus(); }
+  lbSetMsg('', '');
+  var btn = document.getElementById('lbRegisterBtn');
+  if (btn) btn.disabled = true;
+}
+
+// Kayıt modalını kapat
+function lbCloseRegister() {
+  var modal = document.getElementById('lbRegisterModal');
+  if (modal) modal.style.display = 'none';
+}
+
+// Input doğrulama — harf, rakam, _ ve - kabul et; 3-20 karakter
+function lbValidateInput(inp) {
+  var val = inp.value;
+  // Geçersiz karakterleri temizle
+  inp.value = val.replace(/[^a-zA-Z0-9_\-]/g, '');
+  var len = inp.value.length;
+  var hint = document.getElementById('lbInputHint');
+  var btn  = document.getElementById('lbRegisterBtn');
+  if (len < 3) {
+    if (hint) hint.textContent = 'En az 3 karakter gir. (' + len + '/20)';
+    if (btn)  btn.disabled = true;
+  } else if (len > 20) {
+    if (hint) hint.textContent = 'En fazla 20 karakter olabilir.';
+    if (btn)  btn.disabled = true;
+  } else {
+    if (hint) hint.textContent = len + '/20 karakter \u2014 harf, rakam, _ ve - kabul edilir.';
+    if (btn)  { btn.disabled = false; btn.style.opacity = '1'; }
+  }
+  lbSetMsg('', '');
+}
+
+// Mesaj kutusunu ayarla
+function lbSetMsg(text, type) {
+  var box = document.getElementById('lbRegisterMsg');
+  if (!box) return;
+  if (!text) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  if (type === 'ok') {
+    box.style.background = 'var(--green-bg)';
+    box.style.borderColor = 'var(--green-border)';
+    box.style.color = 'var(--green-text)';
+  } else {
+    box.style.background = 'var(--red-bg)';
+    box.style.borderColor = 'var(--red-border)';
+    box.style.color = 'var(--red-text)';
+  }
+  box.textContent = text;
+}
+
+// Kayıt isteği gönder
+async function lbSubmitRegister() {
+  var inp = document.getElementById('lbNicknameInput');
+  var btn = document.getElementById('lbRegisterBtn');
+  if (!inp) return;
+  var nick = inp.value.trim();
+
+  // Tekrar doğrula
+  if (nick.length < 3 || nick.length > 20 || !/^[a-zA-Z0-9_\-]+$/.test(nick)) {
+    lbSetMsg('Geçersiz takma ad. 3-20 karakter, harf/rakam/_ / - kullan.', 'err');
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Kaydediliyor...'; }
+
+  var result = await lbRegister(nick);
+
+  if (btn) { btn.textContent = 'Katıl'; }
+
+  if (result && result.ok) {
+    // alreadyRegistered: sunucu bu cihazi tanidi, mevcut kaydi dondurdu
+    var finalNick = (result.alreadyRegistered && result.player && result.player.nickname)
+      ? result.player.nickname
+      : nick;
+
+    try { localStorage.setItem(LB_NICK_KEY, finalNick); } catch(e) {}
+
+    var msg = result.alreadyRegistered
+      ? '\u2705 Zaten siralamaya katilmissin: ' + finalNick
+      : '\u2705 Siralamaya katildin! Takma adin: ' + finalNick;
+
+    lbSetMsg(msg, 'ok');
+    if (btn) btn.disabled = true;
+    setTimeout(function() {
+      lbCloseRegister();
+      lbUpdateJoinRow();
+      lbUpdateRankCard();
+    }, 1800);
+  } else if (result && result.error === 'nickname_taken') {
+    lbSetMsg('Bu takma ad alinmis. Baska bir ad sec.', 'err');
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  } else {
+    lbSetMsg('Baglanti hatasi. Lutfen tekrar dene.', 'err');
+    if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
+// ── Leaderboard Kayıt Sistemi SONU ───────────────────────
+
+// -- Leaderboard Goruntuleme (B3) -----------------------------
+var LB_MEDALS = ['\uD83E\uDD47', '\uD83E\uDD48', '\uD83E\uDD49'];
+
+function lbGetLevelName(xpVal) {
+  if (xpVal >= 800) return 'Nutri Ustasi';
+  if (xpVal >= 500) return 'Etiket Uzmani';
+  if (xpVal >= 250) return 'Bilincli Secici';
+  if (xpVal >= 100) return 'Etiket Kasifi';
+  return 'Caylak';
+}
+
+function lbUpdateRankCard() {
+  var card  = document.getElementById('lbRankCard');
+  var desc  = document.getElementById('lbRankCardDesc');
+  var badge = document.getElementById('lbRankCardBadge');
+  if (!card) return;
+  var nick = lbGetNickname();
+  if (nick) {
+    card.className = 'gc-card gc-card--active';
+    if (desc)  desc.textContent  = 'En iyi 20 oyuncuyu gor';
+    if (badge) { badge.textContent = 'Ac \u2192'; badge.className = 'gc-card-badge gc-badge--active'; }
+  } else {
+    card.className = 'gc-card gc-card--soon';
+    if (desc)  desc.textContent  = 'Katilmak icin kayit ol';
+    if (badge) { badge.textContent = 'Katil \u2192'; badge.className = 'gc-card-badge gc-badge--soon'; }
+  }
+}
+
+function gcOpenLeaderboard() {
+  var nick = lbGetNickname();
+  if (!nick) { lbShowRegister(); return; }
+  ['gcHome','gcClassic','gcDuel','gcAchieve','gcQuick','gcDaily','gcBadges'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  document.getElementById('gcLeaderboard').style.display = 'block';
+  renderLeaderboard();
+}
+
+async function renderLeaderboard() {
+  var el = document.getElementById('gcLeaderboardContent');
+  if (!el) return;
+  el.innerHTML = '<div style=\'text-align:center;padding:32px 0;color:var(--muted);font-weight:700;\'>Yukleniyor...</div>';
+  var myNick = lbGetNickname();
+  var myId   = lbGetOrCreateId();
+  var rows   = await lbFetchLeaderboard();
+  var myRank = await lbFetchMyRank();
+
+  if (!rows || rows.length === 0) {
+    el.innerHTML = '<div class=\'lb-empty\'>\uD83C\uDFC6 Henuz siralama bos.<br>Ilk sen ol!</div>';
+    return;
+  }
+
+  var myRow = rows.find(function(r) { return r.nickname === myNick || r.id === myId; });
+  var inTop = !!myRow;
+  var h = '';
+
+  h += '<button class=\'lb-refresh\' onclick=\'renderLeaderboard()\'>\uD83D\uDD04 Yenile</button>';
+
+  if (!inTop && myRank) {
+    h += '<div class=\'lb-not-in\'>';
+    h += '\uD83D\uDCCC Senin siran: <strong>#' + myRank.rank + '</strong>';
+    h += ' \u2014 ' + myRank.xp + ' XP \u2014 ' + lbGetLevelName(myRank.xp);
+    h += '</div>';
+  } else if (!inTop) {
+    h += '<div class=\'lb-not-in\'>Sirada gorunmuyorsun. XP kazan ve tekrar bak!</div>';
+  }
+
+  h += '<table class=\'lb-table\'><thead><tr>';
+  h += '<th>#</th><th>Takma Ad</th>';
+  h += '<th style=\'text-align:right\'>XP</th><th style=\'text-align:right\'>Seviye</th>';
+  h += '</tr></thead><tbody>';
+
+  rows.forEach(function(r, i) {
+    var rank   = r.rank || (i + 1);
+    var isMe   = (r.nickname === myNick || r.id === myId);
+    var rCls   = isMe ? 'lb-row me' : 'lb-row';
+    var medal  = rank <= 3 ? LB_MEDALS[rank - 1] : '';
+    var nCls   = rank === 1 ? 'lb-rank-num gold' : rank === 2 ? 'lb-rank-num silver' : rank === 3 ? 'lb-rank-num bronze' : 'lb-rank-num';
+    var lvName = lbGetLevelName(r.xp || 0);
+    h += '<tr class=\'' + rCls + '\'>';
+    h += '<td><span class=\'' + nCls + '\'>' + (medal || ('#' + rank)) + '</span></td>';
+    h += '<td class=\'lb-nick\'>' + (isMe ? '\u27A4 ' : '') + (r.nickname || '-') + '</td>';
+    h += '<td class=\'lb-xp\'>' + (r.xp || 0) + '</td>';
+    h += '<td class=\'lb-lv\'>' + lvName + '</td>';
+    h += '</tr>';
+  });
+
+  h += '</tbody></table>';
+  if (inTop) {
+    h += '<div style=\'text-align:center;font-size:11px;color:var(--muted);font-weight:600;\'>';
+    h += '\u27A4 senin satirin.';
+    h += '</div>';
+  }
+  el.innerHTML = h;
+}
+// -- Leaderboard Goruntuleme SONU --
+
 
 load();upProf();renderQuizHome(0);
 </script>
