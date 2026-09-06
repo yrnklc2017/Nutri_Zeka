@@ -3888,7 +3888,7 @@ async function lbFetchMyRank() {
     var id = lbGetOrCreateId();
     var resp = await fetch(LB_URL + '/rank?id=' + encodeURIComponent(id));
     var data = await resp.json();
-    return (data && data.player) ? data.player : null;
+    return (data && data.ok !== false && data.player) ? data.player : null;
   } catch(e) { return null; }
 }
 // ── Leaderboard Altyapısı SONU ────────────────────────────────────────
@@ -3914,7 +3914,9 @@ async function lbUpdateScore() {
     var serverXP = 0;
     if (rankResp.ok) {
       var rankData = await rankResp.json();
-      if (rankData && rankData.player && typeof rankData.player.xp === 'number') serverXP = rankData.player.xp;
+      if (rankData && rankData.player && typeof rankData.player.xp === 'number') {
+        serverXP = rankData.player.xp;
+      }
     }
 
     // 2. Fark hesapla; Worker +50 siniri var, adim adim gonder
